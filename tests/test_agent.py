@@ -217,15 +217,15 @@ def test_installed_command_actually_runs(tmp_path, isolated):
 
 
 def test_plugin_manifests_consistent():
+    import re
     from pathlib import Path
-    import tomllib
 
     root = Path(__file__).resolve().parent.parent
     market = json.loads((root / ".claude-plugin/marketplace.json").read_text())
     entry = market["plugins"][0]
     plugin_dir = root / entry["source"]
     manifest = json.loads((plugin_dir / ".claude-plugin/plugin.json").read_text())
-    version = tomllib.loads((root / "pyproject.toml").read_text())["project"]["version"]
+    version = re.search(r'^version = "([^"]+)"', (root / "pyproject.toml").read_text(), re.M).group(1)  # tomllib is 3.11+
     assert manifest["name"] == entry["name"] == "pickaxetax"
     assert manifest["version"] == entry["version"] == version
     pre = manifest["hooks"]["PreToolUse"][0]
