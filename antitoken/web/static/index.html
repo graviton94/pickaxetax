@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ANTITOKENMAXING</title>
+  <meta name="description" content="Upload a shared AI conversation. We keep only its shape — agenda, structure, depth — and show how many tokens it didn't need.">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/">ANTI<span>TOKEN</span>MAXING</a>
+    <nav>
+      <a href="/" data-i18n="nav_analyze">분석</a>
+      <a href="/explore" data-i18n="nav_explore">공익 그래프</a>
+      <button id="lang" class="ghost" type="button" aria-label="language">EN</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="hero">
+      <h1 data-i18n="hero_title">AI는 같은 대화를 매번 처음부터 다시 읽습니다.</h1>
+      <p class="lede" data-i18n="hero_lede">대화 공유 링크나 내보내기 파일을 올리면 원문은 버리고 구조(아젠다·흐름·깊이)만 그래프로 남겨, 그 대화에서 불필요했던 연산이 얼마인지 보여줍니다.</p>
+      <div class="counter" id="counter" hidden>
+        <div><b id="c-convs">0</b><span data-i18n="c_convs">개 대화 분석</span></div>
+        <div><b id="c-units">0</b><span data-i18n="c_units">연산 단위 측정</span></div>
+        <div><b id="c-avoid">0%</b><span data-i18n="c_avoid">회피 가능했던 연산</span></div>
+      </div>
+    </section>
+
+    <section id="analyze" class="card">
+      <form id="form">
+        <label for="input" class="label" data-i18n="input_label">공유 링크, JSON 내보내기, 또는 대화 텍스트</label>
+        <textarea id="input" rows="8" spellcheck="false" data-i18n-placeholder="input_ph"></textarea>
+        <div class="row">
+          <label class="file"><input type="file" id="file" accept=".json,.txt,.md"><span data-i18n="file_btn">파일 선택</span> <em id="file-name"></em></label>
+          <label class="check"><input type="checkbox" id="save" checked> <span data-i18n="consent">익명 구조를 공익 그래프에 기여 (원문 미저장, 언제든 삭제 가능)</span></label>
+        </div>
+        <div class="row end">
+          <button type="button" class="ghost" id="sample" data-i18n="sample">예시로 해보기</button>
+          <button type="submit" id="go" data-i18n="analyze">분석하기</button>
+        </div>
+        <p class="error" id="error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section id="result" hidden></section>
+
+    <section id="explore" hidden>
+      <h2 data-i18n="explore_title">공익 그래프</h2>
+      <p class="muted" data-i18n="explore_lede">기여된 대화 구조의 집계입니다. 개인 식별을 막기 위해 k개 이상의 대화에서 등장한 주제만 공개합니다.</p>
+      <div class="grid" id="ex-stats"></div>
+      <div class="card"><h3 data-i18n="topic_graph">주제 동시출현 그래프</h3><div id="ex-graph" class="graph"></div></div>
+      <div class="card"><h3 data-i18n="waste_mix">낭비 유형 누계</h3><div id="ex-waste"></div></div>
+      <p class="muted small"><a href="/api/topics/cypher" data-i18n="dl_cypher">Cypher 내보내기 (Neo4j)</a> · <a href="/api/docs">API</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p data-i18n="footer">원문은 메모리에서만 처리되고 즉시 폐기됩니다. 분석기는 LLM을 호출하지 않습니다 — 토큰을 아끼자는 프로젝트가 토큰을 쓸 수는 없으니까요.</p>
+    <p class="small"><a href="https://github.com/graviton94/antitokenmaxing">GitHub</a> · Apache-2.0</p>
+  </footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "antitoken"
+version = "0.1.0"
+description = "Turn shared AI conversations into privacy-preserving graph skeletons (agenda, structure, depth) and expose token waste."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  "httpx>=0.27",
+  "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+tiktoken = ["tiktoken>=0.7"]
+
+[project.scripts]
+antitoken = "antitoken.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["antitoken*"]
+
+[tool.setuptools.package-data]
+"antitoken.web" = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
