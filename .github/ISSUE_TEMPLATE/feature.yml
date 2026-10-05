@@ -1,0 +1,11 @@
+name: Idea or adapter request
+description: A new waste pattern, another coding agent, a better metric.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should Pickaxe Tax measure or cut?
+      description: For a new agent adapter (Codex CLI, Aider, Cline, Cursor, ...), describe or attach a redacted log that shows the structure.
+    validations:
+      required: true

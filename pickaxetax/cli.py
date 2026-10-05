@@ -7,6 +7,7 @@ import json
 import os
 import sys
 
+from . import __version__
 from .graph import GraphStore, skeleton_cypher, topics_cypher
 from .models import Skeleton
 from .service import process_bytes, process_text
@@ -33,6 +34,7 @@ def _summary(sk: dict) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="pickaxetax", description=__doc__)
+    ap.add_argument("--version", action="version", version=f"pickaxetax {__version__}")
     ap.add_argument("--db", default=os.environ.get("PICKAXETAX_DB", "data/pickaxetax.sqlite3"))
     sub = ap.add_subparsers(dest="cmd", required=True)
 
