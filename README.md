@@ -15,8 +15,17 @@
 Contributed skeletons feed a public, **k-anonymous** topic graph (a topic is shown only once it appears in ≥ k conversations) plus aggregate waste statistics. The analyzer itself calls **no LLM**: a project about saving tokens shouldn't spend them.
 
 ```bash
-pip install -e ".[dev]" && antitoken serve && pytest
+pip install -e ".[dev]"
+antitoken serve                      # conversation skeleton analyzer (web)
+antitoken proxy                      # local proxy: OpenAI-compatible /v1, Anthropic base URL
+antitoken ledger                     # tokens spent, context re-sent, tokens avoided
+antitoken bench run --base-url http://localhost:11434 --model llama3.2   # donate benchmark compute
+pytest
 ```
+
+**Local proxy.** Point your client at it and it forwards to the real provider with your own key, which it never stores. It measures every request (input, output, reasoning, re-sent context). By default it also drops earlier pure thank-you exchanges from the history and answers a bare "thanks" locally instead of re-reading the whole chat. "ok"/"yes" are never short-circuited, because in agent workflows they mean "go ahead". Requests with tools are never rewritten. Opt-in: `--cache` reuses responses to identical temperature-0 requests, stored on your disk.
+
+**How to help at zero cost:** see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIVACY.md).
 

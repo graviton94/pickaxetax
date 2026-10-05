@@ -78,3 +78,25 @@ RETURN t.intent, avg(t.depth) AS depth, count(*) ORDER BY depth DESC
 - Redirects are followed manually, and each hop is re-checked against the allowlist (SSRF protection).
 - Parsers are layered: the provider JSON API (Claude snapshots), then embedded JSON (`__NEXT_DATA__` and others), then role-attributed DOM.
 - Many share pages render client-side and change often. When parsing fails, the user is told to paste the text or upload the export.
+
+## Local proxy (`antitoken/proxy`)
+
+```
+ client (OpenAI SDK / Anthropic SDK / any compatible tool)
+        │  base_url = http://127.0.0.1:8787[/v1]
+ ┌──────▼───────────────────────────────────────────────┐
+ │ 1. bare "thanks" (no tools, not answering a question) │──► local reply in the provider's exact format
+ │ 2. compact: drop earlier thank-you exchanges           │
+ │ 3. cache (opt-in): identical temperature-0 requests     │──► local reply
+ │ 4. forward with the client's own credentials            │──► provider
+ │ 5. meter usage from JSON or the SSE stream              │
+ └──────┬───────────────────────────────────────────────┘
+        ▼
+ ledger.sqlite3 (counts only: tokens in/out/reasoning, re-sent context, avoided)
+```
+
+Usage comes from the provider (`measured`) whenever it is reported, and from estimates otherwise. The ledger records which is which, so the "verified savings" north-star metric only counts what can be verified.
+
+## Over-computation benchmark (`antitoken/bench`)
+
+A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-compatible endpoint and records completion and reasoning tokens against the minimal answer length. Results are content-addressed by (model, settings, task set), so the same measurement is never paid for twice. CI validates submitted files and recomputes their summaries.
