@@ -35,7 +35,8 @@ GitHub는 개인 계정만 검색했다. 조직 이름과 도메인은 확인하
 - 곡괭이세를 실제로 내는 쪽은 AI 개발사와 사용자다. 그래서 이 이름은 반AI가 아니라 "함께 그만 뜯기자"는 메시지가 되고, 투트랙 전략과 인수 시나리오와도 충돌하지 않는다.
 
 ## 결과와 후속 조치 (대표 직접)
-- [ ] PyPI `pickaxetax`, npm `pickaxetax` 이름 선점 등록
+- [x] PyPI `pickaxetax` 확보 (0.1.0 배포, 2026-10-05, ADR-0004)
+- [ ] npm `pickaxetax` 이름 선점 (npm 패키지가 생길 때)
 - [ ] GitHub 조직 `pickaxetax` 생성
 - [ ] 도메인 확인과 등록 (pickaxetax.org / .dev)
 - [ ] 런칭 전 상표 검색 (법률 검토)
