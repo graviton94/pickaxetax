@@ -94,9 +94,26 @@ def main(argv: list[str] | None = None) -> int:
     ab.add_argument("--min-shared", type=int, default=1, help="distinctive tokens a later output must reuse to count as a use")
     ab.add_argument("--raw", action="store_true", help="skip calibration against measured context growth")
     ab.add_argument("--json", action="store_true", help="print the aggregate as JSON")
+    ab.add_argument("--export", action="store_true", help="print an anonymous aggregate (audit + bound) for contribution")
     ah = agsub.add_parser("hook", help="guard hook (called by Claude Code) and its installer")
     ah.add_argument("action", choices=["pre-tool-use", "pre-compact", "install", "uninstall"])
     ah.add_argument("--scope", choices=["user", "project"], default="user")
+
+    bt = sub.add_parser("backtest", help="pre-registered backtest and benchmark over many sessions (any provider)")
+    btsub = bt.add_subparsers(dest="backtest_cmd", required=True)
+    br = btsub.add_parser("run", help="measure sessions and write the report (aggregates only)")
+    br.add_argument("paths", nargs="+", help="chat exports (ChatGPT, Claude, Gemini, ...), transcripts or agent logs")
+    br.add_argument("--source", default=None, help="provider label for every session in these files (overrides detection)")
+    br.add_argument("--contributor", default="1", help="opaque label of who supplied the files (stored as a short hash)")
+    br.add_argument("--out", default="backtest-report.json", help="publishable report (no text, paths or ids)")
+    br.add_argument("--manifest", default="backtest-manifest.txt", help="private list of session fingerprints (keep it)")
+    bl = btsub.add_parser("label", help="validate the use detector by hand (text shown locally, only answers saved)")
+    bl.add_argument("paths", nargs="+")
+    bl.add_argument("--source", default=None)
+    bl.add_argument("--n", type=int, default=100, help="pairs to label (half detected, half not)")
+    bl.add_argument("--labels", default="backtest-labels.json")
+    bv = btsub.add_parser("validation", help="summarize detector validation labels")
+    bv.add_argument("labels")
 
     co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
     cosub = co.add_subparsers(dest="contrib_cmd", required=True)
@@ -120,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = ap.parse_args(argv)
 
-    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute"):
+    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute", "backtest"):
         return _tools(args)
 
     if args.cmd == "serve":
@@ -236,6 +253,8 @@ def _tools(args) -> int:
 
     if args.cmd == "agent":
         return _agent(args)
+    if args.cmd == "backtest":
+        return _backtest(args)
 
     if args.cmd == "contribute":
         return _contribute(args)
@@ -272,13 +291,16 @@ def _agent(args) -> int:
     if not files:
         print("no Claude Code transcripts found (looked in ~/.claude/projects)", file=sys.stderr)
         return 1
-    if args.agent_cmd == "bound":
+    if args.agent_cmd == "bound" and not args.export:
         return _agent_bound(files, args)
     reports = [audit_session(parse(f)) for f in files]
     reports = [r for r in reports if r["api_calls"]]
     m = merge(reports)
     if args.export:
-        print(json.dumps(export(m), indent=2))
+        from .agent import bound
+
+        bounds = [r for r in (bound.analyze(f) for f in files) if r["api_calls"]]
+        print(json.dumps(export(m, bound.export(bounds) if bounds else None), indent=2))
         return 0
     if args.json:
         print(json.dumps({"summary": m, "sessions": reports}, indent=2, default=list))
@@ -331,6 +353,47 @@ def _agent_bound(files: list[str], args) -> int:
         best = m["policies"].get("P=0", {}).get("bound_input", measured)
         print(f"\ninput per token written to disk: {measured / m['written_tokens']:,.0f} (oracle: {best / m['written_tokens']:,.0f})")
     print("References are detected lexically; see research/belady-bound.md for what that means for these numbers.")
+    return 0
+
+
+def _backtest(args) -> int:
+    from .backtest import label, run
+
+    if args.backtest_cmd == "label":
+        print(json.dumps(label.interactive(args.paths, args.n, args.labels, args.source), indent=2))
+        return 0
+    if args.backtest_cmd == "validation":
+        with open(args.labels, encoding="utf-8") as f:
+            print(json.dumps(label.summarize(json.load(f)), indent=2))
+        return 0
+    report, manifest = run.run(args.paths, args.source, args.contributor)
+    report = run.nan_to_none(report)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=1)
+    with open(args.manifest, "w", encoding="utf-8") as f:
+        f.write("\n".join(manifest) + "\n")
+    s = report["sessions"]
+    print(f"{report['protocol']} · sessions kept {s['kept']} (dev {s['dev']}, test {s['test']}), excluded short {s['excluded_short']}"
+          " · one contributor")
+    if not report["aggregate"]:
+        return 1
+
+    def fmt(x):
+        return f"{x['median']}% [{x['ci95'][0]}, {x['ci95'][1]}] n={x['n']}" if x["n"] else "-"
+    rows = [("all sessions", report["aggregate"]["all_sessions"]), ("test split", report["aggregate"]["test_split"])]
+    rows += [(f"source: {k}", v) for k, v in report["aggregate"]["by_source"].items()]
+    rows += [(f"length: {k} calls", v) for k, v in report["aggregate"]["by_length"].items()]
+    print(f"\n{'stratum':<26}{'forget (P=inf)':<30}{'page (P=0)':<30}{'best online (test N)'}")
+    for name, b in rows:
+        from .backtest import MAX_MISS_RATE
+
+        ok = [f for f in ("window", "recency", "pointer") if (b[f"online_{f}"]["miss_rate"]["median"] or 0) <= MAX_MISS_RATE]
+        best = max(ok, key=lambda f: b[f"online_{f}"]["saved_pct"]["median"] or -1) if ok else None
+        flag = "  (n < 10: not a finding)" if b["insufficient"] else ""
+        online = (f"{best}-{b[f'online_{best}']['n']}: {b[f'online_{best}']['saved_pct']['median']}%, "
+                  f"miss {b[f'online_{best}']['miss_rate']['median']}%") if best else f"none within {MAX_MISS_RATE}% misses"
+        print(f"{name:<26}{fmt(b['oracle_Pinf']):<30}{fmt(b['oracle_P0']):<30}{online}{flag}")
+    print(f"\nreport: {args.out} (publishable) · manifest: {args.manifest} (private; its digest is in the report)")
     return 0
 
 

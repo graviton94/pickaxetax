@@ -50,6 +50,7 @@ class Segment:
     terms: frozenset
     end: int = -1
     refs: list[int] = field(default_factory=list)
+    text: str = field(default="", repr=False)  # kept only for local validation labeling (keep_text=True)
 
 
 @dataclass
@@ -69,7 +70,7 @@ def _text(content) -> str:
     return ""
 
 
-def read_trace(path: str) -> Trace:
+def read_trace(path: str, keep_text: bool = False) -> Trace:
     """Parse a Claude Code transcript into calls, outputs and context segments."""
     t = Trace()
     call_of: dict[str, int] = {}
@@ -78,7 +79,7 @@ def read_trace(path: str) -> Trace:
     def add(kind: str, text: str, birth: int) -> None:
         n = estimate_tokens(text)
         if n:
-            t.segments.append(Segment(kind, n, birth, frozenset(TOKEN_RE.findall(text))))
+            t.segments.append(Segment(kind, n, birth, frozenset(TOKEN_RE.findall(text)), text=text if keep_text else ""))
 
     with open(path, encoding="utf-8", errors="replace") as f:
         for line in f:
@@ -286,6 +287,31 @@ def merge(reports: list[dict]) -> dict:
             "unneeded_pct": round(100 * unneeded / res, 1) if res else 0.0,
         }
     return m
+
+
+METHOD = "lexical-v1"  # bump when detection or calibration changes, so results stay comparable
+PCT_KEYS = {"P=0": "P0", "P=1000": "P1000", "P=10000": "P10000", "P=inf": "Pinf"}
+MAX_SESSIONS = 200
+
+
+def export(reports: list[dict]) -> dict:
+    """Anonymous contribution block: counts and percentages only, one row per session."""
+    m = merge(reports)
+    factors = sorted(r["tokenizer_factor"] or 1.0 for r in reports)
+    rows = [[r["api_calls"], r["measured_input"],
+             round(100 * r["pinned_input"] / r["measured_input"], 1) if r["measured_input"] else 0.0,
+             *(r["policies"][k]["avoidable_pct"] for k in PCT_KEYS)] for r in reports[:MAX_SESSIONS]]
+    return {
+        "method": METHOD,
+        "sessions": m["sessions"],
+        "api_calls": m["api_calls"],
+        "measured_input": m["measured_input"],
+        "pinned_input": m["pinned_input"],
+        "written_tokens": m["written_tokens"],
+        "tokenizer_factor": factors[len(factors) // 2] if factors else 1.0,
+        "avoidable_pct": {short: m["policies"][k]["avoidable_pct"] for k, short in PCT_KEYS.items()},
+        "per_session": rows,
+    }
 
 
 def _label(p: float) -> str:

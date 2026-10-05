@@ -24,7 +24,7 @@
 
 ## Contributions / 기여
 
-- **What is sent:** only allowlisted structure and numbers: turn intents, depth, token counts, waste totals and, for agents and the proxy, aggregate counters. It never includes text, file paths, commands, ids or MCP tool names. Topic labels (at most 7 short words) are included only if you tick the box, and you can remove any word first. The exact JSON is shown before you send it.
+- **What is sent:** only allowlisted structure and numbers: turn intents, depth, token counts, waste totals and, for agents and the proxy, aggregate counters (for agents, optionally the context bound: percentages and one row of numbers per session). It never includes text, file paths, commands, ids or MCP tool names. Topic labels (at most 7 short words) are included only if you tick the box, and you can remove any word first. The exact JSON is shown before you send it.
 - **Anonymous path (Cloudflare Worker):** no account and no cookies. Your IP is never stored. The daily rate limit uses an HMAC of the IP keyed with a secret plus the date, which can't be linked across days. You get a delete token; the server keeps only its hash.
 - **Verified path (GitHub issue):** public and tied to your GitHub account. Comment `/withdraw` to remove it.
 - **Public aggregate:** sums and medians. Topics and topic pairs appear only after at least 3 independent contributions (enforced in the worker's SQL and again in aggregation).

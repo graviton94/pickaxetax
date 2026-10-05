@@ -3,7 +3,7 @@
 - Date: Tue 2026-11-10
 - Purpose: the ask. Turn readers into contributors before the preprint.
 - Image: none
-- Prerequisite: the bound must be part of the anonymous `agent` contribution, so that `pxt agent bound --export | pxt contribute send -` works (ADR-0008 follow-up 1). Until it ships, ask people to run `pxt agent bound` and post the summary in a GitHub issue instead.
+- Prerequisite: done. The bound is part of the anonymous `agent` contribution: `pxt agent bound --export | pxt contribute send -` (ADR-0010). It needs a PyPI release that includes it before this chapter goes out.
 
 ## Post (English)
 

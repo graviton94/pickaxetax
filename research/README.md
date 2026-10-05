@@ -7,6 +7,8 @@ Theory and measurements behind Pickaxe Tax. The goal is to replace "AI wastes co
 | [framework.md](framework.md) | Units (compute per valuable outcome → memory residency), efficiency and waste, value measurement, the Jevons stance, propositions |
 | [belady-bound.md](belady-bound.md) | The offline-optimal context bound: model, proof, measurement and first results |
 | [hypotheses.md](hypotheses.md) | Every hypothesis with its result, failures included |
+| [protocol/backtest-v1.md](protocol/backtest-v1.md) | The pre-registered benchmark and backtest protocol, frozen before data |
+| [protocol/data-intake.md](protocol/data-intake.md) | How to supply sessions from each product, and what happens to them |
 | [preprint/outline.md](preprint/outline.md) | Outline of the English preprint (draft for approval) |
 | [preprint/summary-ko.md](preprint/summary-ko.md) | 한글 요약 |
 | [results/](results/) | Published aggregates (no text, paths or identifiers) |
@@ -18,6 +20,7 @@ pip install pickaxetax
 pxt agent bound                      # all Claude Code sessions in ~/.claude/projects
 pxt agent bound path/to/session.jsonl --json
 python research/sensitivity.py path/to/session.jsonl   # the full sensitivity grid, aggregates only
+pxt backtest run exports/*.json --source chatgpt     # the pre-registered benchmark over many sessions
 ```
 
 ## Rules

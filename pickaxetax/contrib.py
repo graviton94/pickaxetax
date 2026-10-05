@@ -43,6 +43,10 @@ AGENT_NUMS = ["sessions", "api_calls", "subagent_calls", "compactions", "tool_ca
 AGENT_TOKENS = ["input", "cache_read", "cache_write", "output", "processed_input"]
 AGENT_COST = ["count", "tokens", "carried_tokens"]
 AGENT_TOOL = ["calls", "result_tokens", "carried_tokens", "errors", "images"]
+BOUND_METHODS = ["lexical-v1"]
+BOUND_NUMS = ["sessions", "api_calls", "measured_input", "pinned_input", "written_tokens"]
+BOUND_PCTS = ["P0", "P1000", "P10000", "Pinf"]
+BOUND_ROWS = 200
 
 LABEL_RE = re.compile(r"^[^\W_][\w+#.\-]{1,31}$")  # letters/digits first; \w here is Unicode like \p{L}\p{N}_
 MODEL_RE = re.compile(r"^[A-Za-z0-9._:/\-]{0,64}$")
@@ -217,9 +221,47 @@ def _validate_ledger(d, errs):
             errs.append(f"{where}: measured > requests")
 
 
+def _pct_ok(x) -> bool:
+    return _is_num(x) and 0 <= x <= 100
+
+
+def _validate_bound(b, errs):
+    keys = ["method", *BOUND_NUMS, "tokenizer_factor", "avoidable_pct", "per_session"]
+    if not _check_keys(b, keys, "data.bound", errs):
+        return
+    if b.get("method") not in BOUND_METHODS:
+        errs.append("data.bound.method: unknown")
+    _check_nums(b, BOUND_NUMS, "data.bound", errs)
+    _check_nums(b, ["tokenizer_factor"], "data.bound", errs, ints=False, hi=20)
+    if _check_keys(b.get("avoidable_pct"), BOUND_PCTS, "data.bound.avoidable_pct", errs):
+        _check_nums(b["avoidable_pct"], BOUND_PCTS, "data.bound.avoidable_pct", errs, ints=False, hi=100)
+    rows = b.get("per_session")
+    if not isinstance(rows, list) or not 1 <= len(rows) <= BOUND_ROWS:
+        errs.append(f"data.bound.per_session: 1..{BOUND_ROWS} rows")
+        return
+    for i, r in enumerate(rows):
+        ok = (isinstance(r, list) and len(r) == 7 and _is_int(r[0]) and 1 <= r[0] <= BIG and _is_int(r[1]) and 0 <= r[1] <= BIG
+              and all(_pct_ok(x) for x in r[2:]) and r[3] >= r[4] >= r[5] >= r[6] and r[3] <= 100 - r[2] + 0.1)
+        if not ok:
+            errs.append(f"data.bound.per_session[{i}]: bad row")
+    if errs:
+        return
+    a = b["avoidable_pct"]
+    if not a["P0"] >= a["P1000"] >= a["P10000"] >= a["Pinf"]:
+        errs.append("consistency: bound policies out of order")
+    if b["pinned_input"] > b["measured_input"]:
+        errs.append("consistency: pinned > measured")
+    elif b["measured_input"] and a["P0"] > 100 * (b["measured_input"] - b["pinned_input"]) / b["measured_input"] + 0.1:
+        errs.append("consistency: bound above ceiling")
+    if len(rows) != min(b["sessions"], BOUND_ROWS):
+        errs.append("consistency: bound session rows")
+    elif len(rows) == b["sessions"] and (sum(r[0] for r in rows) != b["api_calls"] or sum(r[1] for r in rows) != b["measured_input"]):
+        errs.append("consistency: bound session totals")
+
+
 def _validate_agent(d, errs):
-    keys = ["agent", *AGENT_NUMS, "tokens", "duplicate_reads", "large_results", "failed_repeats", "by_tool"]
-    if not _check_keys(d, keys, "data", errs):
+    keys = ["agent", *AGENT_NUMS, "tokens", "duplicate_reads", "large_results", "failed_repeats", "by_tool", "bound"]
+    if not _check_keys(d, keys, "data", errs, keys[:-1]):
         return
     if d.get("agent") != "claude-code":
         errs.append("data.agent: unknown")
@@ -241,6 +283,8 @@ def _validate_agent(d, errs):
                 _check_nums(b, AGENT_TOOL, f"data.by_tool.{n}", errs)
     else:
         errs.append("data.by_tool: must be an object")
+    if "bound" in d:
+        _validate_bound(d["bound"], errs)
     if not errs:
         t = d["tokens"]
         if t["processed_input"] != t["input"] + t["cache_read"] + t["cache_write"]:
@@ -362,6 +406,14 @@ def payload_from_issue(body: str) -> dict:
 
 # ------------------------------------------------------------------ aggregation
 
+def _quartiles(xs: list[float]) -> dict:
+    xs = sorted(xs)
+    if len(xs) < 2:
+        return {"median": xs[0], "q1": xs[0], "q3": xs[0]}
+    q = statistics.quantiles(xs, n=4, method="inclusive")
+    return {"median": round(q[1], 1), "q1": round(q[0], 1), "q3": round(q[2], 1)}
+
+
 def aggregate(records: list[dict], labels: dict | None = None, k: int = K_ANON) -> dict:
     """records: [{"payload": ..., "verified": bool}] -> public aggregate.
 
@@ -412,6 +464,14 @@ def aggregate(records: list[dict], labels: dict | None = None, k: int = K_ANON) 
             "large_results": sum(x["large_results"]["count"] for x in ag),
             "carried_tokens": sum(x["duplicate_reads"]["carried_tokens"] + x["large_results"]["carried_tokens"] for x in ag),
         }
+        rows = [r for x in ag if "bound" in x for r in x["bound"]["per_session"]]
+        if rows:  # the session is the unit: medians and quartiles over sessions, not pooled tokens
+            out["agent"]["bound"] = {
+                "method": BOUND_METHODS[0],
+                "sessions": len(rows),
+                "pinned_pct": _quartiles([r[2] for r in rows]),
+                **{k: _quartiles([r[3 + i] for r in rows]) for i, k in enumerate(BOUND_PCTS)},
+            }
     # labels: verified contributions are counted here; anonymous ones arrive pre-filtered from the worker
     lab = Counter()
     pairs = Counter()

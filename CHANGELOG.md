@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- **Benchmark:** `pxt backtest run` measures many sessions from any provider (ChatGPT, Claude and Gemini exports, transcripts, Claude Code logs) under the pre-registered protocol `research/protocol/backtest-v1.md`. It reports the offline bound, online policies (window, recency, pointer) tuned on a dev split and reported on a held-out test split, bootstrap confidence intervals, strata by source and length, and a sensitivity grid. `pxt backtest label` validates the use detector by hand.
+- **Contributions:** the anonymous `agent` contribution can carry the context bound (`pxt agent bound --export | pxt contribute send -`). Both validators check it, and the public aggregate reports medians over sessions.
+- Gemini API (`contents` / `parts`) JSON is accepted as input.
 - **Research:** `pxt agent bound` computes the offline-optimal context bound for Claude Code sessions: how much input an oracle that knows which context each call uses would have needed, for any cost of re-fetching dropped content. Segment sizes are calibrated to provider-reported usage, so the model matches measured input at every call.
 - `research/`: the unit framework (compute per valuable outcome → memory residency), the bound's proof and first results, the hypothesis log, and the preprint outline with a Korean summary.
 - Worker: live smoke test after every deploy; the deploy health check now sends a User-Agent.

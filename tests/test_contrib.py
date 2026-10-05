@@ -35,6 +35,19 @@ def agent_payload():
     return contrib.from_export(agent_export(m))
 
 
+def bound_block():
+    return {"method": "lexical-v1", "sessions": 2, "api_calls": 30, "measured_input": 1000, "pinned_input": 400,
+            "written_tokens": 50, "tokenizer_factor": 1.9,
+            "avoidable_pct": {"P0": 50.0, "P1000": 45.0, "P10000": 30.0, "Pinf": 9.0},
+            "per_session": [[10, 400, 40.0, 55.0, 50.0, 35.0, 10.0], [20, 600, 40.0, 46.7, 41.7, 26.7, 8.3]]}
+
+
+def agent_bound_payload():
+    p = agent_payload()
+    p["data"]["bound"] = bound_block()
+    return p
+
+
 def ledger_payload():
     return contrib.from_export({"schema": "pickaxetax.ledger.v1", "rows": [
         {"day": "2026-10-05", "provider": "openai", "model": "gpt-x", "action": "gratitude_local", "requests": 3,
@@ -93,6 +106,34 @@ def mutations():
         (mut(ag, lambda p: p["data"].__setitem__("agent", "other")), False),
         (mut(ag, lambda p: p["data"].__setitem__("cache_hit_pct", 101)), False),
     ]
+    ab = agent_bound_payload()
+    cases += [(ab, True)]
+
+    def bset(path, value):
+        def f(p):
+            obj = p["data"]["bound"]
+            for k in path[:-1]:
+                obj = obj[k]
+            obj[path[-1]] = value
+        return f
+    bound_bad = [
+        bset(["method"], "vibes-v0"),
+        bset(["note"], "free text"),
+        bset(["avoidable_pct", "Pinf"], 60.0),                     # policies out of order
+        bset(["avoidable_pct", "P0"], 101),
+        bset(["pinned_input"], 2000),                              # pinned > measured
+        bset(["pinned_input"], 900),                               # P0 above the 10% ceiling
+        bset(["tokenizer_factor"], 99),
+        bset(["per_session"], []),
+        bset(["per_session", 0], [10, 400, 40.0, 55.0]),            # short row
+        bset(["per_session", 0], [10, 400, 40.0, 10.0, 20.0, 5.0, 1.0]),  # row out of order
+        bset(["per_session", 0], [10, 400, 90.0, 55.0, 50.0, 35.0, 10.0]),  # row above its ceiling
+        bset(["per_session", 0], [0, 400, 40.0, 55.0, 50.0, 35.0, 10.0]),  # a session needs calls
+        bset(["per_session", 0, 1], 401),                          # totals mismatch
+        bset(["sessions"], 3),                                     # row count mismatch
+        bset(["per_session", 1, 3], "46.7"),
+    ]
+    cases += [(mut(ab, f), False) for f in bound_bad]
     lg = ledger_payload()
     cases += [
         (mut(lg, lambda p: p["data"]["rows"][0].__setitem__("model", "my secret model name with spaces")), False),
@@ -153,6 +194,31 @@ def test_aggregate_k_anonymity_and_medians():
     labels = {n["label"] for n in agg["topics"]["nodes"]}
     assert "postgres" in labels and "redis" not in labels  # 2 verified + 1 anonymous >= 3; redis only once
     assert agg["ledger"]["avoided_input"] == 900 and agg["agent"]["sessions"] == 1
+    assert "bound" not in agg["agent"]
+
+
+def test_aggregate_bound_uses_sessions_as_unit():
+    recs = [{"payload": agent_bound_payload(), "verified": False}, {"payload": agent_bound_payload(), "verified": True}]
+    b = contrib.aggregate(recs)["agent"]["bound"]
+    assert b["sessions"] == 4 and b["method"] == "lexical-v1"
+    assert b["P0"]["median"] == 50.9 and b["Pinf"]["q1"] <= b["Pinf"]["median"] <= b["Pinf"]["q3"]
+
+
+def test_real_export_with_bound_validates(tmp_path):
+    from pickaxetax.agent import bound
+    from tests.test_bound import session
+
+    path = session(tmp_path)
+    m = merge([audit_session_for(path)])
+    payload = contrib.from_export(agent_export(m, bound.export([bound.analyze(path)])))
+    assert contrib.validate(payload) == []
+    assert payload["data"]["bound"]["per_session"][0][0] == 4
+
+
+def audit_session_for(path):
+    from pickaxetax.agent import audit_session, parse
+
+    return audit_session(parse(path))
 
 
 def test_build_site_without_worker(tmp_path, monkeypatch):

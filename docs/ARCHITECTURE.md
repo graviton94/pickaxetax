@@ -122,6 +122,22 @@ A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-co
 - `bound.py`: the offline-optimal context bound (`pxt agent bound`). It splits each call's context into segments, rescales them to the measured growth between calls (the remainder is pinned as `unattributed`), finds the later calls whose outputs reuse each segment's distinctive tokens, and computes the least residency per segment and gap. Model and proof: [research/belady-bound.md](../research/belady-bound.md).
 - `install.py`: merges hooks into `~/.claude/settings.json` (or the project's), with a backup and idempotent re-runs. The plugin form lives in `claude-plugin/pickaxetax`, with the marketplace at `.claude-plugin/marketplace.json`.
 
+## Backtest and benchmark (`pickaxetax/backtest`)
+
+```
+ chat exports / transcripts / agent logs ──► trace.py: one Trace per session (calls, segments, outputs)
+                                               │   chats: full-history baseline, estimated tokens
+                                               │   agents: measured usage, calibrated
+                                               ▼
+ agent/bound.py link + bound (oracle, P grid)   policies.py: window / recency / pointer replayed online
+                                               ▼
+ run.py: dev/test split by hash → tune N on dev → report on test; strata; bootstrap CIs (stats.py); sensitivity grid
+                                               ▼
+ backtest-report.json (numbers only) + private manifest (its digest is in the report)
+```
+
+The constants in `backtest/__init__.py` are the pre-registered protocol (`research/protocol/backtest-v1.md`); `tests/test_backtest_protocol.py` fails if they drift apart. `label.py` samples (segment, call) pairs in two blind strata for hand validation of the use detector; only answers are stored.
+
 ## Contributions (`site/contrib.js`, `worker/`, `pickaxetax/contrib*.py`)
 
 ```
