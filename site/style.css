@@ -120,6 +120,11 @@ footer { color: var(--muted); font-size: 14px; padding-top: 30px; padding-bottom
 @media (max-width: 560px) { .top { flex-wrap: wrap; } .stat .v { font-size: 22px; } }
 
 /* static site additions */
+.contrib pre.payload { max-height: 260px; overflow: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font: 12px/1.5 var(--mono); white-space: pre-wrap; word-break: break-all; }
+.contrib .chip button { background: none; border: 0; color: var(--muted); padding: 0 0 0 6px; font: inherit; cursor: pointer; }
+.contrib .status { font-size: 14px; color: var(--muted); min-height: 1.4em; }
+.contrib .status.ok { color: var(--accent); }
+.contrib .status.err { color: var(--bad); }
 .privacy-badge { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 4px 12px; margin-top: 4px; }
 .linkbox ol { padding-left: 20px; margin: 8px 0 0; }
 .linkbox li { margin: 8px 0; }

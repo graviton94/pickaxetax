@@ -38,6 +38,13 @@ pytest
 
 **Web app (local-first).** `site/` is a static page that runs the same engine in your browser. You can paste text, drop an export file, or use a share link through a bookmarklet that reads the page you already have open. Its Content-Security-Policy (`connect-src 'none'`) makes it impossible for the page to send your conversation anywhere. It is deployed to GitHub Pages; to run it locally: `cd site && python3 -m http.server`.
 
+**Contribute (one click, no account).** After an analysis, the web app shows exactly what would be sent (numbers and structure, never text) and contributes it anonymously. Developers can contribute from the terminal:
+
+```bash
+pxt agent audit --export | pxt contribute send -     # anonymous
+pxt contribute github my-ledger.json                 # verified, via a prefilled GitHub issue
+```
+
 **How to help at zero cost:** see [CONTRIBUTING.md](https://github.com/graviton94/pickaxetax/blob/HEAD/CONTRIBUTING.md).
 
 See [docs/ARCHITECTURE.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/ARCHITECTURE.md) and [docs/PRIVACY.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/PRIVACY.md).

@@ -53,12 +53,21 @@
     </section>
 
     <section id="result" hidden></section>
+
+    <section id="impact" hidden>
+      <h2 data-i18n="impact_title"></h2>
+      <p class="muted" data-i18n="impact_lede"></p>
+      <div class="grid" id="impact-stats"></div>
+      <div class="card" id="impact-topics" hidden><h3 data-i18n="impact_topics"></h3><div class="chips" id="impact-chips"></div></div>
+    </section>
   </main>
 
   <footer>
     <p data-i18n="footer"></p>
     <p class="small"><a href="https://github.com/graviton94/pickaxetax">GitHub</a> · Apache-2.0 · <span data-i18n="engine_note"></span></p>
   </footer>
+  <script src="config.js"></script>
+  <script src="data/aggregate.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>

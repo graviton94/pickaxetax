@@ -1,6 +1,10 @@
 // Pickaxe Tax static site. Everything happens in this tab: the page's CSP
 // (connect-src 'none') makes it impossible to send the conversation anywhere.
 import { analyzeInput, analyzeTurns, LinkInput } from "./engine.js";
+import { skeletonContribution, solvePow, validateContribution } from "./contrib.js";
+
+export const ENGINE_VERSION = "0.3.0"; // kept equal to pyproject.toml by tests/test_contrib.py
+const CONFIG = window.PXT_CONFIG || { contribUrl: "", repo: "graviton94/pickaxetax" };
 
 // ---------- i18n ----------
 const T = {
@@ -32,6 +36,13 @@ const T = {
     agenda: "Agenda", prompt_title: "One-shot prompt skeleton", copy: "Copy", copied: "Copied",
     tips_title: "Habits to change next time", tip_none: "Barely any waste here. 👍",
     download: "Download skeleton (JSON)", multi: "Analyzed {n} conversations", from_page: "Read from {src}",
+    c_title: "Contribute to the public index", c_lede: "Only numbers and structure are sent (turn intents, depth, token counts). Never your text. No account needed.",
+    c_labels: "Also share these topic words (they become public; click × to remove a word)", c_show: "Exactly what will be sent",
+    c_anon: "Contribute anonymously", c_github: "Contribute with GitHub (verified)", c_solving: "Proving you're not a bot (a few seconds)…",
+    c_thanks: "Thank you! Your contribution is in. It appears in the public index at the next daily update.", c_undo: "Delete my contribution", c_deleted: "Deleted.",
+    c_done: "You already contributed this conversation.", c_off: "Anonymous contributions open soon. GitHub works today.", c_clip: "The payload was copied to your clipboard: paste it into the issue form.",
+    impact_title: "Public impact", impact_lede: "Aggregated from contributions worldwide. Topics appear only after at least {k} independent contributions.",
+    i_convs: "Conversations analyzed", i_avoid: "Compute that was avoidable", i_median: "Typical (median) waste", i_sessions: "Coding-agent sessions", i_contrib: "Contributions ({v} verified)", impact_topics: "What people ask about",
     intents: { ask: "ask", instruct: "instruct", clarify: "clarify", correct: "correct", retry: "retry", continue: "continue", ack: "thanks/ok", context: "big paste", answer: "answer", code: "code", followup_question: "asks back", apology_fix: "apology/fix", refusal: "refusal" },
   },
   ko: {
@@ -62,6 +73,13 @@ const T = {
     agenda: "아젠다", prompt_title: "한 번에 끝내는 프롬프트 골격", copy: "복사", copied: "복사됨",
     tips_title: "다음 대화에서 바꿀 습관", tip_none: "낭비가 거의 없는 대화입니다. 👍",
     download: "골격 내려받기 (JSON)", multi: "{n}개의 대화를 분석했습니다", from_page: "{src}에서 읽음",
+    c_title: "공익 지수에 기여하기", c_lede: "숫자와 구조(턴 의도·깊이·토큰 수)만 전송됩니다. 대화 텍스트는 절대 보내지 않습니다. 계정이 필요 없습니다.",
+    c_labels: "이 주제 단어도 공유하기 (공개됩니다. ×로 단어를 뺄 수 있습니다)", c_show: "실제로 전송되는 내용",
+    c_anon: "익명으로 기여하기", c_github: "GitHub로 기여하기 (검증됨)", c_solving: "봇이 아님을 확인하는 중 (몇 초)…",
+    c_thanks: "감사합니다! 기여가 접수되었습니다. 매일 갱신되는 공익 지수에 반영됩니다.", c_undo: "내 기여 삭제", c_deleted: "삭제되었습니다.",
+    c_done: "이 대화는 이미 기여하셨습니다.", c_off: "익명 기여는 곧 열립니다. GitHub 기여는 지금 가능합니다.", c_clip: "기여 내용이 클립보드에 복사되었습니다. 이슈 양식에 붙여넣으세요.",
+    impact_title: "공익 임팩트", impact_lede: "전 세계 기여를 집계한 결과입니다. 주제는 서로 다른 기여 {k}건 이상에서 나와야 공개됩니다.",
+    i_convs: "분석된 대화", i_avoid: "회피 가능했던 연산", i_median: "대화당 낭비 (중앙값)", i_sessions: "코딩 에이전트 세션", i_contrib: "기여 수 (검증 {v}건)", impact_topics: "사람들이 묻는 주제",
     intents: { ask: "질문", instruct: "지시", clarify: "보충", correct: "정정", retry: "재질문", continue: "계속", ack: "감사·확인", context: "대용량 붙여넣기", answer: "답변", code: "코드", followup_question: "되묻기", apology_fix: "사과·수정", refusal: "거절" },
   },
 };
@@ -218,8 +236,105 @@ function renderResult() {
   out.append(h("div", { class: "card" }, h("h3", {}, t("tips_title")),
     tips.length ? h("ol", { class: "tips" }, tips.map((x) => h("li", {}, x[lang] || x.en))) : h("p", {}, t("tip_none"))));
   out.append(h("div", { class: "card actions" }, h("button", { class: "ghost", type: "button", onclick: () => download(sk) }, t("download"))));
+  out.append(contributionCard(sk));
   out.hidden = false;
   out.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ---------- contributions ----------
+const contributed = {
+  all() { try { return JSON.parse(store.get("pxt_contrib") || "{}"); } catch { return {}; } },
+  get(id) { return this.all()[id]; },
+  set(id, v) { const a = this.all(); if (v) a[id] = v; else delete a[id]; store.set("pxt_contrib", JSON.stringify(a)); },
+};
+
+function contributionCard(sk) {
+  const labels = sk.agenda.slice(0, 5);
+  let share = false;
+  const pre = h("pre", { class: "payload" });
+  const status = h("p", { class: "status", role: "status" });
+  const payload = () => skeletonContribution(sk, { labels: share ? labels : [], version: ENGINE_VERSION });
+  const refresh = () => { pre.textContent = JSON.stringify(payload(), null, 1); };
+  const chips = h("div", { class: "chips" });
+  const drawChips = () => chips.replaceChildren(...labels.map((l, i) => h("span", { class: "chip" }, l,
+    h("button", { type: "button", "aria-label": "remove", onclick: () => { labels.splice(i, 1); drawChips(); refresh(); } }, "×"))));
+  drawChips();
+  const box = h("input", { type: "checkbox", onchange: (e) => { share = e.target.checked; refresh(); } });
+  refresh();
+
+  const say = (msg, cls = "") => { status.className = "status " + cls; status.textContent = msg; };
+  const prior = contributed.get(sk.id);
+  const anonBtn = h("button", { type: "button", disabled: !CONFIG.contribUrl || !!prior ? "" : null, onclick: async () => {
+    const p = payload();
+    const errs = validateContribution(p);
+    if (errs.length) return say(errs.join("; "), "err");
+    anonBtn.disabled = true;
+    try {
+      say(t("c_solving"));
+      const ch = await (await fetch(CONFIG.contribUrl + "/challenge")).json();
+      const nonce = await solvePow(ch.seed, ch.bits);
+      const r = await fetch(CONFIG.contribUrl + "/contribute", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payload: p, pow: { ...ch, nonce } }) });
+      const res = await r.json();
+      if (r.status !== 201) throw new Error(res.error || r.statusText);
+      contributed.set(sk.id, { id: res.id, token: res.delete_token });
+      say(t("c_thanks"), "ok");
+      actions.append(undoBtn());
+    } catch (e) {
+      anonBtn.disabled = false;
+      say(e.message, "err");
+    }
+  } }, t("c_anon"));
+  const ghBtn = h("button", { type: "button", class: "ghost", onclick: async () => {
+    const body = JSON.stringify(payload());
+    const base = `https://github.com/${CONFIG.repo}/issues/new?template=contribution.yml&title=${encodeURIComponent("[contribution] skeleton")}`;
+    let url = `${base}&payload=${encodeURIComponent(body)}`;
+    if (url.length > 7500) {
+      try { await navigator.clipboard.writeText(body); say(t("c_clip"), "ok"); } catch { /* clipboard blocked */ }
+      url = base;
+    }
+    window.open(url, "_blank", "noopener");
+  } }, t("c_github"));
+  const undoBtn = () => h("button", { type: "button", class: "ghost", onclick: async (ev) => {
+    const c = contributed.get(sk.id);
+    if (!c) return;
+    try {
+      const r = await fetch(`${CONFIG.contribUrl}/contribute/${c.id}`, { method: "DELETE", headers: { "X-Delete-Token": c.token } });
+      if (r.status !== 200) throw new Error((await r.json()).error || r.statusText);
+      contributed.set(sk.id, null);
+      ev.target.remove();
+      anonBtn.disabled = !CONFIG.contribUrl;
+      say(t("c_deleted"), "ok");
+    } catch (e) { say(e.message, "err"); }
+  } }, t("c_undo"));
+  const actions = h("div", { class: "actions" }, anonBtn, ghBtn);
+  if (prior && CONFIG.contribUrl) { actions.append(undoBtn()); say(t("c_done")); }
+  else if (!CONFIG.contribUrl) say(t("c_off"));
+  return h("div", { class: "card contrib" },
+    h("h3", {}, t("c_title")), h("p", { class: "note" }, t("c_lede")),
+    h("label", { class: "check" }, box, h("span", {}, t("c_labels"))), chips,
+    h("details", {}, h("summary", {}, t("c_show")), pre),
+    actions, status);
+}
+
+function renderImpact() {
+  const a = window.PXT_AGGREGATE;
+  if (!a || !a.contributions || !a.contributions.total) return;
+  const stats = [];
+  if (a.skeleton) {
+    stats.push(statCard(t("i_convs"), fmt(a.skeleton.conversations)));
+    stats.push(statCard(t("i_avoid"), `${a.skeleton.avoidable_pct}%`, null, true));
+    stats.push(statCard(t("i_median"), `${a.skeleton.median_savings_pct}%`));
+  }
+  if (a.agent) stats.push(statCard(t("i_sessions"), fmt(a.agent.sessions)));
+  stats.push(statCard(t("i_contrib", { v: fmt(a.contributions.verified) }), fmt(a.contributions.total)));
+  $("impact-stats").replaceChildren(...stats);
+  $("impact").querySelector("[data-i18n=impact_lede]").textContent = t("impact_lede", { k: a.topics ? a.topics.k : 3 });
+  if (a.topics && a.topics.nodes.length) {
+    $("impact-chips").replaceChildren(...a.topics.nodes.slice(0, 40).map((n) => h("span", { class: "chip" }, `${n.label} · ${n.count}`)));
+    $("impact-topics").hidden = false;
+  }
+  $("impact").hidden = false;
 }
 
 function showError(msg) {
@@ -317,8 +432,9 @@ $("form").addEventListener("submit", async (ev) => {
 });
 $("sample").addEventListener("click", () => { $("input").value = SAMPLE[lang]; $("file").value = ""; $("file-name").textContent = ""; });
 $("file").addEventListener("change", () => { $("file-name").textContent = $("file").files[0]?.name || ""; });
-$("lang").addEventListener("click", () => { lang = lang === "ko" ? "en" : "ko"; store.set("lang", lang); applyI18n(); renderResult(); });
+$("lang").addEventListener("click", () => { lang = lang === "ko" ? "en" : "ko"; store.set("lang", lang); applyI18n(); renderResult(); renderImpact(); });
 
 applyI18n();
+renderImpact();
 setupBookmarklet();
 receiveFromBookmarklet();

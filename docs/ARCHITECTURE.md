@@ -120,3 +120,14 @@ A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-co
 - `audit.py`: a tool result added at call *k* is re-read on every later call until the next compaction (its "carried" tokens). It detects duplicate reads, large results and repeated failures.
 - `guard.py`: a PreToolUse (Read) and PreCompact hook. It denies one re-read of an unchanged file, then allows; it fails open and stores only path/size/mtime. Avoided tokens go to the proxy ledger (`action=agent_dup_read_blocked`).
 - `install.py`: merges hooks into `~/.claude/settings.json` (or the project's), with a backup and idempotent re-runs. The plugin form lives in `claude-plugin/pickaxetax`, with the marketplace at `.claude-plugin/marketplace.json`.
+
+## Contributions (`site/contrib.js`, `worker/`, `pickaxetax/contrib*.py`)
+
+```
+ web app / pxt contribute ──(allowlisted JSON + proof of work)──► Cloudflare Worker + D1   (anonymous)
+ web app / pxt contribute github ──► GitHub issue form ──► Actions: validate → `contributions` branch (verified)
+                                                         │
+ Pages build (daily) ◄── /export + /labels (k≥3) + contributions branch ──► site/data/aggregate.js
+```
+
+There is one validator, mirrored in JS (browser + worker) and Python (CLI + CI). `tests/test_contrib.py` requires identical verdicts on 45 cases. `worker/test/e2e.mjs` runs against the real Workers runtime in CI.

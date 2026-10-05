@@ -1,0 +1,19 @@
+name: Contribution (verified)
+description: Contribute anonymous numbers to the public Compute Bubble Index, tied to your GitHub account.
+title: "[contribution] "
+labels: ["contribution"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Generate the payload with the web app (**Contribute with GitHub**) or `pxt contribute github FILE`.
+        It contains **numbers and structure only**, never conversation text. A bot validates and stores it,
+        then closes this issue. Comment `/withdraw` at any time to remove it. Data license: ODbL 1.0.
+  - type: textarea
+    id: payload
+    attributes:
+      label: Payload
+      description: The JSON generated for you. Please don't edit it by hand.
+      render: json
+    validations:
+      required: true

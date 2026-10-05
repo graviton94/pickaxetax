@@ -7,4 +7,6 @@ build/
 dist/
 *.sqlite3
 *.db
-data/
+/data/
+.contrib-data/
+site/config.json.bak

@@ -14,13 +14,13 @@ pickaxetax ledger                      # what was spent, re-sent and avoided
 pickaxetax ledger --export > my-ledger.json   # anonymous daily aggregates, no text
 ```
 
-The ledger holds counts only: no prompts, no replies, no keys. Share the export in an issue to feed the usage layer (W) of the [Compute Bubble Index](docs/BUBBLE_INDEX.md).
+The ledger holds counts only: no prompts, no replies, no keys. Contribute it to the usage layer (W) of the [Compute Bubble Index](docs/BUBBLE_INDEX.md) with `pxt ledger --export | pxt contribute send -` (anonymous) or `pxt contribute github FILE` (verified).
 
 ### 1b. Audit your coding agent (zero cost)
 
 ```bash
 pxt agent audit                         # Claude Code transcripts in ~/.claude/projects
-pxt agent audit --export > agent.json   # anonymous counts only: no paths, commands or ids
+pxt agent audit --export | pxt contribute send -   # anonymous counts only: no paths, commands or ids
 ```
 
 Using another agent (Codex CLI, Aider, Cline, Cursor…)? Adapters are built from real samples, never guessed. Open an issue with a **redacted** session log that shows the structure, and we'll add support.

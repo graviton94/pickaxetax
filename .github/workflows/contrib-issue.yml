@@ -1,0 +1,29 @@
+name: contrib-issue
+# Verified contributions: validates issues opened from the contribution form,
+# stores valid payloads on the `contributions` branch, handles /withdraw.
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: contributions
+  cancel-in-progress: false
+jobs:
+  ingest:
+    if: >-
+      startsWith(github.event.issue.title, '[contribution]') &&
+      (github.event_name == 'issues' || startsWith(github.event.comment.body, '/withdraw'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - run: pxt contribute ingest-issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

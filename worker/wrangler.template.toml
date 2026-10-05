@@ -1,0 +1,16 @@
+# Rendered by deploy.sh (database_id filled in). Do not commit secrets here: there are none.
+name = "pickaxetax-contrib"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://graviton94.github.io,http://127.0.0.1:8800,http://localhost:8800"
+K_ANON = "3"
+POW_BITS = "15"
+DAILY_LIMIT = "60"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pickaxetax"
+database_id = "__DATABASE_ID__"

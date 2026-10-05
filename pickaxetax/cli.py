@@ -90,6 +90,20 @@ def main(argv: list[str] | None = None) -> int:
     ah.add_argument("action", choices=["pre-tool-use", "pre-compact", "install", "uninstall"])
     ah.add_argument("--scope", choices=["user", "project"], default="user")
 
+    co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
+    cosub = co.add_subparsers(dest="contrib_cmd", required=True)
+    for name, hlp in (("send", "send anonymously (one click, no account)"), ("github", "open a prefilled GitHub issue (verified)"),
+                      ("validate", "check a payload without sending")):
+        cp = cosub.add_parser(name, help=hlp)
+        cp.add_argument("file", help="export JSON (skeleton / ledger / agent) or '-' for stdin")
+        cp.add_argument("--labels", action="store_true", help="include up to 3 topic labels (they become public)")
+        if name == "send":
+            cp.add_argument("--url", default=None, help="worker URL (default: discovered from the website)")
+    cb = cosub.add_parser("build-site", help=argparse.SUPPRESS)
+    cb.add_argument("--site", default="site")
+    cb.add_argument("--data-dir", default=None)
+    cosub.add_parser("ingest-issue", help=argparse.SUPPRESS)
+
     c = sub.add_parser("cbi", help="Compute Bubble Index dataset tools")
     csub = c.add_subparsers(dest="cbi_cmd", required=True)
     cv = csub.add_parser("validate", help="validate curated CSV files")
@@ -98,7 +112,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = ap.parse_args(argv)
 
-    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent"):
+    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute"):
         return _tools(args)
 
     if args.cmd == "serve":
@@ -215,6 +229,9 @@ def _tools(args) -> int:
     if args.cmd == "agent":
         return _agent(args)
 
+    if args.cmd == "contribute":
+        return _contribute(args)
+
     if args.cmd == "cbi":
         from .cbi import validate_csv
 
@@ -274,6 +291,58 @@ def _agent(args) -> int:
     lang = "ko" if os.environ.get("LANG", "").startswith("ko") else "en"
     for tip in tips(m):
         print(f"- {tip[lang]}")
+    return 0
+
+
+def _contribute(args) -> int:
+    from pathlib import Path
+
+    from . import contrib
+
+    if args.contrib_cmd == "build-site":
+        from .contrib_ops import build_site
+
+        print(json.dumps(build_site(Path(args.site), Path(args.data_dir) if args.data_dir else None)))
+        return 0
+    if args.contrib_cmd == "ingest-issue":
+        from .contrib_ops import ingest_issue
+
+        with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as f:
+            print(ingest_issue(json.load(f), Path.cwd()))
+        return 0
+
+    raw = sys.stdin.read() if args.file == "-" else open(args.file, encoding="utf-8").read()
+    try:
+        payload = contrib.from_export(json.loads(raw), labels=args.labels)
+    except (ValueError, KeyError) as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
+    errs = contrib.validate(payload)
+    if errs:
+        for e in errs:
+            print(f"invalid: {e}", file=sys.stderr)
+        return 1
+    if args.contrib_cmd == "validate":
+        print(f"valid {payload['kind']} contribution ({len(json.dumps(payload))} bytes)")
+        return 0
+    if args.contrib_cmd == "github":
+        url = contrib.github_issue_url(payload)
+        print(url)
+        try:
+            import webbrowser
+
+            webbrowser.open(url)
+        except Exception:
+            pass
+        return 0
+    print("sending (solving a small proof-of-work, a few seconds)...", file=sys.stderr)
+    try:
+        res = contrib.send(payload, args.url)
+    except (ValueError, OSError) as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 1
+    print(f"thank you! contribution {res['id']}")
+    print(f"delete it any time: curl -X DELETE -H 'X-Delete-Token: {res['delete_token']}' <worker>/contribute/{res['id']}")
     return 0
 
 

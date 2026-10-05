@@ -27,3 +27,20 @@ jobs:
       - run: pickaxetax bench validate 'bench/results/*.json'
       - run: pickaxetax cbi validate cbi/capital.csv
       - run: pickaxetax cbi validate cbi/drafts.csv --drafts
+  worker:
+    # the contribution worker on the real Workers runtime (wrangler dev --local, local D1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run worker locally and test end to end
+        working-directory: worker
+        run: |
+          npm install --no-audit --no-fund
+          sed 's/__DATABASE_ID__/00000000-0000-0000-0000-000000000000/' wrangler.template.toml > wrangler.toml
+          npx wrangler d1 execute pickaxetax --local --file schema.sql
+          npx wrangler dev --local --port 8787 --ip 127.0.0.1 > /tmp/wrangler.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8787/health && break; sleep 1; done
+          node test/e2e.mjs http://127.0.0.1:8787 || { cat /tmp/wrangler.log; exit 1; }
