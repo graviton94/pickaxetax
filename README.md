@@ -31,6 +31,7 @@ pip install pickaxetax            # Python 3.10+; `pxt` is the short command
 
 pxt analyze chat.txt              # a pasted transcript or export file
 pxt agent audit                   # your Claude Code sessions
+pxt agent bound                   # how close each session came to the least context it needed
 pxt proxy                         # OpenAI-compatible at http://127.0.0.1:8787/v1
 pxt ledger                        # what the proxy measured and avoided
 ```
@@ -54,6 +55,10 @@ peak context    507,710 tokens  ·  tool results re-read later: 3.3% of all inpu
 ```
 
 The agent read 43 million input tokens to write about 350 thousand. Caching made most of those reads cheap, but not free. The biggest lever wasn't any single tool output; it was the session simply growing.
+
+## How far from optimal?
+
+`pxt agent bound` computes what an oracle that knows which context each call will use would have kept. On the session that built this repository, dropping content after its last use would have saved 9.1% of input. Dropping it between uses and fetching it back on demand would have saved 50.1%. The lesson: agents should carry pointers, not payloads. Method, proof and caveats (n = 1): [research/belady-bound.md](https://github.com/graviton94/pickaxetax/blob/HEAD/research/belady-bound.md).
 
 ## Why
 

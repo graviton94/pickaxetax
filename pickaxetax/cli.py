@@ -88,6 +88,12 @@ def main(argv: list[str] | None = None) -> int:
     aa.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
     aa.add_argument("--json", action="store_true", help="print the full report as JSON (local, includes paths)")
     aa.add_argument("--export", action="store_true", help="print an anonymous aggregate for contribution")
+    ab = agsub.add_parser("bound", help="how far from the least context it needed was each session? (offline-optimal bound)")
+    ab.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    ab.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
+    ab.add_argument("--min-shared", type=int, default=1, help="distinctive tokens a later output must reuse to count as a use")
+    ab.add_argument("--raw", action="store_true", help="skip calibration against measured context growth")
+    ab.add_argument("--json", action="store_true", help="print the aggregate as JSON")
     ah = agsub.add_parser("hook", help="guard hook (called by Claude Code) and its installer")
     ah.add_argument("action", choices=["pre-tool-use", "pre-compact", "install", "uninstall"])
     ah.add_argument("--scope", choices=["user", "project"], default="user")
@@ -266,6 +272,8 @@ def _agent(args) -> int:
     if not files:
         print("no Claude Code transcripts found (looked in ~/.claude/projects)", file=sys.stderr)
         return 1
+    if args.agent_cmd == "bound":
+        return _agent_bound(files, args)
     reports = [audit_session(parse(f)) for f in files]
     reports = [r for r in reports if r["api_calls"]]
     m = merge(reports)
@@ -293,6 +301,36 @@ def _agent(args) -> int:
     lang = "ko" if os.environ.get("LANG", "").startswith("ko") else "en"
     for tip in tips(m):
         print(f"- {tip[lang]}")
+    return 0
+
+
+def _agent_bound(files: list[str], args) -> int:
+    from .agent import bound
+
+    reports = [r for r in (bound.analyze(f, min_shared=args.min_shared, calibrated=not args.raw) for f in files)
+               if r["api_calls"]]
+    if not reports:
+        print("no API calls found in the transcripts", file=sys.stderr)
+        return 1
+    m = bound.merge(reports)
+    if args.json:
+        print(json.dumps(m, indent=2))
+        return 0
+    measured = m["measured_input"]
+    print(f"sessions {m['sessions']}  ·  API calls {m['api_calls']:,}  ·  input processed {measured:,} tokens")
+    print(f"pinned (fixed base + context the transcript does not show): {100 * m['pinned_input'] / measured:.1f}%")
+    names = {"P=inf": "drop after last use, never re-fetch", "P=0": "oracle, free re-fetch"}
+    print(f"\n{'policy':<40}{'bound input':>16}{'avoidable':>11}")
+    for label, p in sorted(m["policies"].items(), key=lambda kv: -kv[1]["bound_input"]):
+        name = names[label] if label in names else f"oracle, re-fetch costs {int(label[2:]):,} tokens"
+        print(f"{name:<40}{p['bound_input']:>16,}{p['avoidable_pct']:>10.1f}%")
+    print(f"\n{'segment kind':<18}{'share of resident':>18}{'dead after last use':>21}{'unneeded':>10}")
+    for name, k in m["by_kind"].items():
+        print(f"{name:<18}{k['share_of_resident_pct']:>17.1f}%{k['dead_after_last_use_pct']:>20.1f}%{k['unneeded_pct']:>9.1f}%")
+    if m["written_tokens"]:
+        best = m["policies"].get("P=0", {}).get("bound_input", measured)
+        print(f"\ninput per token written to disk: {measured / m['written_tokens']:,.0f} (oracle: {best / m['written_tokens']:,.0f})")
+    print("References are detected lexically; see research/belady-bound.md for what that means for these numbers.")
     return 0
 
 

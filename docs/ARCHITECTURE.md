@@ -119,6 +119,7 @@ A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-co
 - `transcript.py` parses Claude Code JSONL defensively. Usage is de-duplicated per `message.id`, because one response is split across several lines. Subagent (sidechain) traffic is counted separately.
 - `audit.py`: a tool result added at call *k* is re-read on every later call until the next compaction (its "carried" tokens). It detects duplicate reads, large results and repeated failures.
 - `guard.py`: a PreToolUse (Read) and PreCompact hook. It denies one re-read of an unchanged file, then allows; it fails open and stores only path/size/mtime. Avoided tokens go to the proxy ledger (`action=agent_dup_read_blocked`).
+- `bound.py`: the offline-optimal context bound (`pxt agent bound`). It splits each call's context into segments, rescales them to the measured growth between calls (the remainder is pinned as `unattributed`), finds the later calls whose outputs reuse each segment's distinctive tokens, and computes the least residency per segment and gap. Model and proof: [research/belady-bound.md](../research/belady-bound.md).
 - `install.py`: merges hooks into `~/.claude/settings.json` (or the project's), with a backup and idempotent re-runs. The plugin form lives in `claude-plugin/pickaxetax`, with the marketplace at `.claude-plugin/marketplace.json`.
 
 ## Contributions (`site/contrib.js`, `worker/`, `pickaxetax/contrib*.py`)

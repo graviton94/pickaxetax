@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+- **Research:** `pxt agent bound` computes the offline-optimal context bound for Claude Code sessions: how much input an oracle that knows which context each call uses would have needed, for any cost of re-fetching dropped content. Segment sizes are calibrated to provider-reported usage, so the model matches measured input at every call.
+- `research/`: the unit framework (compute per valuable outcome → memory residency), the bound's proof and first results, the hypothesis log, and the preprint outline with a Korean summary.
+- Worker: live smoke test after every deploy; the deploy health check now sends a User-Agent.
+
 ## 0.3.1 — 2026-10-05
 - Launch-ready README (screenshot, quick start, privacy guarantees), `pxt --version`, OG card and social meta tags.
 - SECURITY, CODE_OF_CONDUCT, issue and PR templates, and the launch kit in `docs/launch/`.
