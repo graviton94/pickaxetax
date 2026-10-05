@@ -6,7 +6,6 @@ values (keyword labels, hashes, flags).
 
 from __future__ import annotations
 
-import hashlib
 import math
 import re
 from collections import Counter
@@ -159,6 +158,22 @@ def rank_keywords(user_texts: list[str], assistant_texts: list[str], top: int = 
 # --- fingerprints --------------------------------------------------------------
 
 
+_FNV_PRIME = 0x01000193
+_FNV_BASIS_LO = 0x811C9DC5
+_FNV_BASIS_HI = 0x050C5D1F
+
+
+def _fnv1a32(data: bytes, h: int) -> int:
+    for b in data:
+        h = ((h ^ b) * _FNV_PRIME) & 0xFFFFFFFF
+    return h
+
+
+def _hash64(data: bytes) -> int:
+    # two FNV-1a halves: cheap, and identical in the browser engine (site/engine.js)
+    return (_fnv1a32(data, _FNV_BASIS_HI) << 32) | _fnv1a32(data, _FNV_BASIS_LO)
+
+
 def simhash(text: str, bits: int = 64, key: bytes = b"") -> int:
     """Locality-sensitive fingerprint. With a secret ``key`` the values are only
     comparable inside one deployment, so they cannot confirm a guessed text."""
@@ -168,7 +183,7 @@ def simhash(text: str, bits: int = 64, key: bytes = b"") -> int:
     grams = feats + [f"{x} {y}" for x, y in zip(feats, feats[1:])]
     v = [0] * bits
     for g in grams:
-        h = int.from_bytes(hashlib.blake2b(g.encode(), digest_size=8, key=key[:64]).digest(), "big")
+        h = _hash64(key + b"\x00" + g.encode())
         for i in range(bits):
             v[i] += 1 if (h >> i) & 1 else -1
     return sum(1 << i for i in range(bits) if v[i] > 0)

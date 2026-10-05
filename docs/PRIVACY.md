@@ -12,6 +12,8 @@
 
 ## Safeguards / 안전장치
 
+0. **The web app is local-first.** The static site (`site/`) analyzes text inside the browser tab. Its CSP (`connect-src 'none'`) blocks every outgoing request, and this is verified in a real browser by `tests/e2e/site_e2e.mjs`. Share links are read by a bookmarklet from the page the user already has open and handed to the tab through a URL fragment, which is never sent to a server and is cleared immediately. The safeguards below apply to the optional Python server.
+
 1. **Text is processed in memory only.** `RawConversation.turns` is cleared right after analysis, and `RawConversation.__repr__` hides the text so it can't leak into logs or tracebacks. Error messages never echo input (covered by a test).
 2. **PII scrubbing runs before keyword extraction**, covering emails, URLs, IPs, phone, card and ID numbers, API-key-like strings and long opaque tokens.
 3. **Rare-word filter.** A word mentioned once and never echoed by the assistant does not become a stored label. Personal details are usually like this.

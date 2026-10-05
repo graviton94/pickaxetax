@@ -36,6 +36,7 @@ Add sourced rows to `cbi/drafts.csv`. Rows move to `cbi/capital.csv` once a seco
 ### 4. Code, translation and research
 
 - Code: see the open issues and the roadmap in [docs/CHARTER.md](docs/CHARTER.md). Run `pytest` before opening a PR.
+- The analysis engine exists twice: Python (`pickaxetax/`) and browser JavaScript (`site/engine.js`). Change both together. `tests/test_parity.py` fails if their outputs differ. For UI changes to the static site, run the optional browser check: `PWPATH=$(npm root -g)/playwright node tests/e2e/site_e2e.mjs`.
 - Translation: the UI strings are in `pickaxetax/web/static/app.js` (`T`), and the docs are in `docs/`.
 - Research: methodology critiques of the index and the benchmark are very welcome. Open an issue with your reasoning and data.
 

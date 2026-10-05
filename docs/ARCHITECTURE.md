@@ -100,3 +100,16 @@ Usage comes from the provider (`measured`) whenever it is reported, and from est
 ## Over-computation benchmark (`pickaxetax/bench`)
 
 A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-compatible endpoint and records completion and reasoning tokens against the minimal answer length. Results are content-addressed by (model, settings, task set), so the same measurement is never paid for twice. CI validates submitted files and recomputes their summaries.
+
+## Static web app (`site/`)
+
+```
+ share page (chatgpt.com / claude.ai / …)      site/ (GitHub Pages, CSP connect-src 'none')
+ ┌──────────────────────────────┐   #pxt=…   ┌──────────────────────────────────────────┐
+ │ bookmarklet reads the DOM     │──────────► │ engine.js: ingest → skeleton (same as py) │
+ └──────────────────────────────┘  fragment  │ app.js: render, JSON download             │
+            paste / file ─────────────────────►│ no network after load                     │
+                                               └──────────────────────────────────────────┘
+```
+
+`site/engine.js` is a line-by-line port of the Python engine. The places where Python and JS semantics differ (Unicode `\w`/`\b`/`\d`, code-point lengths, round-half-even, float formatting) are handled explicitly, and `tests/test_parity.py` enforces identical output.

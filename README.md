@@ -26,6 +26,8 @@ pytest
 
 **Local proxy.** Point your client at it and it forwards to the real provider with your own key, which it never stores. It measures every request (input, output, reasoning, re-sent context). By default it also drops earlier pure thank-you exchanges from the history and answers a bare "thanks" locally instead of re-reading the whole chat. "ok"/"yes" are never short-circuited, because in agent workflows they mean "go ahead". Requests with tools are never rewritten. Opt-in: `--cache` reuses responses to identical temperature-0 requests, stored on your disk.
 
+**Web app (local-first).** `site/` is a static page that runs the same engine in your browser. You can paste text, drop an export file, or use a share link through a bookmarklet that reads the page you already have open. Its Content-Security-Policy (`connect-src 'none'`) makes it impossible for the page to send your conversation anywhere. It is deployed to GitHub Pages; to run it locally: `cd site && python3 -m http.server`.
+
 **How to help at zero cost:** see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIVACY.md).
