@@ -1,0 +1,27 @@
+{
+  "name": "pickaxetax",
+  "displayName": "Pickaxe Tax",
+  "version": "0.2.0",
+  "description": "Blocks re-reads of files that have not changed since the agent last read them (once per file; a repeated request is allowed), resets on compaction, and records the tokens avoided. Requires `pip install pickaxetax` (or pipx). #AntiTokenMaxing",
+  "author": { "name": "Pickaxe Tax" },
+  "homepage": "https://github.com/graviton94/pickaxetax",
+  "license": "Apache-2.0",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          { "type": "command", "command": "command -v pxt >/dev/null 2>&1 && pxt agent hook pre-tool-use || true", "timeout": 10 }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "command -v pxt >/dev/null 2>&1 && pxt agent hook pre-compact || true", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

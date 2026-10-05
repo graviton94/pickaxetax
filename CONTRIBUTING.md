@@ -16,6 +16,15 @@ pickaxetax ledger --export > my-ledger.json   # anonymous daily aggregates, no t
 
 The ledger holds counts only: no prompts, no replies, no keys. Share the export in an issue to feed the usage layer (W) of the [Compute Bubble Index](docs/BUBBLE_INDEX.md).
 
+### 1b. Audit your coding agent (zero cost)
+
+```bash
+pxt agent audit                         # Claude Code transcripts in ~/.claude/projects
+pxt agent audit --export > agent.json   # anonymous counts only: no paths, commands or ids
+```
+
+Using another agent (Codex CLI, Aider, Cline, Cursor…)? Adapters are built from real samples, never guessed. Open an issue with a **redacted** session log that shows the structure, and we'll add support.
+
 ### 2. Donate benchmark compute (zero cost with a local model)
 
 Over-computation (CBI layer M) is measured by running a small set of trivial tasks once per model and setting.

@@ -79,6 +79,17 @@ def main(argv: list[str] | None = None) -> int:
     bv.add_argument("paths", nargs="+")
     bsub.add_parser("tasks", help="list the task set")
 
+    ag = sub.add_parser("agent", help="coding agents: audit transcripts, guard hook")
+    agsub = ag.add_subparsers(dest="agent_cmd", required=True)
+    aa = agsub.add_parser("audit", help="where did the coding agent's tokens go? (Claude Code transcripts)")
+    aa.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    aa.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
+    aa.add_argument("--json", action="store_true", help="print the full report as JSON (local, includes paths)")
+    aa.add_argument("--export", action="store_true", help="print an anonymous aggregate for contribution")
+    ah = agsub.add_parser("hook", help="guard hook (called by Claude Code) and its installer")
+    ah.add_argument("action", choices=["pre-tool-use", "pre-compact", "install", "uninstall"])
+    ah.add_argument("--scope", choices=["user", "project"], default="user")
+
     c = sub.add_parser("cbi", help="Compute Bubble Index dataset tools")
     csub = c.add_subparsers(dest="cbi_cmd", required=True)
     cv = csub.add_parser("validate", help="validate curated CSV files")
@@ -87,7 +98,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = ap.parse_args(argv)
 
-    if args.cmd in ("proxy", "ledger", "bench", "cbi"):
+    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent"):
         return _tools(args)
 
     if args.cmd == "serve":
@@ -201,6 +212,9 @@ def _tools(args) -> int:
         print(f"\nwrote {path} -- open a pull request to contribute it.", file=sys.stderr)
         return 0
 
+    if args.cmd == "agent":
+        return _agent(args)
+
     if args.cmd == "cbi":
         from .cbi import validate_csv
 
@@ -209,6 +223,58 @@ def _tools(args) -> int:
             print(e, file=sys.stderr)
         return 1 if errs else 0
     return 2
+
+
+def _agent(args) -> int:
+    if args.agent_cmd == "hook":
+        if args.action in ("pre-tool-use", "pre-compact"):
+            from .agent.guard import run_hook
+
+            return run_hook(args.action)
+        from .agent.install import install, settings_path, uninstall
+
+        path = settings_path(args.scope)
+        if args.action == "install":
+            print(f"installed pickaxetax guard hook in {install(path)}")
+            print("Re-reads of unchanged files are now blocked once per file; see savings with `pxt ledger`.")
+        else:
+            print("removed" if uninstall(path) else "nothing to remove", f"({path})")
+        return 0
+
+    from .agent import audit_session, export, find_transcripts, merge, parse, tips
+
+    files = find_transcripts(args.paths or None, args.since)
+    if not files:
+        print("no Claude Code transcripts found (looked in ~/.claude/projects)", file=sys.stderr)
+        return 1
+    reports = [audit_session(parse(f)) for f in files]
+    reports = [r for r in reports if r["api_calls"]]
+    m = merge(reports)
+    if args.export:
+        print(json.dumps(export(m), indent=2))
+        return 0
+    if args.json:
+        print(json.dumps({"summary": m, "sessions": reports}, indent=2, default=list))
+        return 0
+    t = m["tokens"]
+    print(f"sessions        {m['sessions']}  ·  API calls {m['api_calls']:,} (+{m['subagent_calls']:,} subagent)  ·  tool calls {m['tool_calls']:,}")
+    print(f"input processed {t.get('processed_input', 0):,} tokens  (cache hits {m['cache_hit_pct']}%)  ·  output {t.get('output', 0):,}")
+    print(f"peak context    {m['peak_context']:,} tokens  ·  tool results re-read later: {m['carried_share_pct']}% of all input")
+    for k, label in (("duplicate_reads", "re-read unchanged files"), ("large_results", "large tool results"), ("failed_repeats", "repeated failures")):
+        v = m[k]
+        print(f"{label:<24}{v['count']:>5}  ·  {v['tokens']:>10,} tokens  ·  carried {v['carried_tokens']:>12,}")
+    print("\ntop tools by carried tokens:")
+    for name, b in list(m["by_tool"].items())[:6]:
+        print(f"  {name[:28]:<28} {b['calls']:>5} calls  {b['result_tokens']:>10,} tok  carried {b['carried_tokens']:>12,}")
+    details = [d for r in reports for d in r["_detail"]["large_results"]]
+    if details:
+        print("\nlargest tool results (local only):")
+        for tok, name, label in sorted(details, reverse=True)[:5]:
+            print(f"  {tok:>8,} tok  {name:<6} {label}")
+    lang = "ko" if os.environ.get("LANG", "").startswith("ko") else "en"
+    for tip in tips(m):
+        print(f"- {tip[lang]}")
+    return 0
 
 
 def ledger_path(path):

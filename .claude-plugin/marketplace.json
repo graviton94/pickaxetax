@@ -1,0 +1,12 @@
+{
+  "name": "pickaxetax",
+  "owner": { "name": "Pickaxe Tax" },
+  "plugins": [
+    {
+      "name": "pickaxetax",
+      "source": "./claude-plugin/pickaxetax",
+      "description": "Stop paying the pickaxe tax: block re-reads of unchanged files and log the tokens saved.",
+      "version": "0.2.0"
+    }
+  ]
+}

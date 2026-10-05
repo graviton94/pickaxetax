@@ -113,3 +113,10 @@ A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-co
 ```
 
 `site/engine.js` is a line-by-line port of the Python engine. The places where Python and JS semantics differ (Unicode `\w`/`\b`/`\d`, code-point lengths, round-half-even, float formatting) are handled explicitly, and `tests/test_parity.py` enforces identical output.
+
+## Coding agent auditor and guard (`pickaxetax/agent`)
+
+- `transcript.py` parses Claude Code JSONL defensively. Usage is de-duplicated per `message.id`, because one response is split across several lines. Subagent (sidechain) traffic is counted separately.
+- `audit.py`: a tool result added at call *k* is re-read on every later call until the next compaction (its "carried" tokens). It detects duplicate reads, large results and repeated failures.
+- `guard.py`: a PreToolUse (Read) and PreCompact hook. It denies one re-read of an unchanged file, then allows; it fails open and stores only path/size/mtime. Avoided tokens go to the proxy ledger (`action=agent_dup_read_blocked`).
+- `install.py`: merges hooks into `~/.claude/settings.json` (or the project's), with a backup and idempotent re-runs. The plugin form lives in `claude-plugin/pickaxetax`, with the marketplace at `.claude-plugin/marketplace.json`.

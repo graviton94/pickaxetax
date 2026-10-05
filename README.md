@@ -29,6 +29,13 @@ pytest
 
 **Local proxy.** Point your client at it and it forwards to the real provider with your own key, which it never stores. It measures every request (input, output, reasoning, re-sent context). By default it also drops earlier pure thank-you exchanges from the history and answers a bare "thanks" locally instead of re-reading the whole chat. "ok"/"yes" are never short-circuited, because in agent workflows they mean "go ahead". Requests with tools are never rewritten. Opt-in: `--cache` reuses responses to identical temperature-0 requests, stored on your disk.
 
+**Coding agents (Claude Code).** `pxt agent audit` reads your local transcripts and shows where the tokens went: cache hits, peak context, re-reads of unchanged files, huge tool outputs, repeated failures, and how many times each result was re-sent afterwards. `pxt agent hook install` adds a guard that blocks a re-read of an unchanged file once (a repeated request is allowed, compaction resets it) and logs the avoided tokens. Or install it as a plugin:
+
+```text
+/plugin marketplace add graviton94/pickaxetax
+/plugin install pickaxetax@pickaxetax
+```
+
 **Web app (local-first).** `site/` is a static page that runs the same engine in your browser. You can paste text, drop an export file, or use a share link through a bookmarklet that reads the page you already have open. Its Content-Security-Policy (`connect-src 'none'`) makes it impossible for the page to send your conversation anywhere. It is deployed to GitHub Pages; to run it locally: `cd site && python3 -m http.server`.
 
 **How to help at zero cost:** see [CONTRIBUTING.md](https://github.com/graviton94/pickaxetax/blob/HEAD/CONTRIBUTING.md).
