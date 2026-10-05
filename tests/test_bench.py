@@ -3,9 +3,9 @@ import json
 import httpx
 import pytest
 
-from antitoken.bench import TASKS, run, settings_key, summarize, validate, validate_files
-from antitoken.bench.runner import grade
-from antitoken.cli import main
+from pickaxetax.bench import TASKS, run, settings_key, summarize, validate, validate_files
+from pickaxetax.bench.runner import grade
+from pickaxetax.cli import main
 
 
 def fake_model(verbose: bool, reasoning: int = 0):

@@ -24,4 +24,4 @@
 
 - Topic labels are still words from the conversation. A person whose rare project name is frequently discussed could appear as a label once k conversations mention it. Planned mitigations: client-side extraction, differential privacy for aggregates, and a reviewed label vocabulary.
 - Share-link fetching sends a request to the AI provider from the server. Uploading an export or pasting the text avoids that.
-- Running your own instance gives you full control: `antitoken serve` with a local DB.
+- Running your own instance gives you full control: `pickaxetax serve` with a local DB.

@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ANTITOKENMAXING</title>
+  <title>Pickaxe Tax</title>
   <meta name="description" content="Upload a shared AI conversation. We keep only its shape — agenda, structure, depth — and show how many tokens it didn't need.">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <header class="top">
-    <a class="brand" href="/">ANTI<span>TOKEN</span>MAXING</a>
+    <a class="brand" href="/">PICKAXE<span>TAX</span></a>
     <nav>
       <a href="/" data-i18n="nav_analyze">분석</a>
       <a href="/explore" data-i18n="nav_explore">공익 그래프</a>
@@ -19,6 +19,7 @@
 
   <main>
     <section id="hero">
+      <p class="kicker"><span data-i18n="kicker">곡괭이세를 그만 내자.</span> <b>#AntiTokenMaxing</b></p>
       <h1 data-i18n="hero_title">AI는 같은 대화를 매번 처음부터 다시 읽습니다.</h1>
       <p class="lede" data-i18n="hero_lede">대화 공유 링크나 내보내기 파일을 올리면 원문은 버리고 구조(아젠다·흐름·깊이)만 그래프로 남겨, 그 대화에서 불필요했던 연산이 얼마인지 보여줍니다.</p>
       <div class="counter" id="counter" hidden>
@@ -58,7 +59,7 @@
 
   <footer>
     <p data-i18n="footer">원문은 메모리에서만 처리되고 즉시 폐기됩니다. 분석기는 LLM을 호출하지 않습니다 — 토큰을 아끼자는 프로젝트가 토큰을 쓸 수는 없으니까요.</p>
-    <p class="small"><a href="https://github.com/graviton94/antitokenmaxing">GitHub</a> · Apache-2.0</p>
+    <p class="small"><a href="https://github.com/graviton94/pickaxetax">GitHub</a> · Apache-2.0</p>
   </footer>
   <script src="/static/app.js"></script>
 </body>

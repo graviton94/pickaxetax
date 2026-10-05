@@ -1,7 +1,7 @@
-from antitoken.analyze import analyze
-from antitoken.analyze import intent as I
-from antitoken.ingest import parse_transcript
-from antitoken.models import USER
+from pickaxetax.analyze import analyze
+from pickaxetax.analyze import intent as I
+from pickaxetax.ingest import parse_transcript
+from pickaxetax.models import USER
 
 
 def sk_of(text, salt=b"s"):

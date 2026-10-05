@@ -9,7 +9,7 @@ import threading
 import time
 from pathlib import Path
 
-DEFAULT_PATH = os.environ.get("ANTITOKEN_LEDGER", str(Path.home() / ".antitoken" / "ledger.sqlite3"))
+DEFAULT_PATH = os.environ.get("PICKAXETAX_LEDGER", str(Path.home() / ".pickaxetax" / "ledger.sqlite3"))
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS requests (
@@ -91,7 +91,7 @@ class Ledger:
             ).fetchall()
         keys = ["day", "provider", "model", "action", "requests", "input_tokens", "output_tokens",
                 "reasoning_tokens", "history_tokens", "avoided_input", "avoided_output", "measured_requests"]
-        return json.dumps({"schema": "antitoken.ledger.v1", "rows": [dict(zip(keys, r)) for r in rows]}, indent=2)
+        return json.dumps({"schema": "pickaxetax.ledger.v1", "rows": [dict(zip(keys, r)) for r in rows]}, indent=2)
 
     def close(self) -> None:
         self.db.close()

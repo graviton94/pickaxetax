@@ -37,6 +37,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);
@@ -54,6 +55,8 @@ nav a:hover { color: var(--ink); }
 h1 { font-size: clamp(26px, 5vw, 40px); line-height: 1.2; margin: 28px 0 12px; letter-spacing: -.01em; }
 h2 { font-size: 24px; margin: 28px 0 8px; }
 h3 { font-size: 16px; margin: 0 0 12px; }
+.kicker { margin: 28px 0 -16px; font-size: 14px; color: var(--muted); letter-spacing: .02em; }
+.kicker b { color: var(--accent); font-weight: 700; }
 .lede { font-size: 18px; color: var(--muted); max-width: 720px; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }

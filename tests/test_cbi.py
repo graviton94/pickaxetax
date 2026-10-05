@@ -1,4 +1,4 @@
-from antitoken.cbi import COLUMNS, validate_csv
+from pickaxetax.cbi import COLUMNS, validate_csv
 
 ROW = {
     "id": "acme-capex-ai-2025q1", "entity": "Acme Cloud", "metric": "capex_ai", "value": "12.5", "unit": "USD bn",

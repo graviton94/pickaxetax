@@ -4,6 +4,7 @@
 const T = {
   ko: {
     nav_analyze: "분석", nav_explore: "공익 그래프",
+    kicker: "곡괭이세를 그만 내자.",
     hero_title: "AI는 같은 대화를 매번 처음부터 다시 읽습니다.",
     hero_lede: "대화 공유 링크나 내보내기 파일을 올리면 원문은 버리고 구조(아젠다·흐름·깊이)만 그래프로 남겨, 그 대화에서 불필요했던 연산이 얼마인지 보여줍니다.",
     c_convs: "개 대화 분석", c_units: "연산 단위 측정", c_avoid: "회피 가능했던 연산",
@@ -35,6 +36,7 @@ const T = {
   },
   en: {
     nav_analyze: "Analyze", nav_explore: "Public graph",
+    kicker: "Stop paying the pickaxe tax.",
     hero_title: "Your AI re-reads the whole conversation, every single turn.",
     hero_lede: "Upload a shared chat link or export. We throw away the text, keep only its shape — agenda, flow, depth — as a graph, and show how much of the compute it didn't need.",
     c_convs: " conversations", c_units: " compute units measured", c_avoid: " was avoidable",

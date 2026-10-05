@@ -16,10 +16,10 @@ from . import intent as I
 
 # Input tokens are cheaper to process than generated ones (prefill vs decode).
 # Public API price ratios put input at roughly 1/5-1/4 of output.
-INPUT_WEIGHT = float(os.environ.get("ANTITOKEN_INPUT_WEIGHT", "0.25"))
+INPUT_WEIGHT = float(os.environ.get("PICKAXETAX_INPUT_WEIGHT", "0.25"))
 # Illustrative energy factor per 1k weighted tokens. Published estimates vary
 # by an order of magnitude; treat derived Wh figures as rough, not measured.
-WH_PER_1K = float(os.environ.get("ANTITOKEN_WH_PER_1K", "0.5"))
+WH_PER_1K = float(os.environ.get("PICKAXETAX_WH_PER_1K", "0.5"))
 
 
 def _units(inp: int, out: int) -> float:

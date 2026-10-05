@@ -88,7 +88,7 @@
 
 ## 6. 제품과 로드맵
 
-브랜드는 둘로 나눈다. **ANTITOKENMAXING**은 운동과 캠페인의 이름이다. 엔진, 프록시, 데이터셋, 지수에는 별도의 제품명을 붙인다(미정).
+브랜드는 둘로 나눈다. 마스터 브랜드는 **Pickaxe Tax**(곡괭이세)이고, 제품명은 Pickaxe Tax Proxy와 Pickaxe Tax Bench처럼 설명형으로 붙이며, 지수는 Compute Bubble Index다. 운동명 **#AntiTokenMaxing**은 해시태그와 캠페인 이름으로 쓴다. ([ADR-0002](decisions/0002-brand-pickaxe-tax.md))
 
 | 단계 | 기간(목표) | 산출물 |
 |---|---|---|
@@ -153,7 +153,7 @@
 
 ## 12. 열린 질문
 
-- [ ] 제품명 (엔진, 프록시, 데이터셋, 지수)
+- [x] 제품명: Pickaxe Tax ([ADR-0002](decisions/0002-brand-pickaxe-tax.md))
 - [ ] 재단과 벤처의 설립 국가 및 법인 구조
 - [ ] 초기 자금 (그랜트 후보, 엔젤)
 - [ ] 코어 팀 구성과 기여자 거버넌스 규칙

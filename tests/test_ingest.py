@@ -3,9 +3,9 @@ import json
 import httpx
 import pytest
 
-from antitoken.ingest import ingest_text, parse_json, parse_transcript
-from antitoken.ingest.share import ShareFetchError, check_url, fetch_share, parse_share_html
-from antitoken.models import ASSISTANT, USER
+from pickaxetax.ingest import ingest_text, parse_json, parse_transcript
+from pickaxetax.ingest.share import ShareFetchError, check_url, fetch_share, parse_share_html
+from pickaxetax.models import ASSISTANT, USER
 
 
 def roles(conv):

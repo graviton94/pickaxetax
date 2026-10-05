@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "antitoken"
+name = "pickaxetax"
 version = "0.1.0"
-description = "Turn shared AI conversations into privacy-preserving graph skeletons (agenda, structure, depth) and expose token waste."
+description = "Pickaxe Tax: measure and cut wasted AI compute -- local LLM proxy, conversation skeletons, over-computation benchmark, Compute Bubble Index."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
@@ -21,13 +21,14 @@ dev = ["pytest>=8"]
 tiktoken = ["tiktoken>=0.7"]
 
 [project.scripts]
-antitoken = "antitoken.cli:main"
+pickaxetax = "pickaxetax.cli:main"
+pxt = "pickaxetax.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["antitoken*"]
+include = ["pickaxetax*"]
 
 [tool.setuptools.package-data]
-"antitoken.web" = ["static/*"]
+"pickaxetax.web" = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

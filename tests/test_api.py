@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from antitoken.graph import GraphStore
-from antitoken.web import create_app
+from pickaxetax.graph import GraphStore
+from pickaxetax.web import create_app
 
 
 @pytest.fixture
@@ -56,5 +56,5 @@ def test_error_does_not_echo_input(client):
 def test_index_served(client):
     for path in ("/", "/explore", "/c/abc"):
         r = client.get(path)
-        assert r.status_code == 200 and "ANTI" in r.text
+        assert r.status_code == 200 and "PICKAXE" in r.text
     assert client.get("/static/app.js").status_code == 200

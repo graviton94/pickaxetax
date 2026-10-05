@@ -1,4 +1,4 @@
-"""ANTITOKENMAXING: conversation skeletons instead of conversation transcripts."""
+"""Pickaxe Tax: measure and cut wasted AI compute. #AntiTokenMaxing"""
 
 from .analyze import analyze
 from .ingest import ingest_text

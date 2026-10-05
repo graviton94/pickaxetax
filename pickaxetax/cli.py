@@ -32,8 +32,8 @@ def _summary(sk: dict) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="antitoken", description=__doc__)
-    ap.add_argument("--db", default=os.environ.get("ANTITOKEN_DB", "data/antitoken.sqlite3"))
+    ap = argparse.ArgumentParser(prog="pickaxetax", description=__doc__)
+    ap.add_argument("--db", default=os.environ.get("PICKAXETAX_DB", "data/pickaxetax.sqlite3"))
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     a = sub.add_parser("analyze", help="analyze a file, share URL, or '-' for stdin")
@@ -52,14 +52,14 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("proxy", help="run the local measuring/optimizing LLM proxy")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8787)
-    p.add_argument("--openai-base", default=os.environ.get("ANTITOKEN_OPENAI_BASE", "https://api.openai.com"),
+    p.add_argument("--openai-base", default=os.environ.get("PICKAXETAX_OPENAI_BASE", "https://api.openai.com"),
                    help="upstream for /v1/chat/completions (any OpenAI-compatible server)")
-    p.add_argument("--anthropic-base", default=os.environ.get("ANTITOKEN_ANTHROPIC_BASE", "https://api.anthropic.com"))
+    p.add_argument("--anthropic-base", default=os.environ.get("PICKAXETAX_ANTHROPIC_BASE", "https://api.anthropic.com"))
     p.add_argument("--no-compact", action="store_true", help="do not drop old thank-you exchanges")
     p.add_argument("--no-gratitude", action="store_true", help="always forward bare 'thanks' messages")
     p.add_argument("--cache", action="store_true", help="cache identical temperature-0 requests locally")
     p.add_argument("--cache-all", action="store_true", help="cache all identical requests (disables regeneration)")
-    p.add_argument("--ledger", default=None, help="ledger path (default ~/.antitoken/ledger.sqlite3)")
+    p.add_argument("--ledger", default=None, help="ledger path (default ~/.pickaxetax/ledger.sqlite3)")
 
     lg = sub.add_parser("ledger", help="show what the proxy measured and avoided")
     lg.add_argument("--ledger", default=None)
@@ -146,7 +146,7 @@ def _tools(args) -> int:
         cache = None
         if args.cache or args.cache_all:
             cache = ResponseCache(os.path.join(os.path.dirname(os.path.abspath(ledger_path(args.ledger))), "cache.sqlite3"))
-        print(f"antitoken proxy on http://{args.host}:{args.port}  "
+        print(f"pickaxetax proxy on http://{args.host}:{args.port}  "
               f"(OpenAI-compatible: /v1  ·  Anthropic: base URL as-is)", file=sys.stderr)
         uvicorn.run(create_proxy_app(opts, ledger=ledger, cache=cache), host=args.host, port=args.port, log_level="warning")
         return 0

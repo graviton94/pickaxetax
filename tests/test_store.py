@@ -1,8 +1,8 @@
 import pytest
 
-from antitoken.analyze import analyze
-from antitoken.graph import GraphStore, skeleton_cypher, skeleton_graph_json
-from antitoken.ingest import parse_transcript
+from pickaxetax.analyze import analyze
+from pickaxetax.graph import GraphStore, skeleton_cypher, skeleton_graph_json
+from pickaxetax.ingest import parse_transcript
 
 
 @pytest.fixture
@@ -90,6 +90,6 @@ def test_exports(store, ko_chat):
 
 
 def test_cypher_escapes_labels():
-    from antitoken.graph.export import _lit
+    from pickaxetax.graph.export import _lit
 
     assert _lit('a"b\\c') == '"a\\"b\\\\c"'

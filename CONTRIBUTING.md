@@ -8,10 +8,10 @@ This project runs on **minimal cost and global contribution**. There are no paid
 
 ```bash
 pip install -e .
-antitoken proxy                       # OpenAI-compatible at http://127.0.0.1:8787/v1
-                                      # Anthropic SDK: base_url="http://127.0.0.1:8787"
-antitoken ledger                      # what was spent, re-sent and avoided
-antitoken ledger --export > my-ledger.json   # anonymous daily aggregates, no text
+pickaxetax proxy                       # OpenAI-compatible at http://127.0.0.1:8787/v1
+                                        # Anthropic SDK: base_url="http://127.0.0.1:8787"
+pickaxetax ledger                      # what was spent, re-sent and avoided
+pickaxetax ledger --export > my-ledger.json   # anonymous daily aggregates, no text
 ```
 
 The ledger holds counts only: no prompts, no replies, no keys. Share the export in an issue to feed the usage layer (W) of the [Compute Bubble Index](docs/BUBBLE_INDEX.md).
@@ -22,9 +22,9 @@ Over-computation (CBI layer M) is measured by running a small set of trivial tas
 
 ```bash
 # free: any local OpenAI-compatible server, e.g. Ollama
-antitoken bench run --base-url http://localhost:11434 --model llama3.2
+pickaxetax bench run --base-url http://localhost:11434 --model llama3.2
 # or a hosted model with your own key
-antitoken bench run --base-url https://api.openai.com --model <model> --api-key-env OPENAI_API_KEY
+pickaxetax bench run --base-url https://api.openai.com --model <model> --api-key-env OPENAI_API_KEY
 ```
 
 The result is written to `bench/results/<model>__<settings>__<taskset>.json`. Open a PR to add it. If a result for the same model, settings and task set already exists, the runner refuses to run again, because a duplicate measurement would itself be waste. Check `bench/results/` first and pick a model that isn't there yet. CI validates every submitted file.
@@ -36,7 +36,7 @@ Add sourced rows to `cbi/drafts.csv`. Rows move to `cbi/capital.csv` once a seco
 ### 4. Code, translation and research
 
 - Code: see the open issues and the roadmap in [docs/CHARTER.md](docs/CHARTER.md). Run `pytest` before opening a PR.
-- Translation: the UI strings are in `antitoken/web/static/app.js` (`T`), and the docs are in `docs/`.
+- Translation: the UI strings are in `pickaxetax/web/static/app.js` (`T`), and the docs are in `docs/`.
 - Research: methodology critiques of the index and the benchmark are very welcome. Open an issue with your reasoning and data.
 
 ## Operating principles

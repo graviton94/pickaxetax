@@ -33,7 +33,7 @@ ALLOWED_HOSTS = {
 }
 MAX_BYTES = 8 * 1024 * 1024
 TIMEOUT = 15.0
-UA = "antitoken/0.1 (+https://github.com/graviton94/antitokenmaxing; public-interest research)"
+UA = "pickaxetax/0.1 (+https://github.com/graviton94/pickaxetax; public-interest research)"
 
 
 class ShareFetchError(ValueError):

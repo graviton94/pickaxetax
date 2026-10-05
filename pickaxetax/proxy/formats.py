@@ -91,7 +91,7 @@ def local_reply(provider: str, model: str, text: str, stream: bool) -> tuple[byt
     """(body, content_type) of a reply generated without calling any model."""
     now = int(time.time())
     if provider == OPENAI:
-        rid = f"chatcmpl-antitoken-{uuid.uuid4().hex[:12]}"
+        rid = f"chatcmpl-pickaxetax-{uuid.uuid4().hex[:12]}"
         if not stream:
             return json.dumps({
                 "id": rid, "object": "chat.completion", "created": now, "model": model,
@@ -107,7 +107,7 @@ def local_reply(provider: str, model: str, text: str, stream: bool) -> tuple[byt
         out = "".join(f"data: {json.dumps(c)}\n\n" for c in chunks) + "data: [DONE]\n\n"
         return out.encode(), "text/event-stream"
 
-    mid = f"msg_antitoken_{uuid.uuid4().hex[:12]}"
+    mid = f"msg_pickaxetax_{uuid.uuid4().hex[:12]}"
     message = {"id": mid, "type": "message", "role": "assistant", "model": model,
                "content": [{"type": "text", "text": text}], "stop_reason": "end_turn",
                "stop_sequence": None, "usage": {"input_tokens": 0, "output_tokens": 0}}

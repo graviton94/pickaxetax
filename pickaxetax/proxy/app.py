@@ -30,8 +30,8 @@ from .messages import ANTHROPIC, OPENAI, View, text_of
 
 _HOP = {"host", "content-length", "connection", "accept-encoding", "transfer-encoding", "keep-alive"}
 _RESP_DROP = {"content-length", "content-encoding", "transfer-encoding", "connection", "keep-alive"}
-GRATITUDE_REPLY = {"ko": "🙏 (antitoken: 모델 호출 없이 로컬에서 응답했습니다)",
-                   "en": "🙏 (antitoken: answered locally, no model call needed)"}
+GRATITUDE_REPLY = {"ko": "🙏 (pickaxetax: 모델 호출 없이 로컬에서 응답했습니다)",
+                   "en": "🙏 (pickaxetax: answered locally, no model call needed)"}
 TYPICAL_ACK_REPLY_TOKENS = 40
 
 
@@ -51,7 +51,7 @@ def _fwd_headers(request: Request) -> dict:
 
 def _resp_headers(r: httpx.Response, action: str) -> dict:
     h = {k: v for k, v in r.headers.items() if k.lower() not in _RESP_DROP}
-    h["x-antitoken-action"] = action
+    h["x-pickaxetax-action"] = action
     return h
 
 
@@ -72,14 +72,14 @@ def create_proxy_app(
         yield
         await client.aclose()
 
-    app = FastAPI(title="antitoken proxy", docs_url=None, redoc_url=None, lifespan=lifespan)
+    app = FastAPI(title="pickaxetax proxy", docs_url=None, redoc_url=None, lifespan=lifespan)
     app.state.ledger = ledger
 
     async def handle(request: Request, provider: str, path: str) -> Response:
         try:
             return await _handle(request, provider, path)
         except httpx.HTTPError as e:
-            return JSONResponse({"error": {"type": "antitoken_upstream_error", "message": type(e).__name__}},
+            return JSONResponse({"error": {"type": "pickaxetax_upstream_error", "message": type(e).__name__}},
                                 status_code=502)
 
     async def _handle(request: Request, provider: str, path: str) -> Response:
@@ -101,7 +101,7 @@ def create_proxy_app(
             out, ctype = local_reply(provider, model, GRATITUDE_REPLY[lang], view.stream)
             ledger.record(provider=provider, model=model, action="gratitude_local", streamed=view.stream,
                           measured=False, avoided_input=est_in, avoided_output=TYPICAL_ACK_REPLY_TOKENS)
-            return Response(out, media_type=ctype, headers={"x-antitoken-action": "gratitude_local"})
+            return Response(out, media_type=ctype, headers={"x-pickaxetax-action": "gratitude_local"})
 
         # 2. drop earlier thank-you exchanges from the history
         compacted = view.compact() if opts.compact else 0
@@ -117,7 +117,7 @@ def create_proxy_app(
             if hit:
                 ledger.record(provider=provider, model=model, action="cache_hit", streamed=False, measured=False,
                               avoided_input=est_in + compacted, avoided_output=hit[1])
-                return Response(hit[0], media_type="application/json", headers={"x-antitoken-action": "cache_hit"})
+                return Response(hit[0], media_type="application/json", headers={"x-pickaxetax-action": "cache_hit"})
 
         base = opts.openai_base if provider == OPENAI else opts.anthropic_base
         url = base.rstrip("/") + path
@@ -180,7 +180,7 @@ def create_proxy_app(
     async def anthropic_messages(request: Request):
         return await handle(request, ANTHROPIC, "/v1/messages")
 
-    @app.get("/antitoken/ledger")
+    @app.get("/pickaxetax/ledger")
     async def ledger_summary():
         return JSONResponse(ledger.summary())
 

@@ -22,6 +22,6 @@ Metrics: `capex_ai`, `capex_total`, `revenue_ai`, `circular_deal`, `depreciation
 Check your rows before opening a PR:
 
 ```bash
-antitoken cbi validate cbi/capital.csv              # main file: rows must be verified
-antitoken cbi validate cbi/drafts.csv --drafts      # drafts may be unverified
+pickaxetax cbi validate cbi/capital.csv              # main file: rows must be verified
+pickaxetax cbi validate cbi/drafts.csv --drafts      # drafts may be unverified
 ```

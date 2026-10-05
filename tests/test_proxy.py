@@ -4,8 +4,8 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from antitoken.proxy import Ledger, ProxyOptions, ResponseCache, create_proxy_app
-from antitoken.proxy.messages import View, is_gratitude
+from pickaxetax.proxy import Ledger, ProxyOptions, ResponseCache, create_proxy_app
+from pickaxetax.proxy.messages import View, is_gratitude
 
 
 class Upstream:
@@ -64,7 +64,7 @@ def test_gratitude_answered_locally(setup):
     client, up, ledger = setup()
     r = client.post("/v1/chat/completions", json={"model": "m", "messages": CHAT + [{"role": "user", "content": "thanks!"}]})
     assert r.status_code == 200
-    assert r.headers["x-antitoken-action"] == "gratitude_local"
+    assert r.headers["x-pickaxetax-action"] == "gratitude_local"
     assert r.json()["choices"][0]["message"]["role"] == "assistant"
     assert up.calls == []
     assert ledger.summary()["totals"]["avoided_input"] > 0
@@ -97,7 +97,7 @@ def test_compaction_drops_old_thank_you_exchange(setup):
         {"role": "user", "content": "그럼 service는 뭐야?"},
     ]
     r = client.post("/v1/chat/completions", json={"model": "m", "messages": msgs})
-    assert r.headers["x-antitoken-action"] == "forwarded+compacted"
+    assert r.headers["x-pickaxetax-action"] == "forwarded+compacted"
     sent = up.calls[0]["body"]["messages"]
     assert [m["content"] for m in sent] == [CHAT[0]["content"], CHAT[1]["content"], "그럼 service는 뭐야?"]
     assert ledger.summary()["totals"]["avoided_input"] > 0
@@ -114,7 +114,7 @@ def test_cache_only_deterministic(setup):
     body = {"model": "m", "temperature": 0, "messages": CHAT + [{"role": "user", "content": "define pod"}]}
     client.post("/v1/chat/completions", json=body)
     r = client.post("/v1/chat/completions", json=body)
-    assert r.headers["x-antitoken-action"] == "cache_hit" and len(up.calls) == 1
+    assert r.headers["x-pickaxetax-action"] == "cache_hit" and len(up.calls) == 1
     client.post("/v1/chat/completions", json=dict(body, temperature=0.7))
     client.post("/v1/chat/completions", json=dict(body, temperature=0.7))
     assert len(up.calls) == 3
@@ -178,7 +178,7 @@ def test_ledger_export_is_aggregate(setup):
     client, _, ledger = setup()
     client.post("/v1/chat/completions", json={"model": "m", "messages": CHAT + [{"role": "user", "content": "x y z"}]})
     exp = json.loads(ledger.export())
-    assert exp["schema"] == "antitoken.ledger.v1" and exp["rows"][0]["requests"] == 1
+    assert exp["schema"] == "pickaxetax.ledger.v1" and exp["rows"][0]["requests"] == 1
 
 
 def test_gratitude_detection():
@@ -206,4 +206,4 @@ def test_upstream_unreachable_is_502():
         raise httpx.ConnectError("refused")
     client = TestClient(create_proxy_app(ledger=Ledger(":memory:"), transport=httpx.MockTransport(down)))
     r = client.post("/v1/chat/completions", json={"model": "m", "messages": CHAT + [{"role": "user", "content": "x"}]})
-    assert r.status_code == 502 and r.json()["error"]["type"] == "antitoken_upstream_error"
+    assert r.status_code == 502 and r.json()["error"]["type"] == "pickaxetax_upstream_error"

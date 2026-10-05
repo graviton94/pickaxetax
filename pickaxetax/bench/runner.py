@@ -22,7 +22,7 @@ import httpx
 from ..tokens import estimate_tokens
 from .tasks import TASKS, TASKSET_VERSION
 
-RESULT_SCHEMA = "antitoken.bench.v1"
+RESULT_SCHEMA = "pickaxetax.bench.v1"
 HARNESS_VERSION = "0.1.0"
 _NUM = re.compile(r"-?\d+(?:\.\d+)?")
 

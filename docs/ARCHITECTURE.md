@@ -20,7 +20,7 @@
         └────────────────┘
 ```
 
-## Analysis pipeline (`antitoken/analyze`)
+## Analysis pipeline (`pickaxetax/analyze`)
 
 | Step | Module | Output |
 |---|---|---|
@@ -52,7 +52,7 @@ Waste attribution:
 
 System prompts, tool calls and provider-side caching are not visible in shares, so the figures are **conservative** about absolute cost. Treat the ratios as the meaningful result.
 
-## Graph model (`antitoken/graph`)
+## Graph model (`pickaxetax/graph`)
 
 ```
 (:Conversation {id, source, language, agenda, metrics…})
@@ -79,7 +79,7 @@ RETURN t.intent, avg(t.depth) AS depth, count(*) ORDER BY depth DESC
 - Parsers are layered: the provider JSON API (Claude snapshots), then embedded JSON (`__NEXT_DATA__` and others), then role-attributed DOM.
 - Many share pages render client-side and change often. When parsing fails, the user is told to paste the text or upload the export.
 
-## Local proxy (`antitoken/proxy`)
+## Local proxy (`pickaxetax/proxy`)
 
 ```
  client (OpenAI SDK / Anthropic SDK / any compatible tool)
@@ -97,6 +97,6 @@ RETURN t.intent, avg(t.depth) AS depth, count(*) ORDER BY depth DESC
 
 Usage comes from the provider (`measured`) whenever it is reported, and from estimates otherwise. The ledger records which is which, so the "verified savings" north-star metric only counts what can be verified.
 
-## Over-computation benchmark (`antitoken/bench`)
+## Over-computation benchmark (`pickaxetax/bench`)
 
 A crowd-run harness for CBI layer M. It runs trivial tasks against any OpenAI-compatible endpoint and records completion and reasoning tokens against the minimal answer length. Results are content-addressed by (model, settings, task set), so the same measurement is never paid for twice. CI validates submitted files and recomputes their summaries.

@@ -1,11 +1,12 @@
-# ANTITOKENMAXING
+# Pickaxe Tax
 
-> **Your AI re-reads the whole conversation, every single turn.**
+> **Stop paying the pickaxe tax.** `#AntiTokenMaxing`
+> In a gold rush, the people selling pickaxes get rich. Your AI re-reads the whole conversation every single turn, and you pay for every re-read.
 > Build less. Waste less. Use the compute we already have.
 
-[한국어](#한국어) · [Charter (KO)](docs/CHARTER.md) · [Architecture](docs/ARCHITECTURE.md) · [Privacy](docs/PRIVACY.md)
+[한국어](#한국어) · [Charter (KO)](docs/CHARTER.md) · [Decisions](docs/decisions/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Privacy](docs/PRIVACY.md)
 
-**Chat models re-read the entire conversation on every turn.** Late constraints, re-asks, "thanks!" messages and topic switches inside one chat make that cost grow quadratically. ANTITOKENMAXING takes a shared conversation (share link, export JSON or pasted transcript) and **throws the text away**. What it keeps is a graph skeleton: agenda (topic labels), structure (per-turn intents and typed edges such as DEEPENS, PIVOTS, CORRECTS and RETRIES), depth (topic threads and drill-down level) and token flow. It then shows:
+**Chat models re-read the entire conversation on every turn.** Late constraints, re-asks, "thanks!" messages and topic switches inside one chat make that cost grow quadratically. Pickaxe Tax takes a shared conversation (share link, export JSON or pasted transcript) and **throws the text away**. What it keeps is a graph skeleton: agenda (topic labels), structure (per-turn intents and typed edges such as DEEPENS, PIVOTS, CORRECTS and RETRIES), depth (topic threads and drill-down level) and token flow. It then shows:
 
 - actual vs. optimal compute (one focused chat per topic, with the waste removed) and a one-shot lower bound
 - where the compute leaked: thank-you messages, discarded answers, re-sent off-topic history
@@ -16,10 +17,10 @@ Contributed skeletons feed a public, **k-anonymous** topic graph (a topic is sho
 
 ```bash
 pip install -e ".[dev]"
-antitoken serve                      # conversation skeleton analyzer (web)
-antitoken proxy                      # local proxy: OpenAI-compatible /v1, Anthropic base URL
-antitoken ledger                     # tokens spent, context re-sent, tokens avoided
-antitoken bench run --base-url http://localhost:11434 --model llama3.2   # donate benchmark compute
+pickaxetax serve                      # conversation skeleton analyzer (web); `pxt` is a short alias
+pickaxetax proxy                      # local proxy: OpenAI-compatible /v1, Anthropic base URL
+pickaxetax ledger                     # tokens spent, context re-sent, tokens avoided
+pickaxetax bench run --base-url http://localhost:11434 --model llama3.2   # donate benchmark compute
 pytest
 ```
 
@@ -31,7 +32,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIV
 
 ### Where this is going
 
-The AI boom is turning into a gold rush where only the pick-and-shovel sellers win: more GPUs, more data centers, more power. The waste is not only in conversations. It runs through the whole compute stack: infrastructure built ahead of revenue, oversized models and needless reasoning tokens, and wasteful usage. ANTITOKENMAXING is a global, open effort to **prove that with public data and remove it with open tools**:
+The AI boom is turning into a gold rush where only the pick-and-shovel sellers win: more GPUs, more data centers, more power. The waste is not only in conversations. It runs through the whole compute stack: infrastructure built ahead of revenue, oversized models and needless reasoning tokens, and wasteful usage. Pickaxe Tax is the open toolkit of **#AntiTokenMaxing**, a global effort to **prove that with public data and remove it with open tools**:
 
 - **Shared brain**: solution-path graph + open efficiency dataset, built from conversation *skeletons* contributed by users worldwide
 - **Prompt compiler**: a local proxy/SDK and coding-agent plugin that compile wasteful requests into minimal ones and measure the savings
@@ -47,6 +48,8 @@ Code: [Apache-2.0](LICENSE) · Data: [ODbL 1.0](DATA_LICENSE.md)
 ---
 
 ## 한국어
+
+**Pickaxe Tax (곡괭이세)**: 골드러시에서 돈을 버는 건 곡괭이 판매자다. 우리는 그 세금을 그만 낸다. 운동명은 **#AntiTokenMaxing**이다.
 
 > **AI는 같은 대화를 매 턴 처음부터 다시 읽습니다.**
 > 원문은 버리고, 대화의 *모양*만 남겨, 불필요했던 연산을 드러냅니다.
@@ -82,22 +85,22 @@ Code: [Apache-2.0](LICENSE) · Data: [ODbL 1.0](DATA_LICENSE.md)
 
 ```bash
 pip install -e ".[dev]"
-antitoken serve                    # http://127.0.0.1:8000
+pickaxetax serve                    # http://127.0.0.1:8000
 # 또는
-antitoken analyze chat.txt         # 로컬 분석 (기본값은 저장 안 함)
-antitoken analyze conversations.json --save
-antitoken analyze https://chatgpt.com/share/... --json
-antitoken export > public_graph.cypher
+pickaxetax analyze chat.txt         # 로컬 분석 (기본값은 저장 안 함)
+pickaxetax analyze conversations.json --save
+pickaxetax analyze https://chatgpt.com/share/... --json
+pickaxetax export > public_graph.cypher
 pytest
 ```
 
 | 환경 변수 | 기본값 | 설명 |
 |---|---|---|
-| `ANTITOKEN_DB` | `data/antitoken.sqlite3` | 그래프 저장소 경로 |
-| `ANTITOKEN_SECRET` | 자동 생성 후 DB에 보관 | ID와 지문에 쓰는 솔트. 운영 환경에서는 직접 지정 권장 |
-| `ANTITOKEN_K_ANON` | `3` | 공개 그래프의 k-익명성 임계값 (API로는 낮출 수 없음) |
-| `ANTITOKEN_INPUT_WEIGHT` | `0.25` | 입력 토큰 연산 가중치 (출력 = 1) |
-| `ANTITOKEN_WH_PER_1K` | `0.5` | 1k 연산 단위당 Wh. **예시용 가정치** |
+| `PICKAXETAX_DB` | `data/pickaxetax.sqlite3` | 그래프 저장소 경로 |
+| `PICKAXETAX_SECRET` | 자동 생성 후 DB에 보관 | ID와 지문에 쓰는 솔트. 운영 환경에서는 직접 지정 권장 |
+| `PICKAXETAX_K_ANON` | `3` | 공개 그래프의 k-익명성 임계값 (API로는 낮출 수 없음) |
+| `PICKAXETAX_INPUT_WEIGHT` | `0.25` | 입력 토큰 연산 가중치 (출력 = 1) |
+| `PICKAXETAX_WH_PER_1K` | `0.5` | 1k 연산 단위당 Wh. **예시용 가정치** |
 
 ### API
 
@@ -116,7 +119,7 @@ pytest
 ### 구조
 
 ```
-antitoken/
+pickaxetax/
   ingest/     공유 링크(SSRF 방지 허용 목록), 내보내기 JSON, 텍스트 파서
   analyze/    의도 분류 · 깊이/갈래 · 토큰 회계 · 제안 생성 (LLM 미사용)
   graph/      SQLite 속성 그래프 저장소 + Cypher/JSON 내보내기

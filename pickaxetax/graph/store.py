@@ -49,7 +49,7 @@ CREATE INDEX IF NOT EXISTS edges_type ON edges(type);
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 """
 
-DEFAULT_K = int(os.environ.get("ANTITOKEN_K_ANON", "3"))
+DEFAULT_K = int(os.environ.get("PICKAXETAX_K_ANON", "3"))
 SUMMED_METRICS = [
     "visible_tokens", "billed_input_tokens", "billed_output_tokens",
     "compute_units", "optimized_compute_units", "one_shot_compute_units",
@@ -74,7 +74,7 @@ class GraphStore:
     # --- infra -----------------------------------------------------------------
 
     def _salt(self) -> bytes:
-        env = os.environ.get("ANTITOKEN_SECRET")
+        env = os.environ.get("PICKAXETAX_SECRET")
         if env:
             return env.encode()
         row = self.db.execute("SELECT value FROM meta WHERE key='salt'").fetchone()

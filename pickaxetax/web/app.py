@@ -23,8 +23,8 @@ class AnalyzeRequest(BaseModel):
 
 
 def create_app(store: GraphStore | None = None) -> FastAPI:
-    store = store or GraphStore(os.environ.get("ANTITOKEN_DB", "data/antitoken.sqlite3"))
-    app = FastAPI(title="ANTITOKENMAXING", version="0.1.0", docs_url="/api/docs", redoc_url=None)
+    store = store or GraphStore(os.environ.get("PICKAXETAX_DB", "data/pickaxetax.sqlite3"))
+    app = FastAPI(title="Pickaxe Tax", version="0.1.0", docs_url="/api/docs", redoc_url=None)
     app.state.store = store
 
     @app.middleware("http")

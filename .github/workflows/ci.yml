@@ -24,6 +24,6 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e .
-      - run: antitoken bench validate 'bench/results/*.json'
-      - run: antitoken cbi validate cbi/capital.csv
-      - run: antitoken cbi validate cbi/drafts.csv --drafts
+      - run: pickaxetax bench validate 'bench/results/*.json'
+      - run: pickaxetax cbi validate cbi/capital.csv
+      - run: pickaxetax cbi validate cbi/drafts.csv --drafts
