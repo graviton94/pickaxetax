@@ -9,10 +9,15 @@ Channels: **X**, **LinkedIn** and **Reddit**. The drafts are ready to post from 
 - [ ] Optional: the repository description, topics and website are set (see ADR-0007).
 
 ## Order
-1. **Day 0, morning (US East, Tue–Thu):** post the X thread, then LinkedIn the same day.
-2. **Day 0–1:** Reddit, one subreddit per day and never cross-posted at once. Start with r/ClaudeAI (agent audit, where the evidence is strongest), then r/LocalLLaMA (proxy and benchmark with free local models), then r/ChatGPT (the web app).
-3. Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
-4. Day 7: post a follow-up with the first public aggregate numbers from contributions.
+The plan is published as a **LinkedIn series** of ten chapters (ADR-0009). The schedule and drafts are in [linkedin-series/](linkedin-series/README.md).
+
+1. **Chapters 1–3 (from Thu 10-08, Tue/Thu):** problem, first measurement, the unit. LinkedIn only, no links yet.
+2. **Chapter 4 = launch day (Tue 10-20):** the tool goes public. Post the X thread the same morning, then Reddit, one subreddit per day and never cross-posted at once. Start with r/ClaudeAI (agent audit, where the evidence is strongest), then r/LocalLLaMA (proxy and benchmark with free local models), then r/ChatGPT (the web app). The checklist above must be done before this day.
+3. **Chapters 5–10 (to Tue 11-10):** coding agents, the failed hypothesis, the bound, the invisible third, the index, the call for data.
+4. Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
+5. **Chapter 11:** first results from contributions, once there is enough data.
+
+`linkedin.md` (a single launch post) is kept as material for chapter 4.
 
 ## Facts (sources for every number in the drafts)
 | Claim | Source |
@@ -21,6 +26,12 @@ Channels: **X**, **LinkedIn** and **Reddit**. The drafts are ready to post from 
 | One coding session: 143 API calls, 43,477,948 input tokens processed, 97.8% cache hits, 507,710 peak context, ~350K output | `pxt agent audit` on one real Claude Code session (anonymized) |
 | Without de-duplication, transcript usage is overcounted ~3× | 126 of 140 responses were split across lines in the same session (ADR-0005) |
 | The web app cannot upload | CSP `connect-src 'none'`, verified in CI (`tests/e2e/site_e2e.mjs`) |
+| ~124 input tokens read per output token (same session) | 43,477,948 ÷ 349,743 |
+| KV cache ≈ 320 KiB per token on an open 70B-class model; 507,710 tokens ≈ 166 GB | 2 × 80 layers × 8 KV heads × 128 dims × 2 bytes = 327,680 B; × 507,710 = 1.66 × 10¹¹ B (illustration, stated as such) |
+| Read amplification 195× | `research/hypotheses.md` H0 (226 calls, 94,880,088 in / 485,860 out) |
+| Naive dead-context test: 1% dead; refined: 54% never echoed (upper bound) | `research/hypotheses.md` H1, H1′ |
+| Bound session: 322 calls, 149,273,256 input tokens; forget 9.1%, page 50.1% (47.5% at 1k, 34.7% at 10k); invisible 32.4%; base 10.1%; ceiling 57.5%; persisted writes 25.1% of resident context | `research/results/belady-session-01.json`, `research/belady-bound.md` §4 |
+| Paging beats forgetting by ≥ 18 points in every calibrated sensitivity cell | same file, `sensitivity_avoidable_pct` |
 
 ## Rules of engagement
 - Don't overclaim. "Avoidable" means *the same results with one focused chat per topic and no waste*, and the definition is in the app. Energy figures are labeled as estimates.

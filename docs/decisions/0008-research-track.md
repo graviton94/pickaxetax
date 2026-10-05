@@ -5,7 +5,7 @@
 - English summary: the unit of account becomes compute per valuable outcome, extended to memory residency (KV-cache byte-seconds). The Jevons stance is efficiency plus value measurement, to shift incentives. The first theoretical result is an offline-optimal (Belady-type) bound on context residency, shipped as `pxt agent bound`. Results are published as an English preprint with a Korean summary, after data from more than one session is collected.
 
 ## 배경
-"누구나 떠올릴 수 있는 토큰 절약 도구"와 차별화하려면 다른 차원의 근거가 필요했다. 측정 단위가 무엇인지, 낭비의 하한을 증명할 수 있는지, 효율 개선이 사용량 증가로 상쇄되는 문제(제번스 역설)에 어떻게 답하는지가 그것이다. 이 세션 자체를 대상으로 한 실험(H0–H3, [research/hypotheses.md](../../research/hypotheses.md))에서 출발했다.
+"누구나 떠올릴 수 있는 토큰 절약 도구"와 차별화하려면 다른 차원의 근거가 필요했다. 측정 단위가 무엇인지, 낭비의 하한을 증명할 수 있는지, 효율 개선이 사용량 증가로 상쇄되는 문제(제번스 역설)에 어떻게 답하는지가 그것이다. 실제 코딩 에이전트 세션 하나(익명)를 대상으로 한 실험(H0–H3, [research/hypotheses.md](../../research/hypotheses.md))에서 출발했다.
 
 ## 검토한 선택지
 1. **근본 단위:** (1) 메모리 상주량 × 시간, (2) 가치 있는 결과 1건당 연산, (3) 토큰 유지 → **2를 기반으로 1까지 확장**

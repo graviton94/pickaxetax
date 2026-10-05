@@ -63,7 +63,7 @@ The pinned unattributed share pulls the other way and makes the bound conservati
 
 ## 4. First measurement (n = 1)
 
-One long Claude Code session: the one that built this repository, up to the point of this measurement. Aggregates only; the snapshot is [`results/belady-session-01.json`](results/belady-session-01.json) and is reproduced with `python research/sensitivity.py <transcript>`.
+One long, real Claude Code session (anonymized; which work it was is not disclosed, as for every published session). Aggregates only; the snapshot is [`results/belady-session-01.json`](results/belady-session-01.json) and is reproduced with `python research/sensitivity.py <transcript>`.
 
 | | |
 |---|---|
@@ -114,7 +114,7 @@ Value proxy (rung V1): 1,889 input tokens processed per token written to disk; 9
 
 ## 6. Limitations
 
-- **n = 1**, a single agent (Claude Code), a single kind of work (building this repository), with the measuring tool itself in the session. Nothing here generalizes until other sessions are measured. `pxt agent bound` exists so that they can be.
+- **n = 1**, a single agent (Claude Code), a single kind of work (software development). Nothing here generalizes until other sessions are measured. `pxt agent bound` exists so that they can be.
 - Segment granularity: a segment is all-or-nothing. Keeping only the used lines of a large tool result would lower the bound further, so at this level it is conservative.
 - Token-calls is a proxy. It weights a cached and an uncached token equally. That is right for memory residency (P1), but overstates compute when caching is on.
 - *P* is a parameter, not a measurement. A real re-fetch also costs an extra call in some designs; the *P* = 10,000 row shows the effect of an expensive re-fetch.

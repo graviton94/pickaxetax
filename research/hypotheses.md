@@ -2,7 +2,7 @@
 
 Every hypothesis is recorded with its result, including the ones that failed. All experiments run locally on transcripts and publish aggregates only.
 
-The first experiments used the session that built this repository as their subject (the "dogfood" session). They were run at different points of that session, so the call counts differ between entries.
+The first experiments used one long, real Claude Code session (anonymized). They were run at different points of that session, so the call counts differ between entries.
 
 ## H0 — Read amplification (descriptive)
 

@@ -58,7 +58,7 @@ The agent read 43 million input tokens to write about 350 thousand. Caching made
 
 ## How far from optimal?
 
-`pxt agent bound` computes what an oracle that knows which context each call will use would have kept. On the session that built this repository, dropping content after its last use would have saved 9.1% of input. Dropping it between uses and fetching it back on demand would have saved 50.1%. The lesson: agents should carry pointers, not payloads. Method, proof and caveats (n = 1): [research/belady-bound.md](https://github.com/graviton94/pickaxetax/blob/HEAD/research/belady-bound.md).
+`pxt agent bound` computes what an oracle that knows which context each call will use would have kept. On one long real coding-agent session, dropping content after its last use would have saved 9.1% of input. Dropping it between uses and fetching it back on demand would have saved 50.1%. The lesson: agents should carry pointers, not payloads. Method, proof and caveats (n = 1): [research/belady-bound.md](https://github.com/graviton94/pickaxetax/blob/HEAD/research/belady-bound.md).
 
 ## Why
 
