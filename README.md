@@ -22,11 +22,11 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIV
 
 ### Where this is going
 
-The AI boom is turning into a gold rush where only the pick-and-shovel sellers win: more GPUs, more data centers, more power. A large share of that demand is waste. ANTITOKENMAXING is a global, open effort to **prove that with public data and remove it with open tools**:
+The AI boom is turning into a gold rush where only the pick-and-shovel sellers win: more GPUs, more data centers, more power. The waste is not only in conversations. It runs through the whole compute stack: infrastructure built ahead of revenue, oversized models and needless reasoning tokens, and wasteful usage. ANTITOKENMAXING is a global, open effort to **prove that with public data and remove it with open tools**:
 
 - **Shared brain**: solution-path graph + open efficiency dataset, built from conversation *skeletons* contributed by users worldwide
 - **Prompt compiler**: a local proxy/SDK and coding-agent plugin that compile wasteful requests into minimal ones and measure the savings
-- **Watchdog**: public waste metrics and an annual "gold rush bill" report
+- **Watchdog — Compute Bubble Index**: how much of the deployed AI compute actually produced value? Top-down capital data (capex vs. AI revenue, circular deals, depreciation assumptions) meets bottom-up measurements (model over-computation, avoidable usage), published as a dashboard and a quarterly "gold rush bill" report ([design, KO](docs/BUBBLE_INDEX.md))
 - **Standard**: a Token Efficiency Index for models and products
 
 Principles: local-first (raw text never leaves your device), two-step consent, no LLM calls in the analysis path, cold data and bold messages, and a mirror rather than an enemy to model developers. Public goods (data, standard, core engine) are held by a foundation under irrevocable open licenses. Full charter: [docs/CHARTER.md](docs/CHARTER.md).
