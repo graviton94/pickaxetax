@@ -72,7 +72,9 @@ def main():
     url = f"https://{WORKER}.{sub}.workers.dev"
     for _ in range(12):  # new subdomains take a moment to resolve
         try:
-            with urllib.request.urlopen(url + "/health", timeout=10) as r:
+            # Cloudflare rejects Python's default User-Agent; identify ourselves
+            req = urllib.request.Request(url + "/health", headers={"User-Agent": "pickaxetax-deploy"})
+            with urllib.request.urlopen(req, timeout=10) as r:
                 if r.status == 200:
                     print(url)
                     return
