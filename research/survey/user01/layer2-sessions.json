@@ -217,5 +217,142 @@
   "pages": 8,
   "measured_at": "2026-10-05T15:15Z",
   "note": "includes one measurement-request turn added 2026-10-05 (its resume rewrote 287,071 tokens to cache); output tokens from the events API are stream-start placeholders, not totals"
+ },
+ "S03": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 33408,
+  "event_types": {
+   "assistant": 9584,
+   "attachment": 6362,
+   "user": 5314,
+   "frame-link": 2100,
+   "last-prompt": 2066,
+   "atis-latch": 1985,
+   "ai-title": 1984,
+   "mode": 1960,
+   "queue-operation": 1403,
+   "system": 531,
+   "cost-state": 119
+  },
+  "api_calls": 4820,
+  "subagent_calls": 0,
+  "user_instructions": 275,
+  "compactions": 14,
+  "tokens": {
+   "input_processed": 2055390268,
+   "cache_read": 2033795938,
+   "cache_write": 21584289,
+   "output": 5607353
+  },
+  "context": {
+   "first": 57883,
+   "peak": 784164,
+   "quartiles": [
+    252248,
+    427524,
+    602396
+   ],
+   "curve_40": [
+    57883,
+    518713,
+    134688,
+    602143,
+    149326,
+    398422,
+    696028,
+    250668,
+    474848,
+    700054,
+    300920,
+    534643,
+    746081,
+    260968,
+    483832,
+    104872,
+    485451,
+    715185,
+    325964,
+    567848,
+    152921,
+    410773,
+    596801,
+    77079,
+    236631,
+    594256,
+    191216,
+    525600,
+    85847,
+    399986,
+    648031,
+    247200,
+    471960,
+    723364,
+    247758,
+    485660,
+    717664,
+    237776,
+    448541,
+    668550
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    5,
+    11,
+    22
+   ],
+   "calls_max": 133,
+   "input_quartiles": [
+    1678382,
+    4336257,
+    9813686
+   ],
+   "input_max": 47119725
+  },
+  "tools": {
+   "Bash": 3569,
+   "Read": 445,
+   "mcp": 145,
+   "Artifact": 134,
+   "Write": 116,
+   "TaskUpdate": 91,
+   "TaskCreate": 59,
+   "ToolSearch": 49,
+   "Agent": 37,
+   "SendUserFile": 11,
+   "Monitor": 10,
+   "Skill": 9,
+   "ReadNotifications": 9,
+   "TaskStop": 8,
+   "SendMessage": 7,
+   "WebSearch": 6,
+   "ScheduleWakeup": 3,
+   "WebFetch": 1,
+   "AskUserQuestion": 1
+  },
+  "tool_calls": 4710,
+  "tool_errors": 72,
+  "images": 436,
+  "models": {
+   "claude-opus-5-5": 4820
+  },
+  "span_hours": 136.64,
+  "active_hours": 60.52,
+  "subagents": {
+   "count": 37,
+   "api_calls": 460,
+   "tokens": {
+    "input_processed": 49528227,
+    "cache_read": 46180874,
+    "cache_write": 3346415,
+    "output": 5923
+   },
+   "models": {
+    "claude-opus-5-5": 460
+   }
+  },
+  "source": "local_transcript (run in the session at the owner's request)",
+  "measured_at": "2026-10-05T22:4xZ",
+  "note": "session-list usage at 15:00Z was 2,259,792,783 input / 6,312,669 output; the local transcript holds 2,104,918,495 input incl. subagents (93%)"
  }
 }
