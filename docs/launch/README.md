@@ -28,6 +28,7 @@ The project is published as **LinkedIn research notes, one at a time**, written 
 | Read amplification 195× | `research/hypotheses.md` H0 (226 calls, 94,880,088 in / 485,860 out) |
 | Naive dead-context test: 1% dead; refined: 54% never echoed (upper bound) | `research/hypotheses.md` H1, H1′ |
 | Task-scoped sessions with a short summary: 66–70% less input | `research/hypotheses.md` H2 |
+| Note 1 session A (snapshot 7b91c8fa…): 400 calls, 169,482,468 input, 729,447 output (1:232); forget 11.0%, page 49.9%, unjudgeable 42.0%; same report on two runs; order holds in 18 cells | `research/results/note01-session-a.json`, `pxt agent audit` |
 | Bound session: 322 calls, 149,273,256 input tokens; forget 9.1%, page 50.1% (47.5% at 1k, 34.7% at 10k); invisible 32.4%; base 10.1%; ceiling 57.5%; persisted writes 25.1% of resident context | `research/results/belady-session-01.json`, `research/belady-bound.md` §4 |
 | Paging beats forgetting by ≥ 18 points in every calibrated sensitivity cell | same file, `sensitivity_avoidable_pct` |
 

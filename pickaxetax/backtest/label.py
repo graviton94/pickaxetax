@@ -86,3 +86,49 @@ def summarize(store: dict) -> dict:
     return {"labeled": {"detected": len(h), "not_detected": len(m)},
             "precision_pct": [r(x) for x in prec], "needed_but_not_detected_pct": [r(x) for x in fnr],
             "recall_pct_estimate": r(recall), "population": pop}
+
+
+def _sample(paths, n, source, seed):
+    sessions = [s for p in paths for s in load(p, source, keep_text=True)]
+    hit, miss = pairs(sessions)
+    rng = random.Random(seed)
+    todo = [("hit", x) for x in rng.sample(hit, min(len(hit), n // 2))] + [("miss", x) for x in rng.sample(miss, min(len(miss), n - n // 2))]
+    rng.shuffle(todo)  # the labeler cannot tell which stratum a pair came from
+    return todo, {"hit": len(hit), "miss": len(miss)}
+
+
+def write_sheet(paths: list[str], n: int, sheet_path: str, key_path: str, source: str | None = None, seed: int = 7) -> int:
+    """A sheet to read and answer outside a terminal. The sheet holds text: keep it local, never commit it.
+    The key maps item numbers to (stratum, pair id) and holds no text."""
+    todo, pop = _sample(paths, n, source, seed)
+    with open(sheet_path, "w", encoding="utf-8") as f:
+        f.write("# Use-detector check\n\nFor each item: did the step (B) need the earlier context (A)?\n"
+                "Answer in one line, e.g. `1y 2n 3y 4s` (y = needed, n = not needed, s = skip).\n")
+        for i, (_, (_, seg, out)) in enumerate(todo, 1):
+            f.write(f"\n---\n\n## {i}\n\n**A. earlier context ({seg.kind})**\n\n```\n{seg.text[:PREVIEW]}\n```\n\n"
+                    f"**B. what the model produced at this step**\n\n```\n{(out[:PREVIEW] or '(nothing visible)')}\n```\n")
+    with open(key_path, "w", encoding="utf-8") as f:
+        json.dump({"items": {str(i): [st, key] for i, (st, (key, _, _)) in enumerate(todo, 1)}, "population": pop}, f)
+    return len(todo)
+
+
+def apply_answers(key_path: str, answers: str, labels_path: str) -> dict:
+    """answers: '1y 2n 3s ...'. Merges into the labels file and returns the summary."""
+    import re
+
+    with open(key_path, encoding="utf-8") as f:
+        key = json.load(f)
+    try:
+        with open(labels_path, encoding="utf-8") as f:
+            store = json.load(f)
+    except (OSError, ValueError):
+        store = {"hit": {}, "miss": {}}
+    store["population"] = key["population"]
+    for num, ans in re.findall(r"(\d+)\s*([yns])", answers.lower()):
+        item = key["items"].get(num)
+        if item and ans in "yn":
+            stratum, pair = item
+            store[stratum][pair] = ans == "y"
+    with open(labels_path, "w", encoding="utf-8") as f:
+        json.dump(store, f)
+    return summarize(store)

@@ -34,4 +34,4 @@ Adapters are never written from guesses about a format. The first real sample de
 - **Label the source** with `--source` when a file's format doesn't identify the product (OpenAI-style lists, plain transcripts).
 - **Nothing is excluded after the fact.** Every session with at least 3 replies counts, including the ones that make the result look worse.
 - **Mixed products in one file:** split them into separate files, so each gets its own label.
-- **Before publication** the use detector is checked by hand on at least 100 pairs (`pxt backtest label`). Only the answers are saved; the text appears on screen during labeling and nowhere else.
+- **Before publication** the use detector is checked by hand on at least 100 pairs. Use `pxt backtest label` in a terminal. Without a terminal, `pxt backtest label --sheet sheet.md` writes a local sheet, and `pxt backtest answer key.json "1y 2n …"` applies the answers. The sheet contains text, so it stays local and is deleted afterwards; only the answers and pair ids are kept.

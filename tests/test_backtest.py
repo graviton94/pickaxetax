@@ -113,3 +113,14 @@ def test_cli_backtest(tmp_path, capsys):
     assert main(["backtest", "run", str(f), "--source", "gemini", "--out", str(out), "--manifest", str(man)]) == 0
     assert "source: gemini" in capsys.readouterr().out
     assert json.loads(out.read_text())["aggregate"]["by_source"]["gemini"]["sessions"] == 1
+
+
+def test_label_sheet_roundtrip(tmp_path):
+    f = tmp_path / "c.json"
+    f.write_text(json.dumps({"messages": [{"role": t.role, "content": t.text} for t in chat(6).turns]}))
+    sheet, key, labels = tmp_path / "s.md", tmp_path / "k.json", tmp_path / "l.json"
+    n = bl.write_sheet([str(f)], 6, str(sheet), str(key))
+    assert n == 6 and "## 6" in sheet.read_text()
+    assert "vacuum_settings" not in key.read_text()  # the key holds no text
+    s = bl.apply_answers(str(key), "1y 2n 3y 4n 5y 6s", str(labels))
+    assert s["labeled"]["detected"] + s["labeled"]["not_detected"] == 5

@@ -112,6 +112,12 @@ def main(argv: list[str] | None = None) -> int:
     bl.add_argument("--source", default=None)
     bl.add_argument("--n", type=int, default=100, help="pairs to label (half detected, half not)")
     bl.add_argument("--labels", default="backtest-labels.json")
+    bl.add_argument("--sheet", default=None, help="write a sheet to answer later instead of asking in the terminal")
+    bl.add_argument("--key", default="backtest-label-key.json", help="with --sheet: item numbers -> pair ids (no text)")
+    ba = btsub.add_parser("answer", help="apply answers to a label sheet, e.g. '1y 2n 3s'")
+    ba.add_argument("key")
+    ba.add_argument("answers")
+    ba.add_argument("--labels", default="backtest-labels.json")
     bv = btsub.add_parser("validation", help="summarize detector validation labels")
     bv.add_argument("labels")
 
@@ -360,7 +366,14 @@ def _backtest(args) -> int:
     from .backtest import label, run
 
     if args.backtest_cmd == "label":
+        if args.sheet:
+            n = label.write_sheet(args.paths, args.n, args.sheet, args.key, args.source)
+            print(f"wrote {n} items to {args.sheet} (contains text: keep it local) and the key to {args.key}")
+            return 0
         print(json.dumps(label.interactive(args.paths, args.n, args.labels, args.source), indent=2))
+        return 0
+    if args.backtest_cmd == "answer":
+        print(json.dumps(label.apply_answers(args.key, args.answers, args.labels), indent=2))
         return 0
     if args.backtest_cmd == "validation":
         with open(args.labels, encoding="utf-8") as f:

@@ -1,44 +1,32 @@
 # 연구 노트 #1 — 곡괭이세
 
 - 게시일: 대표와 함께 정한다
-- 목적: 문제에 이름을 붙이고 왜 시작했는지 밝힌다. 대표의 계기는 이 노트에만 넣는다.
-- 이미지: `docs/img/og.png`
-- 상태: 초안 (대표와 함께 다듬는 중)
+- 목적: 왜 시작했는지(계기)와 첫 측정 결과를 함께 보여 준다. 대표의 계기는 이 노트에만 넣는다.
+- 상태: 초안 v2. 한국어를 대표와 다듬는 중이며, 영어 번역은 한국어 확정 후에 한다.
+- 게시 전 조건:
+  - [ ] 사용 판정 방식의 수작업 검증(100쌍 이상, `research/protocol/backtest-v1.md` §3)
+  - [ ] 대표의 Claude 대화 기록을 같은 기준으로 측정할지, 다음 노트로 넘길지 결정
 
-## 게시물 (한 게시물에 그대로 붙여넣기: 한국어 원문 → 영어 번역)
+## 게시물 (한국어 원문)
 
 [연구 노트 #1] 곡괭이세
 
-AI에게 말을 걸 때마다, AI는 그동안의 대화를 처음부터 다시 읽습니다. 답 하나를 만들려고 지난 대화 전부를 다시 넘기는 셈입니다. 긴 대화 끝에 보내는 "고마워" 한마디도 예외가 아닙니다.
+AI에게 말을 걸 때마다, AI는 그동안의 대화를 처음부터 다시 읽습니다. 이 낭비에 수억 명의 사용자와 쉬지 않고 도는 에이전트를 곱하면, 전 세계의 반도체와 전력을 끌어다 쓰는 자원 낭비가 됩니다. 지금의 AI 붐은 제2의 골드러시입니다. 확실히 돈을 버는 쪽은 곡괭이를 파는 쪽이고, 사람을 돕는 도구였던 연산이 오히려 산업 전체를 끌고 다니는 주종 역전이 일어나고 있습니다. 곡괭이세(Pickaxe Tax)는 이 구조를 근본부터 고칠 방법을 찾기 위해 시작했습니다.
 
-이 사실이 계속 마음에 걸렸습니다. 지금 AI 산업은 더 많은 반도체, 더 큰 데이터센터, 더 많은 전력이라는 한 방향으로만 달려갑니다. 그런데 그 연산의 상당 부분이 새로운 생각이 아니라 같은 내용을 다시 읽는 데 쓰인다면, 우리는 필요 없는 수요를 위해 공장을 짓고 전기를 태우는 셈입니다.
+첫 측정 대상은 제 실제 사용 기록입니다. Claude 코딩 에이전트 세션 하나(호출 400번)는 73만 토큰을 쓰려고 1억 6,948만 토큰을 읽었습니다. 1을 쓰려고 232를 읽은 셈입니다.
 
-골드러시에서 확실히 돈을 번 사람은 금을 캔 사람이 아니라 곡괭이를 판 사람이었습니다. AI 붐의 곡괭이는 칩과 데이터센터이고, 다시 읽기는 우리 모두가 매번 내는 세금입니다. 그래서 이 프로젝트의 이름을 곡괭이세(Pickaxe Tax)라고 지었습니다.
+그중 얼마가 무의미했을까요. 각 단계가 앞의 어떤 내용을 실제로 다시 썼는지 추적해 계산했습니다.
+• 마지막으로 쓰인 뒤에도 계속 다시 읽힌 입력: 11.0%
+• 그 단계에서는 쓰이지 않았는데 들고 다닌 입력: 49.9%
+• 판정할 수 없는 입력(시스템 프롬프트, 기록에 보이지 않는 부분): 42.0%
 
-AI를 쓰지 말자는 이야기가 아닙니다. 같은 결과를 더 적은 연산으로 얻자는 이야기입니다. 그리고 그 과정에서 사람들의 대화 원문은 모으지 않습니다. 주제와 흐름, 깊이 같은 구조와 숫자만 다룹니다.
+앞의 것은 어떻게 봐도 무의미한 부분이고, 뒤의 것은 필요할 때 다시 불러오면 줄일 수 있는 부분입니다. 같은 기록을 두 번 재면 같은 숫자가 나오고, 판정 기준을 18가지로 바꿔 재도 두 숫자의 크기 순서는 같았습니다.
 
-목표는 단순합니다. 이 세금을 정확히 재고, 줄이는 것입니다. 의견이 아니라 측정으로 말하겠습니다.
-
-앞으로 연구가 한 걸음 나아갈 때마다 연구 노트로 공개하겠습니다. 무엇을 쟀고, 무엇을 발견했고, 무엇이 틀렸는지까지 그대로 적겠습니다.
-
-— English —
-
-[Research note #1] The pickaxe tax
-
-Every time you talk to an AI, it reads the whole conversation again from the beginning. To write one answer, it turns back through everything said so far. Even a "thanks" at the end of a long chat is no exception.
-
-This kept bothering me. The AI industry is running in one direction only: more chips, bigger data centers, more power. If much of that compute goes not into new thinking but into re-reading the same words, we are building factories and burning electricity for demand we don't need.
-
-In a gold rush, the people who reliably got rich weren't the ones digging for gold. They were the ones selling pickaxes. In the AI boom, the pickaxes are chips and data centers, and re-reading is a tax we all pay every time. So I named this project Pickaxe Tax.
-
-This is not a call to stop using AI. It's a call to get the same results with less compute. And along the way, no one's conversations are collected. We work only with structure (topics, flow, depth) and numbers.
-
-The goal is simple: measure this tax precisely, and cut it. With measurements, not opinions.
-
-Each time the research takes a step forward, I'll publish it as a research note: what we measured, what we found, and what turned out to be wrong.
-
-#AntiTokenMaxing
+아직 세션 하나입니다. 다음은 제 Claude 대화 기록 전체를, 미리 고정해 둔 기준으로 잽니다.
 
 ## 출처
 
-- 프로젝트 헌장 §1 (문제 정의). 숫자 없음.
+- 세션 A (실제 Claude Code 세션 1개, 익명) 스냅샷: SHA-256 `7b91c8fa…`. 같은 파일로 `pxt backtest run`을 두 번 실행해 같은 보고서가 나왔다(생성 시각 제외).
+- 보고서: `research/results/note01-session-a.json` (backtest-v1, lexical-v1). 호출 400, 입력 169,482,468, 고정분 42.0%, 회피 가능 비율: 마지막 사용 뒤에 버리기(P=∞) 11.0%, 다시 부르기(P=0) 49.9%. 판정 기준 18칸 모두에서 P=0 > P=∞.
+- `pxt agent audit`: 출력 729,447 → 1:232. (감사의 API 호출 402회에는 사용량이 0인 합성 메시지 2개가 들어 있다.)
+- 참고: 측정 방법은 이 세션을 탐색하며 만들었다. 따라서 세션 A의 숫자는 탐색 결과이고, 사전 등록 기준에 따른 첫 확인 데이터는 이후의 기록이다.
