@@ -1,14 +1,13 @@
-# 연구 노트 1/10 — 곡괭이세
+# 연구 노트 #1 — 곡괭이세
 
-- 게시일: 목 2026-10-08, 08:00–09:00 KST
-- 목적: 문제를 이름 붙이고 연재를 예고한다. 대표의 계기는 이 노트에만 넣는다. 링크는 아직 넣지 않는다.
+- 게시일: 대표와 함께 정한다
+- 목적: 문제에 이름을 붙이고 왜 시작했는지 밝힌다. 대표의 계기는 이 노트에만 넣는다.
 - 이미지: `docs/img/og.png`
 - 상태: 초안 (대표와 함께 다듬는 중)
-- 분량: 한국어 706자, 게시물 전체 2044자 (LinkedIn 한도 3,000자)
 
 ## 게시물 (한 게시물에 그대로 붙여넣기: 한국어 원문 → 영어 번역)
 
-[연구 노트 1/10] 곡괭이세
+[연구 노트 #1] 곡괭이세
 
 AI에게 말을 걸 때마다, AI는 그동안의 대화를 처음부터 다시 읽습니다. 답 하나를 만들려고 지난 대화 전부를 다시 넘기는 셈입니다. 긴 대화 끝에 보내는 "고마워" 한마디도 예외가 아닙니다.
 
@@ -20,13 +19,11 @@ AI를 쓰지 말자는 이야기가 아닙니다. 같은 결과를 더 적은 �
 
 목표는 단순합니다. 이 세금을 정확히 재고, 줄이는 것입니다. 의견이 아니라 측정으로 말하겠습니다.
 
-앞으로 5주 동안 연구 노트 열 편을 공개합니다. 무엇을 쟀고, 무엇을 발견했고, 무엇이 틀렸는지까지 그대로 적겠습니다.
-
-다음 노트: 실제 코딩 에이전트 세션 하나를 쟀더니.
+앞으로 연구가 한 걸음 나아갈 때마다 연구 노트로 공개하겠습니다. 무엇을 쟀고, 무엇을 발견했고, 무엇이 틀렸는지까지 그대로 적겠습니다.
 
 — English —
 
-[Research note 1/10] The pickaxe tax
+[Research note #1] The pickaxe tax
 
 Every time you talk to an AI, it reads the whole conversation again from the beginning. To write one answer, it turns back through everything said so far. Even a "thanks" at the end of a long chat is no exception.
 
@@ -38,9 +35,7 @@ This is not a call to stop using AI. It's a call to get the same results with le
 
 The goal is simple: measure this tax precisely, and cut it. With measurements, not opinions.
 
-Over the next five weeks I'll publish ten research notes: what we measured, what we found, and what turned out to be wrong.
-
-Next: what happened when we measured one real coding-agent session.
+Each time the research takes a step forward, I'll publish it as a research note: what we measured, what we found, and what turned out to be wrong.
 
 #AntiTokenMaxing
 

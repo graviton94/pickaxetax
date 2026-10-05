@@ -9,15 +9,12 @@ Channels: **X**, **LinkedIn** and **Reddit**. The drafts are ready to post from 
 - [ ] Optional: the repository description, topics and website are set (see ADR-0007).
 
 ## Order
-The plan is published as a **LinkedIn series** of ten chapters (ADR-0009). The schedule and drafts are in [linkedin-series/](linkedin-series/README.md).
+The project is published as **LinkedIn research notes, one at a time**, written together as the research progresses (ADR-0009). The current state is in [linkedin-series/](linkedin-series/README.md). When the tool goes public, and when the X thread and Reddit posts follow, is decided along the way. The checklist above must be done before any post links to the site.
 
-1. **Chapters 1–3 (from Thu 10-08, Tue/Thu):** problem, first measurement, the unit. LinkedIn only, no links yet.
-2. **Chapter 4 = launch day (Tue 10-20):** the tool goes public. Post the X thread the same morning, then Reddit, one subreddit per day and never cross-posted at once. Start with r/ClaudeAI (agent audit, where the evidence is strongest), then r/LocalLLaMA (proxy and benchmark with free local models), then r/ChatGPT (the web app). The checklist above must be done before this day.
-3. **Chapters 5–10 (to Tue 11-10):** coding agents, the failed hypothesis, the bound, the invisible third, the index, the call for data.
-4. Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
-5. **Chapter 11:** first results from contributions, once there is enough data.
+- Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
+- Reddit: one subreddit per day, never cross-posted at once, following each subreddit's self-promotion rules.
 
-`linkedin.md` (a single launch post) is kept as material for chapter 4.
+`linkedin.md` and `x-thread.md` are kept as material.
 
 ## Facts (sources for every number in the drafts)
 | Claim | Source |
