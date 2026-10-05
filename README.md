@@ -1,17 +1,56 @@
 # ANTITOKENMAXING
 
+> **Your AI re-reads the whole conversation, every single turn.**
+> Build less. Waste less. Use the compute we already have.
+
+[한국어](#한국어) · [Charter (KO)](docs/CHARTER.md) · [Architecture](docs/ARCHITECTURE.md) · [Privacy](docs/PRIVACY.md)
+
+**Chat models re-read the entire conversation on every turn.** Late constraints, re-asks, "thanks!" messages and topic switches inside one chat make that cost grow quadratically. ANTITOKENMAXING takes a shared conversation (share link, export JSON or pasted transcript) and **throws the text away**. What it keeps is a graph skeleton: agenda (topic labels), structure (per-turn intents and typed edges such as DEEPENS, PIVOTS, CORRECTS and RETRIES), depth (topic threads and drill-down level) and token flow. It then shows:
+
+- actual vs. optimal compute (one focused chat per topic, with the waste removed) and a one-shot lower bound
+- where the compute leaked: thank-you messages, discarded answers, re-sent off-topic history
+- a one-shot prompt skeleton built only from topic labels
+- habits to change, ranked by measured waste
+
+Contributed skeletons feed a public, **k-anonymous** topic graph (a topic is shown only once it appears in ≥ k conversations) plus aggregate waste statistics. The analyzer itself calls **no LLM**: a project about saving tokens shouldn't spend them.
+
+```bash
+pip install -e ".[dev]" && antitoken serve && pytest
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIVACY.md).
+
+### Where this is going
+
+The AI boom is turning into a gold rush where only the pick-and-shovel sellers win: more GPUs, more data centers, more power. A large share of that demand is waste. ANTITOKENMAXING is a global, open effort to **prove that with public data and remove it with open tools**:
+
+- **Shared brain**: solution-path graph + open efficiency dataset, built from conversation *skeletons* contributed by users worldwide
+- **Prompt compiler**: a local proxy/SDK and coding-agent plugin that compile wasteful requests into minimal ones and measure the savings
+- **Watchdog**: public waste metrics and an annual "gold rush bill" report
+- **Standard**: a Token Efficiency Index for models and products
+
+Principles: local-first (raw text never leaves your device), two-step consent, no LLM calls in the analysis path, cold data and bold messages, and a mirror rather than an enemy to model developers. Public goods (data, standard, core engine) are held by a foundation under irrevocable open licenses. Full charter: [docs/CHARTER.md](docs/CHARTER.md).
+
+## License
+
+Code: [Apache-2.0](LICENSE) · Data: [ODbL 1.0](DATA_LICENSE.md)
+
+---
+
+## 한국어
+
 > **AI는 같은 대화를 매 턴 처음부터 다시 읽습니다.**
 > 원문은 버리고, 대화의 *모양*만 남겨, 불필요했던 연산을 드러냅니다.
 
-[English below](#english)
+프로젝트의 핵심 가치, 방향성, 조직 구조는 [프로젝트 헌장](docs/CHARTER.md)에 정리되어 있습니다.
 
-## 왜 만드나
+### 왜 만드나
 
 "토큰맥싱"(token-maxing)은 습관입니다. 조건을 나중에 덧붙이고, 같은 질문을 다시 하고, 답이 끝난 뒤 "고마워"를 보내고, 한 창에서 주제를 바꿔 계속 이어 갑니다. 채팅형 AI는 답할 때마다 **이전 대화 전체를 다시 입력으로 읽기** 때문에 이런 습관의 비용은 대화 길이에 따라 제곱으로 커집니다. 40번째 턴의 "고마워" 한 마디는 수만 토큰을 다시 처리하게 만듭니다.
 
 이렇게 불어난 연산은 GPU, 데이터센터, 전력 수요로 이어집니다. 이 프로젝트는 그 낭비를 **측정 가능한 숫자**로 보여 주고, 다음 대화에서 바로 쓸 수 있는 습관과 프롬프트 골격으로 되돌려 주는 공익 프로젝트입니다. 배경과 원칙은 [docs/MANIFESTO.md](docs/MANIFESTO.md)에 있습니다.
 
-## 무엇을 하나
+### 무엇을 하나
 
 1. **올리기**: ChatGPT·Claude·Gemini 등의 공유 링크, 데이터 내보내기 JSON, 또는 `User:` / `Assistant:` 형식의 텍스트
 2. **골격 추출**: 원문을 메모리에서만 분석해 다음 항목을 뽑습니다
@@ -30,7 +69,7 @@
 
 분석기 자체는 **LLM을 호출하지 않습니다.** 규칙 기반 의도 분류, 키워드 랭킹, SimHash를 쓰므로 분석에 드는 연산은 거의 0입니다.
 
-## 빠른 시작
+### 빠른 시작
 
 ```bash
 pip install -e ".[dev]"
@@ -51,7 +90,7 @@ pytest
 | `ANTITOKEN_INPUT_WEIGHT` | `0.25` | 입력 토큰 연산 가중치 (출력 = 1) |
 | `ANTITOKEN_WH_PER_1K` | `0.5` | 1k 연산 단위당 Wh. **예시용 가정치** |
 
-## API
+### API
 
 | 메서드 | 경로 | 설명 |
 |---|---|---|
@@ -65,7 +104,7 @@ pytest
 
 대화형 문서는 `/api/docs`에 있습니다.
 
-## 구조
+### 구조
 
 ```
 antitoken/
@@ -79,7 +118,7 @@ docs/         MANIFESTO · ARCHITECTURE · PRIVACY
 
 자세한 설계는 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), 개인정보 설계는 [docs/PRIVACY.md](docs/PRIVACY.md)를 보세요.
 
-## 로드맵
+### 로드맵
 
 - [ ] 브라우저 확장 또는 WASM으로 **클라이언트 측 골격 추출** (원문이 서버로 아예 가지 않게)
 - [ ] 공유 페이지 파서 강화 (클라이언트 렌더링되는 ChatGPT와 Gemini 신규 포맷)
@@ -90,21 +129,6 @@ docs/         MANIFESTO · ARCHITECTURE · PRIVACY
 - [ ] 측정 기반 에너지 계수 (공개 벤치마크 연동)
 - [ ] 요청 속도 제한과 악용 방지
 
----
+### 라이선스
 
-## English
-
-**Chat models re-read the entire conversation on every turn.** Late constraints, re-asks, "thanks!" messages and topic switches inside one chat make that cost grow quadratically. ANTITOKENMAXING takes a shared conversation (share link, export JSON or pasted transcript) and **throws the text away**. What it keeps is a graph skeleton: agenda (topic labels), structure (per-turn intents and typed edges such as DEEPENS, PIVOTS, CORRECTS and RETRIES), depth (topic threads and drill-down level) and token flow. It then shows:
-
-- actual vs. optimal compute (one focused chat per topic, with the waste removed) and a one-shot lower bound
-- where the compute leaked: thank-you messages, discarded answers, re-sent off-topic history
-- a one-shot prompt skeleton built only from topic labels
-- habits to change, ranked by measured waste
-
-Contributed skeletons feed a public, **k-anonymous** topic graph (a topic is shown only once it appears in ≥ k conversations) plus aggregate waste statistics. The analyzer itself calls **no LLM**: a project about saving tokens shouldn't spend them.
-
-```bash
-pip install -e ".[dev]" && antitoken serve && pytest
-```
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIVACY.md).
+코드는 [Apache-2.0](LICENSE), 데이터는 [ODbL 1.0](DATA_LICENSE.md)을 따릅니다.
