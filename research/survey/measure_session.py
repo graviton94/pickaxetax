@@ -29,7 +29,7 @@ def _ts(d):
         return None
 
 
-def measure(path):
+def measure(path, subagent=False):
     seen, skipped = {}, set()
     calls = []  # (context, output, model)
     side_calls = 0
@@ -58,7 +58,7 @@ def measure(path):
             content = m.get("content")
             if d.get("type") == "assistant":
                 mid = str(m.get("id") or d.get("requestId") or d.get("uuid"))
-                if d.get("isSidechain"):
+                if d.get("isSidechain") and not subagent:
                     if mid not in seen and isinstance(m.get("usage"), dict):
                         side_calls += 1
                     seen[mid] = -1
@@ -77,7 +77,7 @@ def measure(path):
                     if isinstance(b, dict) and b.get("type") == "tool_use":
                         name = str(b.get("name") or "?")
                         tools["mcp" if name.startswith("mcp__") else name] += 1
-            elif d.get("type") == "user" and not d.get("isSidechain"):
+            elif d.get("type") == "user" and (subagent or not d.get("isSidechain")):
                 if d.get("isCompactSummary") or d.get("isMeta"):
                     continue
                 blocks = content if isinstance(content, list) else [{"type": "text", "text": content}]
@@ -135,7 +135,7 @@ def measure(path):
 def with_subagents(path):
     """The session plus its subagents, whose transcripts live in <session>/subagents/*.jsonl."""
     r = measure(path)
-    subs = [measure(p) for p in glob.glob(os.path.join(path[:-6], "subagents", "*.jsonl"))]
+    subs = [measure(p, subagent=True) for p in glob.glob(os.path.join(path[:-6], "subagents", "*.jsonl"))]
     r["subagents"] = {"count": len(subs), "api_calls": sum(s["api_calls"] for s in subs),
                       "tokens": {k: sum(s["tokens"][k] for s in subs) for k in r["tokens"]},
                       "models": dict(sum((Counter(s["models"]) for s in subs), Counter()))}
