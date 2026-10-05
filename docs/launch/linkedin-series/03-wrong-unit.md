@@ -1,46 +1,49 @@
-# Chapter 3 — Tokens are the wrong unit
+# 연구 노트 3/10 — 토큰은 잘못된 단위입니다
 
-- Date: Thu 2026-10-15
-- Purpose: answer the Jevons objection before anyone raises it; connect usage to semiconductors (HBM). This is where the project stops looking like "a token saver".
-- Image: none
+- 게시일: 목 2026-10-15, 08:00–09:00 KST
+- 목적: 제번스 반론에 먼저 답하고, 사용량을 반도체(HBM)와 잇는다.
+- 이미지: 없음
+- 상태: 초안 (대표와 함께 다듬는 중)
+- 분량: 한국어 719자, 게시물 전체 2059자 (LinkedIn 한도 3,000자)
 
-## Post (English)
+## 게시물 (한 게시물에 그대로 붙여넣기: 한국어 원문 → 영어 번역)
 
-#AntiTokenMaxing · Chapter 3/10
+[연구 노트 3/10] 토큰은 잘못된 단위입니다
 
-"If you make AI cheaper, people will just use more of it."
+"AI를 싸게 만들면 사람들은 더 쓸 뿐이다." 효율을 이야기하면 꼭 돌아오는 반론입니다. 제번스 역설이라고 부르지요. 맞는 말입니다. 토큰 값만 내리면 총사용량은 오히려 늘 수 있습니다.
 
-That's the Jevons paradox, and it's the right objection to any efficiency project. If all we did was lower the price per token, total consumption could go up.
+그래서 측정 단위부터 바꿨습니다. 첫째, 토큰이 아니라 가치 있는 결과 하나당 연산으로 잽니다. 같은 결과를 더 적은 계산으로 냈다면, 총량이 늘어도 더 나은 것입니다.
 
-So we changed the unit.
+둘째, 그 밑에 메모리를 둡니다. 모델은 대화를 처리하는 동안 컨텍스트 전체를 KV 캐시라는 형태로 메모리에 올려 둡니다. 공개된 70B급 모델로 계산하면 토큰 하나에 약 320KB입니다. 지난 노트의 최대 컨텍스트라면 약 166GB, 80GB짜리 GPU 두 장으로도 모자랍니다. (공개된 구조로 계산한 예시입니다.)
 
-1. Not tokens, but compute per valuable outcome. The same result with less compute is better, however much the total grows.
-2. Underneath that, memory residency: how many bytes of accelerator memory a task keeps occupied, and for how long.
+프롬프트 캐싱은 다시 읽는 연산을 줄여 주지만, 그 대가로 이 상태를 메모리에 붙잡아 둡니다. 비용이 사라지는 것이 아니라 연산에서 메모리로 옮겨 갈 뿐입니다. 계산은 싸졌어도, 책상 위에 펼쳐 둔 책은 그대로인 셈입니다. 그리고 HBM은 AI 칩에서 가장 비싸고 귀한 부품입니다.
 
-Why memory? While a model works on your conversation, it holds a "KV cache" of everything in context. On an open 70B-class model that's about 320 KB per token. The 507,710-token peak context from Chapter 2 would take about 166 GB, more than two 80 GB GPUs just to hold it. (That's an illustration on a public architecture; closed models don't publish these numbers.)
+그래서 앞으로의 노트는 두 가지를 함께 묻겠습니다. 얼마나 가치 있는 결과를 냈는가, 그리고 그동안 메모리를 얼마나 많이, 얼마나 오래 차지했는가.
 
-Prompt caching makes re-reading cheaper in compute because it keeps that state in memory between calls. The cost doesn't disappear. It moves from compute to memory capacity, and HBM is the scarcest and most expensive part of an AI chip.
+채팅창의 "고마워" 한마디와 반도체 붐은 이렇게 이어져 있습니다.
 
-That's the link between your chat window and the semiconductor boom.
+다음 노트: 내 대화의 낭비를 직접 확인하는 도구.
 
-Next chapter: the tool. See your own waste, without uploading anything.
+— English —
 
-## First comment (한국어)
+[Research note 3/10] Tokens are the wrong unit
 
-#AntiTokenMaxing · 3/10장
+"Make AI cheaper and people will just use more of it." It's the objection every efficiency effort hears. It's called the Jevons paradox, and it's right: lower only the price per token and total use can go up.
 
-"AI를 싸게 만들면 사람들은 더 많이 쓸 뿐이다."
+So we changed the unit first. One: we measure compute per valuable outcome, not tokens. The same result with less computation is better, even if the total grows.
 
-제번스 역설입니다. 모든 효율화 프로젝트가 들어야 할 정당한 반론입니다. 토큰 단가만 낮춘다면 총사용량은 오히려 늘 수 있습니다.
+Two: underneath that, we put memory. While a model works on a conversation, it keeps the whole context in memory as a "KV cache". On an open 70B-class model that is about 320 KB per token. The peak context from the last note would take about 166 GB, more than two 80 GB GPUs can hold. (An illustration using a public architecture.)
 
-그래서 단위를 바꿨습니다.
-1. 토큰이 아니라 **가치 있는 결과 1건당 연산**. 총량이 늘더라도, 같은 결과를 더 적은 연산으로 내면 더 나은 것입니다.
-2. 그 밑에는 **메모리 상주량**. 작업이 가속기 메모리를 몇 바이트, 얼마나 오래 차지하는가입니다.
+Prompt caching cuts the compute of re-reading, but it does so by holding that state in memory. The cost doesn't disappear. It moves from compute to memory: the reading got cheaper, but the books stay open on the desk. And HBM is the most expensive and scarcest part of an AI chip.
 
-왜 메모리일까요? 모델은 대화를 처리하는 동안 컨텍스트 전체의 "KV 캐시"를 메모리에 들고 있습니다. 공개된 70B급 모델 기준으로 토큰당 약 320KB입니다. 2장의 최대 컨텍스트 507,710토큰이면 약 166GB, 그것만 담는 데 80GB GPU 두 장 이상이 필요합니다. (공개 구조로 계산한 예시입니다. 비공개 모델은 이 수치를 밝히지 않습니다.)
+So from here on, every note asks two questions together: how valuable was the result, and how much memory did it occupy, and for how long?
 
-프롬프트 캐싱은 이 상태를 호출 사이에도 메모리에 붙잡아 두어 다시 읽기의 연산을 줄입니다. 비용이 사라지는 게 아니라 연산에서 **메모리 용량**으로 옮겨 갑니다. 그리고 HBM은 AI 칩에서 가장 비싸고 귀한 부품입니다.
+That is how a "thanks" in a chat window connects to the chip boom.
 
-여러분의 채팅창과 반도체 붐은 이렇게 이어져 있습니다.
+Next: a tool to see the waste in your own conversations.
 
-다음 장: 도구 공개. 아무것도 업로드하지 않고 내 낭비를 직접 확인하기.
+#AntiTokenMaxing
+
+## 출처
+
+- Facts 표: KV 캐시 약 320KiB/토큰 (공개 70B급 구조), 507,710토큰 ≈ 166GB. `research/framework.md` §1.

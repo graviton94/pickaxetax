@@ -1,17 +1,19 @@
 # LinkedIn series: the plan, chapter by chapter
 
-Instead of one launch post, the project's plan is published as a **series of chapters** on LinkedIn. Interest builds over five weeks, and each chapter can take in the comments on the one before it. Decision: [ADR-0009](../../decisions/0009-linkedin-series.md).
+Instead of one launch post, the project's plan is published as a **series of research notes** on LinkedIn. Interest builds over five weeks, and each chapter can take in the comments on the one before it. Decisions: [ADR-0009](../../decisions/0009-linkedin-series.md), [ADR-0010](../../decisions/0010-benchmark-and-backtest.md).
 
-## Defaults (change any of them in ADR-0009)
+## Format (ADR-0009, ADR-0010)
 
 | | |
 |---|---|
-| Cadence | **Tuesday and Thursday**, 08:00–09:00 KST (evening before on the US East Coast). Five weeks |
-| Language | **English post**; the Korean version goes in the **first comment** right after posting |
-| Voice | First person, from the maintainer's account ("I"; "we" for the project) |
-| Format | Hook in the first two lines (LinkedIn cuts at ~210 characters). Short paragraphs. One idea per chapter. One image when it helps. Links go at the end |
-| Series tag | Each post starts with `#AntiTokenMaxing · Chapter N/10` and ends with "Next chapter: …" |
-| Hashtags | `#AntiTokenMaxing` plus at most two others |
+| Style | **A research note**: each post reports that note's question, measurement, finding and what's next, as if it were the day's lab result. The author's own motivation appears only in note 1 |
+| Language | **Korean is the original, English is the translation**, both in **one post** (Korean first, then `— English —`, then the English) |
+| Voice | 합니다체, first person, from the maintainer's account |
+| Length | Korean **700–900 characters**; the whole post (both languages) stays under LinkedIn's 3,000-character limit. Each file states its counts |
+| Cadence | **Tuesday and Thursday**, 08:00–09:00 KST. Five weeks |
+| Title line | `[연구 노트 N/10] 제목` / `[Research note N/10] Title` |
+| Ending | "다음 노트: …" / "Next: …", then `#AntiTokenMaxing` once at the very end |
+| Drafts | Written together with the maintainer: Korean first, English translated from the final Korean. Status is in each file |
 
 ## Arc
 
@@ -39,7 +41,6 @@ The order goes from question → evidence → tool → science → ask. The tool
 
 ## After each post
 
-- Post the Korean version as the first comment within a minute.
 - Reply to every comment in the first 3 hours. Good questions become material for the next chapter: say so ("I'll answer this in Chapter N").
 - Log impressions, reactions, comments, profile visits and repo stars in the table below. Next chapter's hook gets adjusted if a chapter underperforms.
 

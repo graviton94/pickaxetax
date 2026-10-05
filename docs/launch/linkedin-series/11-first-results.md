@@ -1,27 +1,30 @@
-# Chapter 11 — First results from you (template)
+# 연구 노트 — 여러분의 데이터로 낸 첫 결과 (틀)
 
-- Date: when the aggregate has at least 30 agent sessions with bounds, or four weeks after chapter 10, whichever comes first. If there are fewer, post what there is and say so.
-- Purpose: the payoff. Close the loop and start the next season.
-- Image: a chart generated from `site/data/aggregate.js` (same style as chapter 7)
+- 게시일: 에이전트 세션 30개 이상이 모이거나, 10번 노트 4주 뒤 중 빠른 쪽. 적게 모였으면 모인 만큼 쓰고 그렇다고 밝힌다.
+- 목적: 연재의 마무리. 다음 시즌을 연다.
+- 이미지: `site/data/aggregate.js` 또는 `pxt backtest run` 보고서로 만든 차트 (7번 노트와 같은 형식)
+- 원칙: 대괄호 안은 공개된 집계와 사전 등록 프로토콜(backtest-v1)의 보고서에서만 채운다. 세션 10개 미만인 칸은 결과로 쓰지 않는다.
 
-## Post (English) — fill in the brackets from the published aggregate only
+## 게시물 (한국어 원문 → 영어 번역)
 
-#AntiTokenMaxing · Results
+[연구 노트] 여러분의 데이터로 다시 쟀습니다
 
-Four weeks ago I asked you to measure your own AI agent sessions. [N] sessions from [K] agents came in.
+4주 전, 각자의 AI 세션을 재서 보내 달라고 부탁드렸습니다. [기여자 수]명이 [제품 수]가지 제품에서 세션 [N]개를 보내 주셨습니다.
 
-The result from one session was that paging beats forgetting: 9.1% vs 50.1% of input avoidable. Across your sessions: [forget median]% vs [paging median]% (middle half: [range]).
+세션 하나에서 나온 결과는 "잊기보다 다시 부르기"였습니다(9.1% 대 50.1%). 여러분의 세션에서는 [잊기 중앙값]% 대 [다시 부르기 중앙값]%였습니다(95% 신뢰구간 [구간]).
 
-[One sentence: did it hold? If not, say so plainly.]
+[한 문장: 결과가 유지됐는가. 아니라면 그렇다고 분명히 쓴다.]
 
-What surprised us: [one finding from the aggregate].
+가장 의외였던 것은 [집계에서 나온 발견 하나]입니다.
 
-The invisible share was [median]%, [higher/lower] than in the first session.
+보이지 않는 입력은 중앙값 [값]%로, 첫 세션보다 [높았/낮았]습니다.
 
-All numbers, the data (ODbL) and the method are public: [link]. The preprint draft goes out [date].
+모든 숫자와 데이터, 방법은 공개되어 있습니다: [링크]. 프리프린트 초안은 [날짜]에 공개합니다.
 
-Next: [what season 2 is about].
+다음 시즌: [주제]
 
-## First comment (한국어)
+— English —
 
-(영문 확정 후 같은 구조로 번역)
+(한국어 확정 후 같은 구조로 번역)
+
+#AntiTokenMaxing
