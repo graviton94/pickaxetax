@@ -4,7 +4,10 @@
 > In a gold rush, the people selling pickaxes get rich. Your AI re-reads the whole conversation every single turn, and you pay for every re-read.
 > Build less. Waste less. Use the compute we already have.
 
-[한국어](#한국어) · [Charter (KO)](docs/CHARTER.md) · [Decisions](docs/decisions/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Privacy](docs/PRIVACY.md)
+
+**Try it in your browser (nothing is uploaded): https://graviton94.github.io/pickaxetax/** · `pip install pickaxetax`
+
+[한국어](#한국어) · [Charter (KO)](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/CHARTER.md) · [Decisions](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/decisions/README.md) · [Architecture](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/ARCHITECTURE.md) · [Privacy](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/PRIVACY.md)
 
 **Chat models re-read the entire conversation on every turn.** Late constraints, re-asks, "thanks!" messages and topic switches inside one chat make that cost grow quadratically. Pickaxe Tax takes a shared conversation (share link, export JSON or pasted transcript) and **throws the text away**. What it keeps is a graph skeleton: agenda (topic labels), structure (per-turn intents and typed edges such as DEEPENS, PIVOTS, CORRECTS and RETRIES), depth (topic threads and drill-down level) and token flow. It then shows:
 
@@ -28,9 +31,9 @@ pytest
 
 **Web app (local-first).** `site/` is a static page that runs the same engine in your browser. You can paste text, drop an export file, or use a share link through a bookmarklet that reads the page you already have open. Its Content-Security-Policy (`connect-src 'none'`) makes it impossible for the page to send your conversation anywhere. It is deployed to GitHub Pages; to run it locally: `cd site && python3 -m http.server`.
 
-**How to help at zero cost:** see [CONTRIBUTING.md](CONTRIBUTING.md).
+**How to help at zero cost:** see [CONTRIBUTING.md](https://github.com/graviton94/pickaxetax/blob/HEAD/CONTRIBUTING.md).
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/PRIVACY.md](docs/PRIVACY.md).
+See [docs/ARCHITECTURE.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/ARCHITECTURE.md) and [docs/PRIVACY.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/PRIVACY.md).
 
 ### Where this is going
 
@@ -38,14 +41,14 @@ The AI boom is turning into a gold rush where only the pick-and-shovel sellers w
 
 - **Shared brain**: solution-path graph + open efficiency dataset, built from conversation *skeletons* contributed by users worldwide
 - **Prompt compiler**: a local proxy/SDK and coding-agent plugin that compile wasteful requests into minimal ones and measure the savings
-- **Watchdog — Compute Bubble Index**: how much of the deployed AI compute actually produced value? Top-down capital data (capex vs. AI revenue, circular deals, depreciation assumptions) meets bottom-up measurements (model over-computation, avoidable usage), published as a dashboard and a quarterly "gold rush bill" report ([design, KO](docs/BUBBLE_INDEX.md))
+- **Watchdog — Compute Bubble Index**: how much of the deployed AI compute actually produced value? Top-down capital data (capex vs. AI revenue, circular deals, depreciation assumptions) meets bottom-up measurements (model over-computation, avoidable usage), published as a dashboard and a quarterly "gold rush bill" report ([design, KO](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/BUBBLE_INDEX.md))
 - **Standard**: a Token Efficiency Index for models and products
 
-Principles: local-first (raw text never leaves your device), two-step consent, no LLM calls in the analysis path, cold data and bold messages, and a mirror rather than an enemy to model developers. Public goods (data, standard, core engine) are held by a foundation under irrevocable open licenses. Full charter: [docs/CHARTER.md](docs/CHARTER.md).
+Principles: local-first (raw text never leaves your device), two-step consent, no LLM calls in the analysis path, cold data and bold messages, and a mirror rather than an enemy to model developers. Public goods (data, standard, core engine) are held by a foundation under irrevocable open licenses. Full charter: [docs/CHARTER.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/CHARTER.md).
 
 ## License
 
-Code: [Apache-2.0](LICENSE) · Data: [ODbL 1.0](DATA_LICENSE.md)
+Code: [Apache-2.0](https://github.com/graviton94/pickaxetax/blob/HEAD/LICENSE) · Data: [ODbL 1.0](https://github.com/graviton94/pickaxetax/blob/HEAD/DATA_LICENSE.md)
 
 ---
 
@@ -56,13 +59,13 @@ Code: [Apache-2.0](LICENSE) · Data: [ODbL 1.0](DATA_LICENSE.md)
 > **AI는 같은 대화를 매 턴 처음부터 다시 읽습니다.**
 > 원문은 버리고, 대화의 *모양*만 남겨, 불필요했던 연산을 드러냅니다.
 
-프로젝트의 핵심 가치, 방향성, 조직 구조는 [프로젝트 헌장](docs/CHARTER.md)에 정리되어 있습니다.
+프로젝트의 핵심 가치, 방향성, 조직 구조는 [프로젝트 헌장](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/CHARTER.md)에 정리되어 있습니다.
 
 ### 왜 만드나
 
 "토큰맥싱"(token-maxing)은 습관입니다. 조건을 나중에 덧붙이고, 같은 질문을 다시 하고, 답이 끝난 뒤 "고마워"를 보내고, 한 창에서 주제를 바꿔 계속 이어 갑니다. 채팅형 AI는 답할 때마다 **이전 대화 전체를 다시 입력으로 읽기** 때문에 이런 습관의 비용은 대화 길이에 따라 제곱으로 커집니다. 40번째 턴의 "고마워" 한 마디는 수만 토큰을 다시 처리하게 만듭니다.
 
-이렇게 불어난 연산은 GPU, 데이터센터, 전력 수요로 이어집니다. 이 프로젝트는 그 낭비를 **측정 가능한 숫자**로 보여 주고, 다음 대화에서 바로 쓸 수 있는 습관과 프롬프트 골격으로 되돌려 주는 공익 프로젝트입니다. 배경과 원칙은 [docs/MANIFESTO.md](docs/MANIFESTO.md)에 있습니다.
+이렇게 불어난 연산은 GPU, 데이터센터, 전력 수요로 이어집니다. 이 프로젝트는 그 낭비를 **측정 가능한 숫자**로 보여 주고, 다음 대화에서 바로 쓸 수 있는 습관과 프롬프트 골격으로 되돌려 주는 공익 프로젝트입니다. 배경과 원칙은 [docs/MANIFESTO.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/MANIFESTO.md)에 있습니다.
 
 ### 무엇을 하나
 
@@ -130,7 +133,7 @@ pickaxetax/
 docs/         MANIFESTO · ARCHITECTURE · PRIVACY
 ```
 
-자세한 설계는 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), 개인정보 설계는 [docs/PRIVACY.md](docs/PRIVACY.md)를 보세요.
+자세한 설계는 [docs/ARCHITECTURE.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/ARCHITECTURE.md), 개인정보 설계는 [docs/PRIVACY.md](https://github.com/graviton94/pickaxetax/blob/HEAD/docs/PRIVACY.md)를 보세요.
 
 ### 로드맵
 
@@ -145,4 +148,4 @@ docs/         MANIFESTO · ARCHITECTURE · PRIVACY
 
 ### 라이선스
 
-코드는 [Apache-2.0](LICENSE), 데이터는 [ODbL 1.0](DATA_LICENSE.md)을 따릅니다.
+코드는 [Apache-2.0](https://github.com/graviton94/pickaxetax/blob/HEAD/LICENSE), 데이터는 [ODbL 1.0](https://github.com/graviton94/pickaxetax/blob/HEAD/DATA_LICENSE.md)을 따릅니다.
