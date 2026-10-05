@@ -11,7 +11,6 @@ Numbers only, as in measure_session.py.
 
 import json
 import os
-import re
 import sys
 import tempfile
 
@@ -35,19 +34,11 @@ def _pages(path):
         return
     else:
         texts = [raw]
+    dec = json.JSONDecoder()
     for t in texts:
         start = t.find('{"ccr"')
-        if start < 0:
-            continue
-        depth = 0
-        for i in range(start, len(t)):  # the JSON object ends where its braces balance
-            if t[i] == "{":
-                depth += 1
-            elif t[i] == "}":
-                depth -= 1
-                if depth == 0:
-                    yield json.loads(t[start:i + 1])
-                    break
+        if start >= 0:  # raw_decode stops where the object ends, ignoring braces inside strings
+            yield dec.raw_decode(t[start:])[0]
 
 
 def lines_from(paths):
