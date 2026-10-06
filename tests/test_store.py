@@ -21,6 +21,12 @@ def chat(topic: str, extra: str = "") -> str:
     )
 
 
+# Distinct conversations on the same topic. Skeleton ids are built from simhash
+# fingerprints, which are locality-sensitive on purpose: texts that differ by a single
+# word ("case1" / "case2") can share an id under some salts and be stored as duplicates.
+VARIANTS = ("for sharded clusters on kubernetes", "when restoring nightly backups", "during online schema migrations")
+
+
 def test_roundtrip(store, ko_chat):
     sk = analyze(parse_transcript(ko_chat), salt=store.salt)
     assert store.save(sk, delete_token="tok")
@@ -36,10 +42,10 @@ def test_duplicate_not_double_counted(store, ko_chat):
 
 
 def test_k_anonymity(store):
-    for i in range(2):
-        store.save(analyze(parse_transcript(chat("postgres", f"case{i}")), salt=store.salt), "t")
+    for v in VARIANTS[:2]:
+        assert store.save(analyze(parse_transcript(chat("postgres", v)), salt=store.salt), "t")
     assert store.topics(k=3)["nodes"] == []
-    store.save(analyze(parse_transcript(chat("postgres", "case2")), salt=store.salt), "t")
+    assert store.save(analyze(parse_transcript(chat("postgres", VARIANTS[2])), salt=store.salt), "t")
     labels = {n["label"] for n in store.topics(k=3)["nodes"]}
     assert "postgres" in labels
     assert all(n["conversations"] >= 3 for n in store.topics(k=3)["nodes"])
@@ -51,9 +57,9 @@ def test_k_cannot_be_lowered(store):
 
 
 def test_delete(store):
-    sks = [analyze(parse_transcript(chat("mongo", f"variant{i}")), salt=store.salt) for i in range(3)]
+    sks = [analyze(parse_transcript(chat("mongo", v)), salt=store.salt) for v in VARIANTS]
     for i, sk in enumerate(sks):
-        store.save(sk, f"tok{i}")
+        assert store.save(sk, f"tok{i}")
     assert "mongo" in {n["label"] for n in store.topics()["nodes"]}
     assert not store.delete(sks[0].id, "wrong")
     assert store.delete(sks[0].id, "tok0")
