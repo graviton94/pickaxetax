@@ -3,5 +3,5 @@
 from .analyze import analyze
 from .ingest import ingest_text
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 __all__ = ["analyze", "ingest_text", "__version__"]

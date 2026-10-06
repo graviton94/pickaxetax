@@ -1,7 +1,7 @@
 {
   "name": "pickaxetax",
   "displayName": "Pickaxe Tax",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Blocks re-reads of files that have not changed since the agent last read them (once per file; a repeated request is allowed), resets on compaction, and records the tokens avoided. Requires `pip install pickaxetax` (or pipx). #AntiTokenMaxing",
   "author": { "name": "Pickaxe Tax" },
   "homepage": "https://github.com/graviton94/pickaxetax",
