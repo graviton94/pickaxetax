@@ -47,7 +47,7 @@ shows what the number depends on most.
 | Mechanical floor, cost (8.92%) | 8.1–9.8% | — (mechanical) | 4.7–15.4% | — | prices |
 | Steps spent only on duplicates/errors (2.6% of input) | 2.0–3.4% | — | — (tokens) | — | sample |
 | Oracle paging, P = 1000 (41.5%) | 40.4–43.2% | 35–56% | — (tokens) | — (foresight assumed) | detector |
-| Forgetting only, P = ∞ (5.6%) | 5.2–6.5% | 5.6–13% supported by behaviour; 3–45% across all | — | — | detector |
+| Forgetting only, P = ∞ (5.6%) | 5.2–6.5% | 7–8% calibrated to behaviour (6–11% credible; 13–32% if only compaction-caused re-reads count as need); 3–45% across all definitions | — | — | detector |
 | Restart above 200k (55.2% of input) | 48.7–59.5% | 26.7–45.7% if lexical reuse were need (A4); behaviour says it is not | 37–49% of total money | 52–53% with observed charges; 41% at the 90th-percentile cold start | sample, then the charge |
 | Ceiling 200k (66.8% of input) | 65–68% | — | 42–58% of total money | +R per compaction: 64–67% | prices (in money) |
 | Ceiling 390k (44% of input) | about ±1 | — | 29–38% of total money | 39% with D2's gross re-reads | prices |

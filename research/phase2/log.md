@@ -794,3 +794,28 @@ tables are in `research/phase3/power/` and reproduce.
 large quality loss from restarting, but not a small one. A small one is what the behavioural
 evidence (A5, B5, D5, A6) suggests. Resolving it needs a larger task set (a public benchmark) or
 many more runs. Phase 3 should say so before running anything.
+
+## Cycle A7 — a need model fitted on behaviour (`A7-behaviour-model.md`)
+
+This cycle is exploratory: the variants were chosen after E8.
+- **Prediction.** A logistic model trained on the file reads after the 34 compactions predicts
+  which files are re-read far better than lexical reuse. Its out-of-session AUC is 0.87 / 0.89,
+  against 0.57 / 0.61. It is well calibrated, and almost all of it comes from the file's read
+  history: prior reads, and whether a newer copy was already read.
+- **Habit.** The same model predicts re-reads just as well mid-cycle, where the content is still in
+  context (AUC 0.86–0.87, similar rates). A compaction adds only about 7–10 points of re-read
+  probability. Re-reading is mostly habit.
+- **Forgetting share.** Lexical links were thinned to match the behavioural re-read rate and the
+  bound recomputed with the repository's code. Forgetting comes to 7.1% / 7.7% (session bootstrap
+  about 5.4–10.9%), with paging unchanged at 41.7%. The credible variants give 6.3–10.5%.
+
+**Review.** The result depends on counting habitual re-reads as need. If only the re-reads a
+compaction caused count, forgetting rises to 13–32%. The data cannot separate the two, because need
+met by the summary is unobserved. The model is fitted on file reads after a drop and applied to
+every kind of segment.
+
+**Discussion.** The forgetting share now has a behaviour-calibrated centre (about 7–8%) next to
+lexical-v1's 5.6%. "Carrying is the larger lever" holds under every reading except the one where
+re-reading counts only when a compaction caused it. Even then paging stays the larger part
+(41.7%). A side finding matters for the restart lever: most re-reading is habit. So the re-reads
+charged to a restart (A5, B5) partly happen anyway, and the true charge is lower.

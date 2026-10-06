@@ -72,7 +72,7 @@ Share of main-session input that would not have been processed, and what each le
 | Lever | Saving | Assumes | Foresight | Who can pull it | Cycle |
 |---|---:|---|---|---|---|
 | Fetch content again only when needed (oracle, 1k per fetch) | 41.5% (35–56% across detectors and placebos; 16–28% raw) | perfect foresight | yes | — (upper bound) | bound, E3, E5 |
-| Drop only content never used again | 5.6% by lexical-v1; **about 5.6–13%** by the definitions behaviour supports | what counts as reuse | yes | — | bound, E5, E8 |
+| Drop only content never used again | 5.6% by lexical-v1; **about 7–8%** calibrated to behaviour (6–11% across credible variants; 5.6–13% by E8's definitions) | what counts as reuse; that re-reads measure need | yes | — | bound, E5, E8, A7 |
 | Simple recency policy, miss rate < 5% | about 3% | none beyond the replay | no | harness | backtest |
 | Mechanical floor (duplicates, errors, cache churn) | 0.0008% of tokens; **8.92% of input-side cost** | codebook v1 | no | user / harness | floor |
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | the cut part is re-read on reuse | no | harness | A |
@@ -128,8 +128,12 @@ Share of main-session input that would not have been processed, and what each le
      cross-session corrections predict which files the agent went back for (AUC 0.57–0.61 and
      0.55–0.60). The
      time-placebo corrections do no better than chance (cycle E8).
-   - So forgetting is most likely 5.6–13%, and **carrying, not forgetting, is the larger lever**. The
-     blind labels check this once more; a secondary analysis is pre-registered.
+   - A model fitted on behaviour (cycle A7) puts forgetting at about 7–8% (6–11% across credible
+     variants), with paging unchanged at 41.7%. Re-reading, though, is mostly habit: the same model
+     predicts re-reads just as well where nothing was dropped. If only the re-reads a compaction
+     caused counted as need, forgetting would be 13–32%.
+   - So forgetting is most likely about 6–13%, and **carrying, not forgetting, is the larger
+     lever**. The blind labels check this once more; a secondary analysis is pre-registered.
 2. **The levers that need no foresight move the boundary**: start a new session, compact earlier, or
    delegate to a sub-agent with its own small context.
    - Trimming what goes in helps only once the boundary has moved. Under today's ceiling it mostly
