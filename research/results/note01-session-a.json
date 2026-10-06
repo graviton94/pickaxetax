@@ -1,0 +1,804 @@
+{
+ "protocol": "backtest-v1",
+ "method": "lexical-v1",
+ "tool_version": "0.3.1",
+ "git_sha": "e47c40900e3f9906ba497c16ce44c3e82b587254",
+ "created_at": "2026-10-05T12:42:13+00:00",
+ "manifest_digest": "b99c55fbd32cb4312f677d66e73b126b2ad50a981c37a261041c47106d5b71cb",
+ "contributors": 1,
+ "contributor_digest": "9c5646b582f1",
+ "sessions": {
+  "loaded": 1,
+  "excluded_short": 0,
+  "kept": 1,
+  "dev": 0,
+  "test": 1
+ },
+ "tuned_on_dev": {
+  "window": {
+   "n": 8,
+   "why": "dev split has 0 < 5 sessions: pre-registered default"
+  },
+  "recency": {
+   "n": 8,
+   "why": "dev split has 0 < 5 sessions: pre-registered default"
+  },
+  "pointer": {
+   "n": 8,
+   "why": "dev split has 0 < 5 sessions: pre-registered default"
+  }
+ },
+ "aggregate": {
+  "sensitivity": [
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 1,
+    "common_frac": 0.01,
+    "sessions": 1,
+    "median_P0": 28.8,
+    "median_Pinf": 11.2,
+    "median_difference": 17.6
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 1,
+    "common_frac": 0.02,
+    "sessions": 1,
+    "median_P0": 26.4,
+    "median_Pinf": 5.7,
+    "median_difference": 20.7
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 1,
+    "common_frac": 0.05,
+    "sessions": 1,
+    "median_P0": 22.0,
+    "median_Pinf": 1.8,
+    "median_difference": 20.2
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 2,
+    "common_frac": 0.01,
+    "sessions": 1,
+    "median_P0": 29.7,
+    "median_Pinf": 18.8,
+    "median_difference": 10.9
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 2,
+    "common_frac": 0.02,
+    "sessions": 1,
+    "median_P0": 28.3,
+    "median_Pinf": 11.9,
+    "median_difference": 16.4
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 2,
+    "common_frac": 0.05,
+    "sessions": 1,
+    "median_P0": 25.5,
+    "median_Pinf": 5.1,
+    "median_difference": 20.4
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 3,
+    "common_frac": 0.01,
+    "sessions": 1,
+    "median_P0": 30.0,
+    "median_Pinf": 22.9,
+    "median_difference": 7.1
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 3,
+    "common_frac": 0.02,
+    "sessions": 1,
+    "median_P0": 29.1,
+    "median_Pinf": 15.3,
+    "median_difference": 13.8
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 3,
+    "common_frac": 0.05,
+    "sessions": 1,
+    "median_P0": 26.8,
+    "median_Pinf": 7.9,
+    "median_difference": 18.9
+   },
+   {
+    "variant": "primary",
+    "min_shared": 1,
+    "common_frac": 0.01,
+    "sessions": 1,
+    "median_P0": 54.5,
+    "median_Pinf": 21.4,
+    "median_difference": 33.1
+   },
+   {
+    "variant": "primary",
+    "min_shared": 1,
+    "common_frac": 0.02,
+    "sessions": 1,
+    "median_P0": 49.9,
+    "median_Pinf": 11.0,
+    "median_difference": 38.9
+   },
+   {
+    "variant": "primary",
+    "min_shared": 1,
+    "common_frac": 0.05,
+    "sessions": 1,
+    "median_P0": 41.7,
+    "median_Pinf": 3.5,
+    "median_difference": 38.2
+   },
+   {
+    "variant": "primary",
+    "min_shared": 2,
+    "common_frac": 0.01,
+    "sessions": 1,
+    "median_P0": 56.2,
+    "median_Pinf": 36.0,
+    "median_difference": 20.2
+   },
+   {
+    "variant": "primary",
+    "min_shared": 2,
+    "common_frac": 0.02,
+    "sessions": 1,
+    "median_P0": 53.6,
+    "median_Pinf": 22.7,
+    "median_difference": 30.9
+   },
+   {
+    "variant": "primary",
+    "min_shared": 2,
+    "common_frac": 0.05,
+    "sessions": 1,
+    "median_P0": 48.2,
+    "median_Pinf": 9.8,
+    "median_difference": 38.4
+   },
+   {
+    "variant": "primary",
+    "min_shared": 3,
+    "common_frac": 0.01,
+    "sessions": 1,
+    "median_P0": 56.8,
+    "median_Pinf": 43.6,
+    "median_difference": 13.2
+   },
+   {
+    "variant": "primary",
+    "min_shared": 3,
+    "common_frac": 0.02,
+    "sessions": 1,
+    "median_P0": 55.0,
+    "median_Pinf": 29.2,
+    "median_difference": 25.8
+   },
+   {
+    "variant": "primary",
+    "min_shared": 3,
+    "common_frac": 0.05,
+    "sessions": 1,
+    "median_P0": 50.8,
+    "median_Pinf": 15.3,
+    "median_difference": 35.5
+   }
+  ],
+  "paging_beats_forgetting_in_every_cell": true,
+  "all_sessions": {
+   "sessions": 1,
+   "insufficient": true,
+   "oracle_P0": {
+    "n": 1,
+    "median": 49.9,
+    "q1": 49.9,
+    "q3": 49.9,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "oracle_Pinf": {
+    "n": 1,
+    "median": 11.0,
+    "q1": 11.0,
+    "q3": 11.0,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "paging_minus_forgetting": {
+    "n": 1,
+    "median": 38.9,
+    "q1": 38.9,
+    "q3": 38.9,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "pinned_pct": {
+    "n": 1,
+    "median": 42.0,
+    "q1": 42.0,
+    "q3": 42.0,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "online_window": {
+    "n": 8,
+    "saved_pct": {
+     "n": 1,
+     "median": 45.0,
+     "q1": 45.0,
+     "q3": 45.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "miss_rate": {
+     "n": 1,
+     "median": 84.2,
+     "q1": 84.2,
+     "q3": 84.2,
+     "ci95": [
+      null,
+      null
+     ]
+    }
+   },
+   "online_recency": {
+    "n": 8,
+    "saved_pct": {
+     "n": 1,
+     "median": 26.0,
+     "q1": 26.0,
+     "q3": 26.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "miss_rate": {
+     "n": 1,
+     "median": 31.4,
+     "q1": 31.4,
+     "q3": 31.4,
+     "ci95": [
+      null,
+      null
+     ]
+    }
+   },
+   "online_pointer": {
+    "n": 8,
+    "saved_pct": {
+     "n": 1,
+     "median": 24.8,
+     "q1": 24.8,
+     "q3": 24.8,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "miss_rate": {
+     "n": 1,
+     "median": 31.4,
+     "q1": 31.4,
+     "q3": 31.4,
+     "ci95": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "test_split": {
+   "sessions": 1,
+   "insufficient": true,
+   "oracle_P0": {
+    "n": 1,
+    "median": 49.9,
+    "q1": 49.9,
+    "q3": 49.9,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "oracle_Pinf": {
+    "n": 1,
+    "median": 11.0,
+    "q1": 11.0,
+    "q3": 11.0,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "paging_minus_forgetting": {
+    "n": 1,
+    "median": 38.9,
+    "q1": 38.9,
+    "q3": 38.9,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "pinned_pct": {
+    "n": 1,
+    "median": 42.0,
+    "q1": 42.0,
+    "q3": 42.0,
+    "ci95": [
+     null,
+     null
+    ]
+   },
+   "online_window": {
+    "n": 8,
+    "saved_pct": {
+     "n": 1,
+     "median": 45.0,
+     "q1": 45.0,
+     "q3": 45.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "miss_rate": {
+     "n": 1,
+     "median": 84.2,
+     "q1": 84.2,
+     "q3": 84.2,
+     "ci95": [
+      null,
+      null
+     ]
+    }
+   },
+   "online_recency": {
+    "n": 8,
+    "saved_pct": {
+     "n": 1,
+     "median": 26.0,
+     "q1": 26.0,
+     "q3": 26.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "miss_rate": {
+     "n": 1,
+     "median": 31.4,
+     "q1": 31.4,
+     "q3": 31.4,
+     "ci95": [
+      null,
+      null
+     ]
+    }
+   },
+   "online_pointer": {
+    "n": 8,
+    "saved_pct": {
+     "n": 1,
+     "median": 24.8,
+     "q1": 24.8,
+     "q3": 24.8,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "miss_rate": {
+     "n": 1,
+     "median": 31.4,
+     "q1": 31.4,
+     "q3": 31.4,
+     "ci95": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "by_source": {
+   "claude-code": {
+    "sessions": 1,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 1,
+     "median": 49.9,
+     "q1": 49.9,
+     "q3": 49.9,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 1,
+     "median": 11.0,
+     "q1": 11.0,
+     "q3": 11.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 1,
+     "median": 38.9,
+     "q1": 38.9,
+     "q3": 38.9,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "pinned_pct": {
+     "n": 1,
+     "median": 42.0,
+     "q1": 42.0,
+     "q3": 42.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 45.0,
+      "q1": 45.0,
+      "q3": 45.0,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 84.2,
+      "q1": 84.2,
+      "q3": 84.2,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 26.0,
+      "q1": 26.0,
+      "q3": 26.0,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 31.4,
+      "q1": 31.4,
+      "q3": 31.4,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 24.8,
+      "q1": 24.8,
+      "q3": 24.8,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 31.4,
+      "q1": 31.4,
+      "q3": 31.4,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  },
+  "by_length": {
+   "200+": {
+    "sessions": 1,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 1,
+     "median": 49.9,
+     "q1": 49.9,
+     "q3": 49.9,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 1,
+     "median": 11.0,
+     "q1": 11.0,
+     "q3": 11.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 1,
+     "median": 38.9,
+     "q1": 38.9,
+     "q3": 38.9,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "pinned_pct": {
+     "n": 1,
+     "median": 42.0,
+     "q1": 42.0,
+     "q3": 42.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 45.0,
+      "q1": 45.0,
+      "q3": 45.0,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 84.2,
+      "q1": 84.2,
+      "q3": 84.2,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 26.0,
+      "q1": 26.0,
+      "q3": 26.0,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 31.4,
+      "q1": 31.4,
+      "q3": 31.4,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 24.8,
+      "q1": 24.8,
+      "q3": 24.8,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 31.4,
+      "q1": 31.4,
+      "q3": 31.4,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  },
+  "by_source_and_length": {
+   "claude-code|200+": {
+    "sessions": 1,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 1,
+     "median": 49.9,
+     "q1": 49.9,
+     "q3": 49.9,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 1,
+     "median": 11.0,
+     "q1": 11.0,
+     "q3": 11.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 1,
+     "median": 38.9,
+     "q1": 38.9,
+     "q3": 38.9,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "pinned_pct": {
+     "n": 1,
+     "median": 42.0,
+     "q1": 42.0,
+     "q3": 42.0,
+     "ci95": [
+      null,
+      null
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 45.0,
+      "q1": 45.0,
+      "q3": 45.0,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 84.2,
+      "q1": 84.2,
+      "q3": 84.2,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 26.0,
+      "q1": 26.0,
+      "q3": 26.0,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 31.4,
+      "q1": 31.4,
+      "q3": 31.4,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 1,
+      "median": 24.8,
+      "q1": 24.8,
+      "q3": 24.8,
+      "ci95": [
+       null,
+       null
+      ]
+     },
+     "miss_rate": {
+      "n": 1,
+      "median": 31.4,
+      "q1": 31.4,
+      "q3": 31.4,
+      "ci95": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  }
+ },
+ "per_session": [
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 400,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 169482468,
+   "pinned_pct": 42.02,
+   "oracle": {
+    "P0": 49.9,
+    "P1000": 47.4,
+    "P10000": 34.7,
+    "Pinf": 11.0
+   },
+   "paging_minus_forgetting": 38.9,
+   "online": {
+    "window": {
+     "saved_pct": 45.0,
+     "miss_rate": 84.24,
+     "gap_closed_pct": 94.9
+    },
+    "recency": {
+     "saved_pct": 25.98,
+     "miss_rate": 31.35,
+     "gap_closed_pct": 54.8
+    },
+    "pointer": {
+     "saved_pct": 24.8,
+     "miss_rate": 31.35,
+     "gap_closed_pct": 52.3
+    }
+   }
+  }
+ ]
+}

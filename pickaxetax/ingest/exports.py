@@ -5,6 +5,7 @@ Supported shapes:
   or ``{"linear_conversation": [...]}`` (single object or a list of them)
 * Claude data export / share snapshot: ``{"chat_messages": [...]}``
 * OpenAI-style message list: ``{"messages": [{"role", "content"}]}`` or a bare list
+* Gemini API request/history: ``{"contents": [{"role": "user"|"model", "parts": [{"text"}]}]}``
 """
 
 from __future__ import annotations
@@ -83,7 +84,7 @@ def _from_message_list(items: list, source: str) -> RawConversation | None:
         if not role:
             continue
         text = m.get("text") if isinstance(m.get("text"), str) and m.get("text") else None
-        turns.append(RawTurn(role, text or _content_text(m.get("content"))))
+        turns.append(RawTurn(role, text or _content_text(m.get("content")) or _content_text(m.get("parts"))))
     return _finish(turns, source)
 
 
@@ -106,6 +107,8 @@ def parse_json(obj: Any) -> list[RawConversation]:
         conv = _from_message_list(obj["linear_conversation"], "chatgpt")
     elif isinstance(obj.get("chat_messages"), list):
         conv = _from_message_list(obj["chat_messages"], "claude")
+    elif isinstance(obj.get("contents"), list):
+        conv = _from_message_list(obj["contents"], "gemini")
     elif isinstance(obj.get("messages"), list):
         conv = _from_message_list(obj["messages"], "openai-messages")
     else:  # look one level down (e.g. Next.js page props wrappers)
