@@ -246,6 +246,38 @@ def validate_labels(lab: dict) -> list[str]:
     return errs
 
 
+MACHINE_CATEGORIES = ("W1", "W2", "W6")  # the mechanical tier (T1) of codebook v1
+
+
+def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", coder: str = "machine-t1") -> dict:
+    """The T1 judge's decisions on a packet's items, as a labels file.
+
+    For the mechanical categories only (W1, W2, W6): "yes" when the judge counted that category
+    while the instruction was current, else "no"; the others are left unanswered. Compare it
+    with the consensus labels (`agreement`) only after the human labeling is closed, so no
+    labeler ever sees it. lines_by_session: {label: transcript lines cut at the same snapshot
+    as the packet}."""
+    from .judge import judge_lines
+
+    maps = {}
+    for label, lines in lines_by_session.items():
+        lines = list(lines)
+        instr = instructions(lines)
+        flags = judge_lines(lines, per_instruction=True)["per_instruction"]
+        if len(flags) != len(instr):
+            raise ValueError(f"{label}: {len(instr)} instructions but the judge saw {len(flags)}")
+        with_calls = [i for i, it in enumerate(instr) if it["stats"]["calls"]]  # packet indexes count these only
+        maps[label] = [set(flags[i]) for i in with_calls]
+    labels = {}
+    for item in packet["items" if phase == "main" else "calibration"]:
+        cats = maps.get(item["session"])
+        if cats is None or item["index"] >= len(cats):
+            raise ValueError(f"no transcript for item {item['id']} ({item['session']} #{item['index']})")
+        labels[item["id"]] = {c: ("yes" if c in cats[item["index"]] else "no") for c in MACHINE_CATEGORIES}
+    return {"schema": LABELS_SCHEMA, "codebook": packet.get("codebook"), "packet": packet["sha256"], "phase": phase,
+            "coder": coder, "machine": {"tier": "T1", "categories": list(MACHINE_CATEGORIES)}, "labels": labels}
+
+
 def cohen_kappa(a: list, b: list) -> float | None:
     """Nominal Cohen's kappa. None when undefined (both coders used one same value only)."""
     n = len(a)
