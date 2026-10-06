@@ -59,6 +59,36 @@
     "W1": 52134,
     "W2": 249859
    },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 6,
+     "input": 3594682
+    },
+    "W2": {
+     "calls": 7,
+     "input": 3549423
+    },
+    "W1_by_tool": {
+     "mcp": {
+      "calls": 4,
+      "input": 2870014
+     },
+     "Read": {
+      "calls": 2,
+      "input": 724668
+     }
+    },
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 6,
+      "input": 3060655
+     },
+     "mcp": {
+      "calls": 1,
+      "input": 488768
+     }
+    }
+   },
    "removable_tokens": 2836,
    "floor_price_units": 22225.6,
    "price_total_units": 18904102.6,
@@ -119,6 +149,40 @@
    "carried_by_later_calls": {
     "W1": 45800,
     "W2": 249300
+   },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 7,
+     "input": 2384135
+    },
+    "W2": {
+     "calls": 9,
+     "input": 2676308
+    },
+    "W1_by_tool": {
+     "Read": {
+      "calls": 6,
+      "input": 1821585
+     },
+     "mcp": {
+      "calls": 1,
+      "input": 562550
+     }
+    },
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 7,
+      "input": 1959465
+     },
+     "Read": {
+      "calls": 1,
+      "input": 76123
+     },
+     "mcp": {
+      "calls": 1,
+      "input": 640720
+     }
+    }
    },
    "removable_tokens": 2713,
    "floor_price_units": 4377768.149999999,
@@ -181,6 +245,52 @@
     "W1": 179470,
     "W2": 2957186
    },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 50,
+     "input": 19584895
+    },
+    "W2": {
+     "calls": 53,
+     "input": 20189506
+    },
+    "W1_by_tool": {
+     "Read": {
+      "calls": 39,
+      "input": 15977315
+     },
+     "Bash": {
+      "calls": 2,
+      "input": 549330
+     },
+     "mcp": {
+      "calls": 8,
+      "input": 2395011
+     },
+     "ToolSearch": {
+      "calls": 1,
+      "input": 663239
+     }
+    },
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 48,
+      "input": 17953049
+     },
+     "Write": {
+      "calls": 2,
+      "input": 718193
+     },
+     "mcp": {
+      "calls": 2,
+      "input": 796189
+     },
+     "Artifact": {
+      "calls": 1,
+      "input": 722075
+     }
+    }
+   },
    "removable_tokens": 20252,
    "floor_price_units": 12341781.649999999,
    "price_total_units": 239172040.20000002,
@@ -241,6 +351,23 @@
    "carried_by_later_calls": {
     "W1": 0,
     "W2": 42620
+   },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 0,
+     "input": 0
+    },
+    "W2": {
+     "calls": 6,
+     "input": 1297210
+    },
+    "W1_by_tool": {},
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 6,
+      "input": 1297210
+     }
+    }
    },
    "removable_tokens": 673,
    "floor_price_units": 738059.1,
@@ -303,6 +430,36 @@
     "W1": 12666,
     "W2": 1560801
    },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 45,
+     "input": 20362323
+    },
+    "W2": {
+     "calls": 34,
+     "input": 10033720
+    },
+    "W1_by_tool": {
+     "Bash": {
+      "calls": 2,
+      "input": 742108
+     },
+     "Read": {
+      "calls": 43,
+      "input": 19620215
+     }
+    },
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 33,
+      "input": 9622678
+     },
+     "Edit": {
+      "calls": 1,
+      "input": 411042
+     }
+    }
+   },
    "removable_tokens": 5357,
    "floor_price_units": 5930937.35,
    "price_total_units": 87642125.9,
@@ -363,6 +520,36 @@
    "carried_by_later_calls": {
     "W1": 0,
     "W2": 75140
+   },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 10,
+     "input": 3935970
+    },
+    "W2": {
+     "calls": 6,
+     "input": 2448140
+    },
+    "W1_by_tool": {
+     "Read": {
+      "calls": 10,
+      "input": 3935970
+     }
+    },
+    "W2_by_tool": {
+     "WebFetch": {
+      "calls": 1,
+      "input": 253086
+     },
+     "Bash": {
+      "calls": 4,
+      "input": 1427693
+     },
+     "mcp": {
+      "calls": 1,
+      "input": 767361
+     }
+    }
    },
    "removable_tokens": 556,
    "floor_price_units": 1591944.2499999998,
@@ -425,6 +612,18 @@
     "W1": 0,
     "W2": 0
    },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 0,
+     "input": 0
+    },
+    "W2": {
+     "calls": 0,
+     "input": 0
+    },
+    "W1_by_tool": {},
+    "W2_by_tool": {}
+   },
    "removable_tokens": 0,
    "floor_price_units": 0.0,
    "price_total_units": 1061648.2000000002,
@@ -485,6 +684,23 @@
    "carried_by_later_calls": {
     "W1": 0,
     "W2": 34609
+   },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 0,
+     "input": 0
+    },
+    "W2": {
+     "calls": 4,
+     "input": 672764
+    },
+    "W1_by_tool": {},
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 4,
+      "input": 672764
+     }
+    }
    },
    "removable_tokens": 458,
    "floor_price_units": 345213.69999999995,
@@ -547,6 +763,40 @@
     "W1": 102709,
     "W2": 2034811
    },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 57,
+     "input": 19087626
+    },
+    "W2": {
+     "calls": 82,
+     "input": 22628074
+    },
+    "W1_by_tool": {
+     "Bash": {
+      "calls": 8,
+      "input": 4086122
+     },
+     "Read": {
+      "calls": 49,
+      "input": 15001504
+     }
+    },
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 79,
+      "input": 21765049
+     },
+     "Edit": {
+      "calls": 2,
+      "input": 496775
+     },
+     "Read": {
+      "calls": 1,
+      "input": 366250
+     }
+    }
+   },
    "removable_tokens": 12670,
    "floor_price_units": 12775103.6,
    "price_total_units": 208458054.05,
@@ -608,6 +858,44 @@
     "W1": 16404,
     "W2": 2146789
    },
+   "steps_spent_only_on": {
+    "W1": {
+     "calls": 47,
+     "input": 23506204
+    },
+    "W2": {
+     "calls": 55,
+     "input": 20936622
+    },
+    "W1_by_tool": {
+     "Read": {
+      "calls": 44,
+      "input": 22472489
+     },
+     "Bash": {
+      "calls": 3,
+      "input": 1033715
+     }
+    },
+    "W2_by_tool": {
+     "Bash": {
+      "calls": 52,
+      "input": 19974367
+     },
+     "WebFetch": {
+      "calls": 1,
+      "input": 461506
+     },
+     "TaskCreate": {
+      "calls": 1,
+      "input": 248218
+     },
+     "Edit": {
+      "calls": 1,
+      "input": 252531
+     }
+    }
+   },
    "removable_tokens": 10335,
    "floor_price_units": 7027615.149999999,
    "price_total_units": 127732449.85000001,
@@ -625,6 +913,68 @@
   "carried_by_later_calls": {
    "W1": 409183,
    "W2": 9351115
+  },
+  "steps_spent_only_on": {
+   "W1": {
+    "calls": 222,
+    "input": 92455835
+   },
+   "W2": {
+    "calls": 256,
+    "input": 84431767
+   },
+   "W1_by_tool": {
+    "mcp": {
+     "calls": 13,
+     "input": 5827575
+    },
+    "Read": {
+     "calls": 193,
+     "input": 79553746
+    },
+    "Bash": {
+     "calls": 15,
+     "input": 6411275
+    },
+    "ToolSearch": {
+     "calls": 1,
+     "input": 663239
+    }
+   },
+   "W2_by_tool": {
+    "Bash": {
+     "calls": 239,
+     "input": 77732930
+    },
+    "mcp": {
+     "calls": 5,
+     "input": 2693038
+    },
+    "Read": {
+     "calls": 2,
+     "input": 442373
+    },
+    "Write": {
+     "calls": 2,
+     "input": 718193
+    },
+    "Artifact": {
+     "calls": 1,
+     "input": 722075
+    },
+    "Edit": {
+     "calls": 4,
+     "input": 1160348
+    },
+    "WebFetch": {
+     "calls": 2,
+     "input": 714592
+    },
+    "TaskCreate": {
+     "calls": 1,
+     "input": 248218
+    }
+   }
   },
   "sensitivity_pct_price_weighted": {
    "all_w6 (v1)": 5.79,

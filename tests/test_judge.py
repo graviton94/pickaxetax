@@ -123,3 +123,16 @@ def test_sensitivity_views(tmp_path):
     stamp(t, "2026-01-01T00:00:00Z", "2026-01-01T00:00:30Z", "2026-01-01T02:00:30Z")
     s = judge.combine({"a": run(t, tmp_path)})["total"]["sensitivity_pct_price_weighted"]
     assert s["all_w6 (v1)"] > s["without_gap_over_1h"] == s["only_gap_under_5m"] > 0
+
+
+def test_steps_spent_only_on_duplicates_or_errors(tmp_path):
+    t = T()
+    t.tool("a", "Read", {"file_path": "/x"}, ctx_read=5_000).result("a", "same text " * 20)
+    t.tool("b", "Read", {"file_path": "/x"}, ctx_read=6_000).result("b", "same text " * 20)   # a step spent on a duplicate
+    t.tool("c", "Bash", {"command": "make"}, ctx_read=7_000).result("c", "error: boom", is_error=True)
+    t.call(8_000, blocks=[{"type": "text", "text": "fixed"}])
+    r = run(t, tmp_path)["steps_spent_only_on"]
+    assert r["W1"] == {"calls": 1, "input": 6_005} and r["W2"] == {"calls": 1, "input": 7_005}
+    assert r["W2_by_tool"] == {"Bash": {"calls": 1, "input": 7_005}} and r["W1_by_tool"] == {"Read": {"calls": 1, "input": 6_005}}
+    total = judge.combine({"a": run(t, tmp_path, name="k.jsonl")})["total"]["steps_spent_only_on"]
+    assert total["W1"]["calls"] == 1 and total["W2_by_tool"]["Bash"]["input"] == 7_005

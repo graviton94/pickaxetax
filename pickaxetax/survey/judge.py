@@ -104,6 +104,9 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     w1 = {"tokens": 0, "count": 0}
     w2 = {"tokens": 0, "count": 0}
     arrivals = []  # (category, tokens, index of the next main call, epoch) for W1/W2 on the main chain
+    steps = {}  # API call id -> {"ctx", "tools": [tool_use ids], "text": bool}, in order
+    tool_name = {}  # tool_use_id -> tool name
+    bad = {}  # tool_use_id -> "W1" | "W2"
     instructions = 0
     flags = []  # per instruction: set of categories
     def flag(cat, at=None):
@@ -138,6 +141,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                     w2["tokens"] += tok
                     w2["count"] += 1
                     flag("W2")
+                    bad[b.get("tool_use_id")] = "W2"
                     if bucket == "main":
                         arrivals.append(("W2", tok, len(calls), epoch))
                     continue
@@ -150,12 +154,19 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                     w1["tokens"] += tok
                     w1["count"] += 1
                     flag("W1")
+                    bad[b.get("tool_use_id")] = "W1"
                     if bucket == "main":
                         arrivals.append(("W1", tok, len(calls), epoch))
                 last_result[use] = (h, epoch)
         elif d.get("type") == "assistant":
+            sid = str(m.get("id") or d.get("requestId"))
+            st = steps.setdefault(sid, {"ctx": 0, "tools": [], "text": False})
             for b in content if isinstance(content, list) else []:
+                if isinstance(b, dict) and b.get("type") == "text" and str(b.get("text", "")).strip():
+                    st["text"] = True
                 if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("id"):
+                    st["tools"].append(b["id"])
+                    tool_name[b["id"]] = "mcp" if str(b.get("name")).startswith("mcp__") else str(b.get("name"))
                     sig = (str(b.get("name")), json.dumps(b.get("input"), ensure_ascii=False, sort_keys=True))
                     uses[b["id"]] = (ctxkey, sig)
             mid = str(m.get("id") or d.get("requestId"))
@@ -169,6 +180,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             totals["input"] += inp
             totals["cache_read"] += cr
             totals["cache_write"] += cw
+            st["ctx"] = inp + cr + cw
             by_ctx[bucket]["calls"] += 1
             by_ctx[bucket]["input"] += inp + cr + cw
             if bucket == "main":
@@ -197,6 +209,21 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     carried = {"W1": 0, "W2": 0}
     for cat, tok, pos, ep in arrivals:
         carried[cat] += tok * sum(1 for c in calls[pos:] if c[5] == ep)
+    # descriptive, not in the floor: an API call whose every tool call came back as a duplicate (W1)
+    # or an error (W2), and that wrote no text, was a step spent only on that; it re-read its whole
+    # context to take it. (An error can still be verification, e.g. a failing test: W2's rule tier.)
+    step_cost = {"W1": {"calls": 0, "input": 0}, "W2": {"calls": 0, "input": 0}, "W1_by_tool": {}, "W2_by_tool": {}}
+    for st in steps.values():
+        cats = {bad.get(t) for t in st["tools"]}
+        if not st["ctx"] or st["text"] or not st["tools"] or None in cats:
+            continue
+        cat = "W1" if cats == {"W1"} else "W2"
+        step_cost[cat]["calls"] += 1
+        step_cost[cat]["input"] += st["ctx"]
+        for name in {tool_name.get(t, "?") for t in st["tools"]}:
+            bt = step_cost[cat + "_by_tool"].setdefault(name, {"calls": 0, "input": 0})
+            bt["calls"] += 1
+            bt["input"] += st["ctx"]
     processed = totals["input"] + totals["cache_read"] + totals["cache_write"]
     price_total = sum(totals[k] * PRICE[k] for k in PRICE)
     # W1/W2 arrive as new context (written to cache on the next call) and need not have;
@@ -211,6 +238,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
         "main": by_ctx["main"], "subagents": by_ctx["side"],
         "W1": w1, "W2": w2, "W6": w6,
         "carried_by_later_calls": carried,
+        "steps_spent_only_on": step_cost,
         "removable_tokens": removable,
         "floor_price_units": floor_price,
         "price_total_units": price_total,
@@ -237,6 +265,15 @@ def combine(per_session: dict) -> dict:
     cats = {c: {"tokens": sum(s[c]["tokens"] for s in per_session.values()),
                 "count": sum(s[c]["count"] for s in per_session.values())} for c in ("W1", "W2", "W6")}
     tot["carried_by_later_calls"] = {c: sum(s["carried_by_later_calls"][c] for s in per_session.values()) for c in ("W1", "W2")}
+    sc = {c: {k: sum(s["steps_spent_only_on"][c][k] for s in per_session.values()) for k in ("calls", "input")} for c in ("W1", "W2")}
+    for c in ("W1", "W2"):
+        byt = sc[c + "_by_tool"] = {}
+        for s in per_session.values():
+            for name, v in s["steps_spent_only_on"][c + "_by_tool"].items():
+                acc = byt.setdefault(name, {"calls": 0, "input": 0})
+                acc["calls"] += v["calls"]
+                acc["input"] += v["input"]
+    tot["steps_spent_only_on"] = sc
     cats["W6"]["by_cause"] = {k: {x: sum(s["W6"]["by_cause"][k][x] for s in per_session.values()) for x in ("tokens", "count")}
                               for k in next(iter(per_session.values()))["W6"]["by_cause"]} if per_session else {}
     parts = {k: sum(s["input_parts"][k] for s in per_session.values()) for k in PRICE}
