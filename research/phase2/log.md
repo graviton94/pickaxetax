@@ -575,7 +575,7 @@ is a weak measure of need, even though it is the best one available.
 
 **Discussion.** E5's alarm is answered: the time-mirror placebo over-corrects, as its own caveat
 suspected, because a segment and the calls just before it share ancestry. Forgetting is most likely
-5.6–13%, and the paging opportunity is 41.5–48% under the supported definitions. "Carrying, not
+5.6–13%, and the paging opportunity is 41.5–49% under the supported definitions. "Carrying, not
 forgetting, is the larger lever" stands, and so does note 2's framing. Its "4~25%" (lexical-v1 over
 nine settings) contains the supported range. The pre-registered secondary W5 analysis will still
 test the time-mirror definition against human labels.
