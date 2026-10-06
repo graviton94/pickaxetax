@@ -65,6 +65,12 @@ Share of main-session input that would not have been processed, with what each l
 (Savings are not additive: several levers act on the same context. In the full bundle the restart
 rule does almost all the work; an earlier compaction adds 1.6 points and pointers 0.5, cycle B3.)
 
+Resampling the ten sessions (cycle E4) moves the ceiling and paging rows by about ±1–2 points
+and the restart rows by 3–5 (90% intervals: restart above 200k 49–60%, ceiling 200k 64–67%, oracle
+40–43%). Every ordering in this table holds in at least 97% of resamples, except two: restart above
+200k and a new session every 3 instructions are tied (50%), and "compaction adds under 5 points on
+top of restart" holds in 89%.
+
 ## 3. In units of work
 
 One commit cost a median of 7.5 million input tokens processed (pooled 9.9M; about 0.9M

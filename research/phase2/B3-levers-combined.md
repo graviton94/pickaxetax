@@ -57,6 +57,7 @@ Under R1 the P1 and P2 singles reproduce to a tenth of a point (P2 matches A2 se
 - P1, R2 vs series 3.8 points. whatif replays "min(s, x)": when the observed context drops (an observed compaction), the replay drops with it even if it is only 300k. That is a free compaction inside long instructions. The segment replay compacts only at the ceiling, so long instructions (S05, S10) keep more context. With observed compactions forced (R1) the segment replay gives 58.6.
 - P3, 43.3 vs 46.1: the series version keeps the same free observed-compaction resets after its own earlier compaction and keeps the call's delta; the segment version also pays the 22k rebuild at 2.0 in price terms. Both sit inside the published 39-46.
 - P2 cannot be done on the series at all; it needs segment identity.
+- *Correction (cycle E4):* the series column predates the replay fix of cycle B4 (an observed compaction applies only if the replay reached 90% of its size). With the current `whatif.cap` on the public series, P3 gives 42.8%, not 46.1%; the 39–43% range used in the synthesis is unaffected.
 
 ## Findings
 1. The bundle does not stack: singles of 58.5 + 20 + 43 sum to over 120%, the bundle saves 58.0% of input (price-weighted 33%); P1 alone gives 54.8%, P1+P3 57.5%.

@@ -369,3 +369,23 @@ data: cycle A5 uses the real compactions as a natural experiment.
 **Discussion.** Until A5 (and in the end an experiment) settles it, the restart and ceiling levers
 are reported as a range: from about 12–27% (every lexical mention must be restored) to about 55%
 (the summary is enough).
+
+## Cycle E4 — how much do the headlines depend on the sample? (`E4-session-uncertainty.md`)
+
+**Found.** Every headline reproduces from public files to within 0.1 point but one (below). S03 is
+31% of input, and S03, S09 and S10 together are 73%. Leaving one session out or resampling the ten
+(2,000 reps) moves the floor, the oracle bound and the ceiling by about ±1–2 points. The restart
+rules move by 3–5 (restart above 200k 49–60%, every 10 instructions 15–28%). C\* stays at
+90–110k, or 120–150k with ten times the re-read cost. Every directional conclusion of the synthesis
+holds in at least 97% of resamples and in all ten leave-one-out samples. Two do not hold that well:
+restart above 200k against a new session every 3 instructions is a tie (50%), and "earlier
+compaction adds under 5 points on top of restart" holds in 89%.
+
+**Review — a stale number.** B3's series column gave 46.1% for compaction at 390k. That was
+computed before the replay fix of cycle B4; the current replay gives 42.8%. B3 now carries a
+correction note. The synthesis range (39–43%) was not affected.
+
+**Discussion.** Sample composition is not what makes the numbers uncertain. Per-session medians
+differ from pooled values by up to 7 points, so pooled numbers describe the large sessions. The
+intervals are for this one person only, and at n = 10 they are too narrow. The assumptions (the
+detector in E3, whether a summary is enough in A4/A5) move the numbers far more.
