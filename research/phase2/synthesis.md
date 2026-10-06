@@ -54,7 +54,7 @@ Share of main-session input that would not have been processed, with what each l
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | cut part re-read on reuse | no | harness | A |
 | Remove every retry and polling loop | about 1.4% (0.3–2.1%) | loops were avoidable | no | agent | B2 |
 | Carry a pointer instead of what the agent wrote | about 20% if compactions stayed where they were; **about 0 (−4%) alone** when compaction fires at the ceiling; negative in cost (re-fetched content is written at 2×) | the agent re-reads when it needs it | no | harness / agent convention | A2, B3 |
-| **New session above 200k tokens at an instruction boundary** | **55.2%** (54.8% on segments) | a 10k summary is enough | no | the user, today | B, B3 |
+| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; 27–46% (12–37% of cost) if every lexically reused earlier token had to be re-read | how much of the old context the next task needs | no | the user, today | B, B3, A4 |
 | New session every 3 / 10 instructions | 55.1% / 22.3% | same | no | the user, today | B |
 | Compact at half the usual ceiling (about 390k instead of 780k) | 39–43% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3 |
 | **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |

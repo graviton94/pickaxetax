@@ -349,3 +349,23 @@ confirmation of cycle B3.
 **Discussion.** The carried copy of what the agent wrote is used: it is what the agent edits from.
 A pointer convention would turn those edits into re-reads (cheap, 7.5% of files). Its saving exists
 only where the boundary already moved; the ceiling result stands.
+
+## Cycle A4 — is "start a new session at a boundary" safe? (`A4-restart-safety.md`)
+
+**Found.** Of 582 instruction boundaries above 200k tokens, by lexical reuse the next instruction draws
+on more than 50k tokens of earlier content at 93% (median 187k, 38% of the context), mostly old
+(only 10.5% from the instruction just finished; 27% from ten or more back). Restarting only at
+"clean" boundaries saves under 1%. Charging every lexically reused token as a re-read keeps 26.7% of
+input (12.1% of cost) at the loosest detector, 40.9–45.7% (30–37% of cost) at stricter ones, against
+55% if the summary were enough.
+
+**Review — two measures disagree.** By lexical reuse, a summary of the last instruction could not
+carry what comes next. By behaviour after the 34 real compactions (cycle D2), which drop almost
+everything for a ~22k summary, the agent re-read only about 0.7 files (≈7k tokens) per compaction
+beyond its habit. Lexical-v1 counts a whole segment as reused when one distinctive word reappears;
+that measures mention, not need. Which one predicts what a summary must carry is testable on the
+data: cycle A5 uses the real compactions as a natural experiment.
+
+**Discussion.** Until A5 (and in the end an experiment) settles it, the restart and ceiling levers
+are reported as a range: from about 12–27% (every lexical mention must be restored) to about 55%
+(the summary is enough).
