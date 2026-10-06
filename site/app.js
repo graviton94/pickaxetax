@@ -4,7 +4,7 @@ import { analyzeInput, analyzeTurns, LinkInput } from "./engine.js";
 import { skeletonContribution, solvePow, validateContribution } from "./contrib.js";
 import { footprint } from "./carbon.js";
 
-export const ENGINE_VERSION = "0.3.1"; // kept equal to pyproject.toml by tests/test_contrib.py
+export const ENGINE_VERSION = "0.4.0"; // kept equal to pyproject.toml by tests/test_contrib.py
 const CONFIG = window.PXT_CONFIG || { contribUrl: "", repo: "graviton94/pickaxetax" };
 
 // ---------- i18n ----------

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pickaxetax"
-version = "0.3.1"
+version = "0.4.0"
 description = "Pickaxe Tax: measure and cut wasted AI compute -- local LLM proxy, conversation skeletons, over-computation benchmark, Compute Bubble Index."
 readme = "README.md"
 requires-python = ">=3.10"

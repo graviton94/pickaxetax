@@ -92,6 +92,9 @@ def mutations():
         lambda p: p["data"].__setitem__("labels", ["<script>"]),
         lambda p: p["data"].__setitem__("turns", []),
         lambda p: p["data"].__setitem__("blob", "x" * 40000),
+        # Python's "$" also matches before a trailing newline; JS's does not
+        lambda p: p.__setitem__("version", p["version"] + "\n"),
+        lambda p: p["data"].__setitem__("labels", ["react\n"]),
     ]
     cases += [(mut(sk, f), False) for f in bad]
     good = [
@@ -140,6 +143,8 @@ def mutations():
         (mut(lg, lambda p: p["data"]["rows"][0].__setitem__("day", "yesterday")), False),
         (mut(lg, lambda p: p["data"]["rows"][0].__setitem__("measured_requests", 9)), False),
         (mut(lg, lambda p: p["data"]["rows"][0].__setitem__("action", "spy")), False),
+        (mut(lg, lambda p: p["data"]["rows"][0].__setitem__("day", p["data"]["rows"][0]["day"] + "\n")), False),
+        (mut(lg, lambda p: p["data"]["rows"][0].__setitem__("model", p["data"]["rows"][0]["model"] + "\n")), False),
     ]
     return cases
 
@@ -287,3 +292,32 @@ def test_ingest_issue_rejects_invalid(repo_with_remote):
     issue = {"number": 5, "user": {"login": "bob"}, "body": "```json\n{\"schema\": \"x\"}\n```"}
     assert contrib_ops.ingest_issue({"issue": issue}, work) == "invalid"
     assert "did not pass validation" in calls[0][2]["body"]
+
+
+def test_invalid_comment_cannot_inject_markdown(repo_with_remote):
+    # validation errors quote attacker-chosen keys; they must stay inside one inline code span
+    _, work, calls = repo_with_remote
+    p = contrib.skeleton_contribution(skeleton())
+    p["x` [click](https://evil.example) @someone\n# heading `"] = 1
+    issue = {"number": 6, "user": {"login": "eve"}, "body": "```json\n" + json.dumps(p) + "\n```"}
+    assert contrib_ops.ingest_issue({"issue": issue}, work) == "invalid"
+    body = calls[0][2]["body"]
+    for line in body.splitlines():
+        if line.startswith("- "):
+            assert line.count("`") == 2 and line.startswith("- `") and line.endswith("`")
+    assert "\n# heading" not in body
+
+
+@pytest.mark.skipif(NODE is None, reason="node not installed")
+def test_worker_rate_limit_buckets_ipv6_per_64():
+    root = Path(__file__).resolve().parents[1]
+    script = (
+        f"import {{ ipBucket }} from '{(root / 'worker/src/index.js').as_uri()}';"
+        "console.log(JSON.stringify(['203.0.113.7','2001:db8:1:2:3:4:5:6','2001:DB8:1:2::9','2001:db8:1:3::1','::ffff:198.51.100.2','::1'].map(ipBucket)));"
+    )
+    out = subprocess.run([NODE, "--input-type=module", "-e", script], capture_output=True, text=True, check=True).stdout
+    a, b, c, d, e, f = json.loads(out)
+    assert a == "203.0.113.7" and e == "198.51.100.2"
+    assert b == c == "2001:db8:1:2::/64"       # same /64, any interface id, any case or compression
+    assert d != b                               # a different /64 is a different bucket
+    assert f == "0:0:0:0::/64"

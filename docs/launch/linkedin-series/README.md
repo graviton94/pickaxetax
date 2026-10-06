@@ -1,6 +1,6 @@
 # LinkedIn series: the plan, chapter by chapter
 
-The project is published on LinkedIn as **research notes, one at a time**. There is no fixed list of notes: each note reports what the research reached that day, and the maintainer and Claude write it together. The comments on one note can shape the next research step. Decisions: [ADR-0009](../../decisions/0009-linkedin-series.md), [ADR-0010](../../decisions/0010-benchmark-and-backtest.md).
+The project is published on LinkedIn as **research notes, one at a time**. There is no fixed list of notes: each note reports what the research reached that day. The comments on one note can shape the next research step. Decisions: [ADR-0009](../../decisions/0009-linkedin-series.md), [ADR-0010](../../decisions/0010-benchmark-and-backtest.md).
 
 ## Format (ADR-0009, ADR-0010)
 
@@ -10,22 +10,22 @@ The project is published on LinkedIn as **research notes, one at a time**. There
 | Language | **Korean is the original, English is the translation**, both in **one post** (Korean first, then `— English —`, then the English) |
 | Voice | 합니다체, first person, from the maintainer's account |
 | Length | Korean **700–900 characters**; the whole post (both languages) stays under LinkedIn's 3,000-character limit. Each file states its counts |
-| Cadence | When there is a result worth reporting; the date is set together for each note |
+| Cadence | When there is a result worth reporting; the date is set for each note |
 | Title line | `[연구 노트 #N] 제목` / `[Research note #N] Title` |
 | Ending | `#AntiTokenMaxing` once at the very end. A "next note" line only when the next step is already known |
-| Drafts | Written together with the maintainer: Korean first, English translated from the final Korean. Status is in each file |
+| Drafts | Korean first, English translated from the final Korean. Status is in each file |
 
 ## Notes
 
 | # | Note | Status | Posted |
 |---|---|---|---|
-| 1 | [곡괭이세](01-the-pickaxe-tax.md) | draft, being refined together | — |
+| 1 | [21세기 골드러시의 영수증](01-the-pickaxe-tax.md) | draft v4, being refined | — |
 
 ## How a note is made
 
 1. A research step is done (a measurement, an experiment, a tool, a failure).
 2. Together we decide what that step showed and what is worth telling.
-3. The Korean is drafted and refined together; the English is translated from the final Korean.
+3. The Korean is drafted and refined; the English is translated from the final Korean.
 4. Every number is added to the facts table ([../README.md](../README.md#facts-sources-for-every-number-in-the-drafts)) before posting.
 
 ## After each post

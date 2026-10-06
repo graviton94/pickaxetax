@@ -1,4 +1,4 @@
-// Pickaxe Tax contribution intake (Cloudflare Worker + D1, free tier).
+// #AntiTokenMaxing contribution intake (pickaxetax) (Cloudflare Worker + D1, free tier).
 //
 // Anonymous by design: no accounts, no cookies, no IP stored. Abuse is made
 // expensive with a proof-of-work challenge and a per-day limit keyed by a
@@ -68,9 +68,22 @@ async function challenge(req, env) {
   return json(req, env, { seed, bits, exp, sig: await hmac(s, `${seed}|${bits}|${exp}`) });
 }
 
+// One person usually holds a whole IPv6 /64 and can rotate addresses inside it,
+// so IPv6 is limited per /64. IPv4 (and IPv4-mapped IPv6) per address.
+export function ipBucket(ip) {
+  if (!ip.includes(":")) return ip;
+  const [head, tail = ""] = ip.toLowerCase().split("::");
+  const h = head ? head.split(":") : [];
+  const t = tail ? tail.split(":") : [];
+  const last = (t.length ? t : h)[(t.length ? t : h).length - 1] || "";
+  if (last.includes(".")) return last;
+  const full = ip.includes("::") ? [...h, ...Array(Math.max(0, 8 - h.length - t.length)).fill("0"), ...t] : h;
+  return full.slice(0, 4).map((x) => (parseInt(x, 16) || 0).toString(16)).join(":") + "::/64";
+}
+
 async function rateLimited(req, env) {
   // salted with the secret and the date: unlinkable across days, never stored raw
-  const ip = req.headers.get("CF-Connecting-IP") || "unknown";
+  const ip = ipBucket(req.headers.get("CF-Connecting-IP") || "unknown");
   const day = today();
   const key = await hmac(await secret(env), `rate|${day}|${ip}`);
   await env.DB.prepare("DELETE FROM rate WHERE day <> ?").bind(day).run();

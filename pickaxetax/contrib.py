@@ -48,11 +48,11 @@ BOUND_NUMS = ["sessions", "api_calls", "measured_input", "pinned_input", "writte
 BOUND_PCTS = ["P0", "P1000", "P10000", "Pinf"]
 BOUND_ROWS = 200
 
-LABEL_RE = re.compile(r"^[^\W_][\w+#.\-]{1,31}$")  # letters/digits first; \w here is Unicode like \p{L}\p{N}_
-MODEL_RE = re.compile(r"^[A-Za-z0-9._:/\-]{0,64}$")
-TOOL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,40}$")
-DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$", re.ASCII)
-VERSION_RE = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}$", re.ASCII)
+LABEL_RE = re.compile(r"^[^\W_][\w+#.\-]{1,31}\Z")  # letters/digits first; \w here is Unicode like \p{L}\p{N}_
+MODEL_RE = re.compile(r"^[A-Za-z0-9._:/\-]{0,64}\Z")
+TOOL_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,40}\Z")
+DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}\Z", re.ASCII)
+VERSION_RE = re.compile(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\Z", re.ASCII)
 BIG = 1e12
 
 

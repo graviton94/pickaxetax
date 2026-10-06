@@ -1,20 +1,28 @@
 # Launch kit
 
-Channels: **X**, **LinkedIn** and **Reddit**. The drafts are ready to post from the maintainer's accounts; every number in them is reproducible (see "Facts" below).
+Channels: **LinkedIn** first, then **GeekNews**, **Hacker News** and **Reddit**. The drafts are ready to post from the maintainer's accounts; every number in them is reproducible (see "Facts" below).
 
 ## Before posting (one time)
 - [ ] The web app loads at https://graviton94.github.io/pickaxetax/. Click "Try an example", then Analyze.
-- [ ] The link preview shows the OG card. Check it in the X or LinkedIn post composer.
+- [ ] The link preview shows the OG card (`site/og.png`). Check it in the LinkedIn post composer.
+- [ ] `pip install pickaxetax` installs 0.4.0 or later, so the site's "get your own receipt" commands work.
 - [ ] Optional: the Cloudflare secrets are set, so the *Contribute anonymously* button is live.
 - [ ] Optional: the repository description, topics and website are set (see ADR-0007).
 
 ## Order
-The project is published as **LinkedIn research notes, one at a time**, written together as the research progresses (ADR-0009). The current state is in [linkedin-series/](linkedin-series/README.md). When the tool goes public, and when the X thread and Reddit posts follow, is decided along the way. The checklist above must be done before any post links to the site.
+The project is published as **LinkedIn research notes, one at a time**, written as the research progresses (ADR-0009). The current state is in [linkedin-series/](linkedin-series/README.md). When the tool goes public, and when the X thread and Reddit posts follow, is decided along the way. The checklist above must be done before any post links to the site.
 
 - Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
 - Reddit: one subreddit per day, never cross-posted at once, following each subreddit's self-promotion rules.
 
-`linkedin.md` and `x-thread.md` are kept as material.
+Suggested sequence for the first week:
+
+1. **Day 0, LinkedIn:** research note 1 with its receipt image ([linkedin-series/](linkedin-series/README.md)); the site link goes in the first comment.
+2. **Day 1–2, GeekNews:** Show GN ([show.md](show.md)).
+3. **Day 3–5, Hacker News:** Show HN on a weekday morning, US Eastern ([show.md](show.md)).
+4. **After HN, Reddit:** r/ClaudeAI ([show.md](show.md)), one subreddit per day.
+
+`linkedin.md`, `x-thread.md` and `reddit.md` are earlier drafts with the old name and the n = 1 session numbers; they are kept as material only.
 
 ## Facts (sources for every number in the drafts)
 | Claim | Source |

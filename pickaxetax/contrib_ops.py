@@ -146,6 +146,11 @@ def _commit_push(d: Path, msg: str) -> None:
         _git("push", "-u", "origin", DATA_BRANCH, cwd=d)
 
 
+def _inline(text: object, limit: int = 200) -> str:
+    """Error text quotes keys the submitter chose; keep it inside one inline code span."""
+    return " ".join(str(text).replace("`", "'").split())[:limit]
+
+
 def ingest_issue(event: dict, root: Path) -> str:
     issue = event.get("issue") or {}
     number = issue.get("number")
@@ -171,7 +176,7 @@ def ingest_issue(event: dict, root: Path) -> str:
     except ValueError as e:
         errs = [str(e)]
     if errs:
-        msg = "Thanks! This contribution did not pass validation, so nothing was stored:\n\n" + "\n".join(f"- `{e}`" for e in errs[:15])
+        msg = "Thanks! This contribution did not pass validation, so nothing was stored:\n\n" + "\n".join(f"- `{_inline(e)}`" for e in errs[:15])
         msg += "\n\nGenerate the payload with the web app or `pxt contribute --github`, then edit the issue to retry."
         _gh("POST", f"/issues/{number}/comments", {"body": msg})
         return "invalid"
@@ -182,6 +187,6 @@ def ingest_issue(event: dict, root: Path) -> str:
     _commit_push(d, f"contribution #{number} ({payload['kind']})")
     _gh("POST", f"/issues/{number}/comments", {"body": (
         "✅ Validated and stored as a **verified** contribution. It will appear in the public aggregate at the next site build. "
-        "Comment `/withdraw` at any time to remove it. Thank you for refusing the pickaxe tax. #AntiTokenMaxing")})
+        "Comment `/withdraw` at any time to remove it. Thank you for helping measure the waste. #AntiTokenMaxing")})
     _gh("PATCH", f"/issues/{number}", {"state": "closed", "state_reason": "completed"})
     return "stored"
