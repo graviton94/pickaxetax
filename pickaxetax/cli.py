@@ -469,13 +469,15 @@ def _survey_judge(args) -> int:
     if args.out:
         with open(args.out, "w", encoding="utf-8") as f:
             json.dump(rep, f, ensure_ascii=False, indent=1)
-    print(f"{'session':8} {'calls':>7} {'input':>15} {'W1 dup':>10} {'W2 fail':>10} {'W6 churn':>12} {'floor %':>8} {'price %':>8}")
+    print(f"{'session':8} {'calls':>7} {'input':>15} {'W1 dup':>10} {'W2 fail':>10} {'W6 churn':>12} {'tokens %':>9} {'cost %':>7}")
     for label, r in sorted(per.items()):
         print(f"{label:8} {r['calls']:>7,} {r['input_processed']:>15,} {r['W1']['tokens']:>10,} {r['W2']['tokens']:>10,} "
-              f"{r['W6']['tokens']:>12,} {r['floor_pct_of_input']:>8.3f} {r['floor_pct_price_weighted']:>8.2f}")
+              f"{r['W6']['tokens']:>12,} {r['floor_pct_of_input']:>9.4f} {r['floor_pct_price_weighted']:>7.2f}")
     t = rep["total"]
     print(f"{'total':8} {t['calls']:>7,} {t['input_processed']:>15,} {t['W1']['tokens']:>10,} {t['W2']['tokens']:>10,} "
-          f"{t['W6']['tokens']:>12,} {t['floor_pct_of_input']:>8.3f} {t['floor_pct_price_weighted']:>8.2f}")
+          f"{t['W6']['tokens']:>12,} {t['floor_pct_of_input']:>9.4f} {t['floor_pct_price_weighted']:>7.2f}")
+    print("tokens %: removable tokens (W1 + W2) of all input processed. cost %: W1 + W2 at the cache-write price "
+          "plus W6's write premium over a read, of the input-side cost.")
     causes = ", ".join(f"{k} {v['tokens']:,}" for k, v in t["W6"]["by_cause"].items() if v["count"])
     if causes:
         print(f"W6 by what came before the re-write: {causes}")

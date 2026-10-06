@@ -41,7 +41,10 @@ def test_cache_churn(tmp_path):
     r = run(t, tmp_path)
     assert r["W6"]["count"] == 1
     assert r["W6"]["tokens"] == 10_805   # the previous context (10,500 + 300 + 5) re-written
-    assert 0 < r["floor_pct_of_input"] < 100
+    # churned tokens are processed either way: not removable tokens, but a removable cost
+    assert r["removable_tokens"] == 0 and r["floor_pct_of_input"] == 0
+    assert r["floor_price_units"] == 10_805 * (judge.PRICE["cache_write"] - judge.PRICE["cache_read"])
+    assert 0 < r["floor_pct_price_weighted"] < 100
 
 
 def test_limit_instructions(tmp_path):
@@ -99,3 +102,14 @@ def test_local_subagent_transcripts_are_read_and_kept_apart(tmp_path):
     assert r["main"]["calls"] == 1 and r["subagents"]["calls"] == 2
     assert r["W1"]["count"] == 0
     assert judge.judge_source(path, limit_calls=1)["subagents"]["calls"] == 0  # cut at the snapshot
+
+
+def test_carry_until_compaction(tmp_path):
+    t = T()
+    t.tool("a", "Bash", {"command": "make"}).result("a", "error: boom " * 10, is_error=True)
+    t.call(1000).call(1100)                      # carried by two later calls
+    t.raw({"type": "system", "subtype": "compact_boundary"})
+    t.call(500)                                  # after compaction: no longer carried
+    r = run(t, tmp_path)
+    assert r["carried_by_later_calls"]["W2"] == r["W2"]["tokens"] * 2
+    assert r["carried_by_later_calls"]["W1"] == 0

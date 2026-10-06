@@ -15,7 +15,7 @@ sources and is left out of the floor.
 |---|---|---|
 | **W1 Duplication** | A tool call with the same tool name and the same input (canonical JSON) as an earlier call in the same context (the main session, or one sub-agent run), whose result text is byte-identical to that earlier call's result, with no compaction in between | The repeated result's tokens, where it arrives |
 | **W2 Failure** | A tool result marked as an error | The error result's tokens |
-| **W6 Cache churn** | On the main session only: call *i* had to write to the cache part of the context that call *i−1* already held. Missed = min(cache write of *i*, context of *i−1* − cache read of *i*), counted when it exceeds 2% of the previous context. Skipped when the context shrank (compaction or a cleared session) | The missed tokens |
+| **W6 Cache churn** | On the main session only: call *i* had to write to the cache part of the context that call *i−1* already held. Missed = min(cache write of *i*, context of *i−1* − cache read of *i*), counted when it exceeds 2% of the previous context. Skipped when the context shrank (compaction or a cleared session) | The missed tokens (see below: a cost, not removable tokens) |
 
 Each sub-agent run is its own context: a local transcript's sub-agent files
 (`<session>/subagents/*.jsonl`) are read with it, and event-API lines are keyed by the tool
@@ -26,11 +26,17 @@ from the provider-recorded usage of each call.
 
 ## Views
 
-- **Raw:** floor tokens as a share of all input processed (uncached input + cache reads +
-  cache writes, main session and sub-agents).
-- **Price-weighted:** the same tokens priced as cache writes (1.25×), as a share of the
-  input-side cost (uncached 1×, cache reads 0.1×, cache writes 1.25×). This is closer to the
-  compute and money spent, because cache reads are cheap and cache writes are not.
+W1 and W2 tokens need not have entered any context: they are **removable tokens**. W6 tokens
+are different. They would have been processed anyway, as cache reads; what was wasted is
+processing them from scratch (prefill compute) and paying the cache-write price instead of the
+cache-read price. So W6 adds no removable tokens, only a **removable cost**.
+
+- **Tokens:** removable tokens (W1 + W2) as a share of all input processed (uncached input +
+  cache reads + cache writes, main session and sub-agents).
+- **Cost:** W1 + W2 priced as cache writes (1.25×), plus W6 priced at the write premium over a
+  read (1.25× − 0.1× = 1.15×), as a share of the input-side cost (uncached 1×, cache reads
+  0.1×, cache writes 1.25×). This is closer to the compute and the money spent, because cache
+  reads are cheap and cache writes are not.
 
 ## W6, broken down by cause
 
@@ -41,6 +47,12 @@ option): under 5 minutes, 5 minutes to 1 hour, over 1 hour. A re-write after a l
 is waste only in the codebook's sense (the tokens could have been kept by a longer-lived
 cache, a smaller context, or a summary); whether that should count the same as a re-write a
 minute later is an open question for the joint review, and every result shows the split.
+
+## Carry of W1 and W2, descriptive
+
+A W1 or W2 result stays in the context and is processed again by every later main-chain call
+until the next compaction. The judge reports that carry (tokens × later calls) next to the
+floor, never in it: whether carrying something is waste is W5's to judge (rule tier).
 
 ## What it does not count, by design
 
