@@ -54,8 +54,10 @@ The levers a user can pull today, as a short project instruction file (for examp
   hash in the context; the agent reads the file again when it needs it. As a convention (no
   harness change), E1's first line approximates it.
 - **Measures:** as E2; plus re-reads of written files and Edit failures (wrong old text).
-- **Expectation from phase 2:** about 10–20% of input only together with a restart rule or a lower
-  compaction ceiling; alone, under today's ceiling, about nothing, and more in cost (cycles A2, B3).
+- **Expectation from phase 2:** small. With compactions left where they were it would save 10–20%
+  (cycle A2), but under today's ceiling alone about nothing (−4%), on top of a restart rule
+  +1.6 points (+0.5 on top of restart and earlier compaction), and in cost it loses, because
+  re-fetched content is written at 2× (cycle B3).
   Test it as an add-on arm to E2, not on its own.
 
 ## E4 — Compaction ceiling (needs a harness setting)

@@ -526,3 +526,56 @@ While sealing, the primary T2 main labels did not reproduce their sealed hash: o
 differs. The re-seal after cycle E2 had run three minutes before E2's last fix was committed. The
 file was re-sealed from the committed code and the protocol corrected, before any label existed.
 The other three primary files reproduce exactly.
+
+## Cycle E7 — a consistency audit of every published number
+
+**Found.** An auditor with no part in the analyses checked every number in the phase 2 documents,
+the survey pages, the launch facts, the note 2 draft and figures, the site and the changelog against
+their sources. Most matched: the what-if replay on the public data equals the published numbers
+exactly, and the note 2 slides regenerate byte for byte. It listed 32 discrepancies.
+
+**Fixed.**
+- CHANGELOG still gave the pre-correction removable cost (5.79%; now 8.92%).
+- The note 2 draft's step split was stale: 222 + 256 steps is now 223 + 255; the total is unchanged.
+- The synthesis's total opportunity range was "41–56%". Across the detectors it cites it is 35–56%.
+- The phase 3 plan expected 10–20% from pointers with a restart; B3 measured +1.6 points.
+- Ceiling-dependent numbers computed before E6 (E4 interval, C5 money, 390k range) are now updated
+  or marked.
+- validity.md undercounted the review findings.
+- The survey contribution proposal misdescribed the anonymity threshold of the other kinds.
+- A few rounding and wording fixes in the launch facts table.
+
+**Left for the data owner.**
+- The note 2 draft quotes the earlier ranges (4~25%, 35~54%), and its framing rests on forgetting
+  being small (see E8).
+- The site and README on `dev` still carry v1 numbers (73.6%, 5.87B, 586 instructions, 148 kg).
+  The site branch has v2 and waits for note 2.
+- "석 달" against the eight weeks of token records.
+- The v1 sections of the user01 README are historical but not marked as such.
+
+## Cycle E8 — which definition of "reused" predicts need? (`E8-behaviour-test.md`)
+
+**Found.** At the 34 real compactions, 5,073 dropped tool results came from file reads, and 46% (50
+calls) to 65% (200 calls) of them were re-read. The question is which E5 definition of reuse
+predicts which files those were.
+- Plain lexical-v1 is best (AUC 0.574 / 0.612), followed by the cross-session corrections
+  (0.55–0.60).
+- The time-mirror corrections and the strict vocabulary filter do no better than chance
+  (0.50–0.53). The gap between lexical-v1 and the mirror correction is 0.12, with a 95% interval of
+  0.06–0.18.
+- The segments the mirror calls "unused" are re-read at the base rate: its extra forgetting is
+  random thinning.
+- Recency carries no signal, and size carries about as much as lexical reuse.
+- The ordering holds with any session left out, within size groups, and with one segment per file.
+
+**Review.** The behavioural label is a lower bound on need: it misses need met by the summary,
+re-injection or inference. Re-reading is partly habit (three in four reads). Both pull the AUCs
+toward 0.5, so the ordering is more reliable than the levels. A modest AUC also means lexical reuse
+is a weak measure of need, even though it is the best one available.
+
+**Discussion.** E5's alarm is answered: the time-mirror placebo over-corrects, as its own caveat
+suspected, because a segment and the calls just before it share ancestry. Forgetting is most likely
+5.6–13%, and the paging opportunity is 41.5–48% under the supported definitions. "Carrying, not
+forgetting, is the larger lever" stands, and so does note 2's framing. Its "4~25%" (lexical-v1 over
+nine settings) contains the supported range. The pre-registered secondary W5 analysis will still
+test the time-mirror definition against human labels.

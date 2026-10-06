@@ -41,4 +41,4 @@ tag known; rejected otherwise with the existing error format.
 ## Public aggregate
 
 Medians and IQRs across contributors (not sessions) for each field, with the contributor count;
-nothing shown until at least five contributors, as for the other kinds.
+nothing shown until at least five contributors (stricter than the k = 3 the other kinds apply to topic labels, because a session-level profile is more identifying).
