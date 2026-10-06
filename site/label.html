@@ -23,9 +23,12 @@
     <section id="setup" class="card lb-setup">
       <h1 data-t="setup_h">낭비 판정 · 블라인드 라벨링</h1>
       <p class="muted" data-t="setup_lede"></p>
+      <details class="lb-guide" open><summary data-t="howto_h"></summary><ul id="howto"></ul></details>
       <ol class="lb-steps">
         <li><label for="packet" data-t="step1"></label> <input type="file" id="packet" accept=".json,application/json"> <span id="packet-info" class="muted"></span></li>
-        <li><label for="coder" data-t="step2"></label> <input id="coder" maxlength="12" autocomplete="off" placeholder="A"></li>
+        <li><label for="coder" data-t="step2"></label> <input id="coder" maxlength="12" autocomplete="off" placeholder="A">
+          <p id="coder-locked" class="small lb-help" data-t="coder_locked" hidden></p>
+          <p class="muted small lb-help" data-t="step2_help"></p></li>
         <li><span data-t="step3"></span>
           <label class="lb-inline"><input type="radio" name="phase" value="calibration" checked> <span data-t="phase_cal"></span></label>
           <label class="lb-inline"><input type="radio" name="phase" value="main"> <span data-t="phase_main"></span></label></li>
@@ -46,6 +49,7 @@
       <div class="lb-grid">
         <article class="card lb-item" aria-live="polite">
           <p class="lb-meta" id="item-meta"></p>
+          <details class="lb-guide lb-read"><summary data-t="read_h"></summary><ul id="readhelp"></ul></details>
           <h2 data-t="instr"></h2>
           <pre class="lb-text" id="item-instruction"></pre>
           <h2 data-t="steps"></h2>
