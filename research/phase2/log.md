@@ -389,3 +389,26 @@ correction note. The synthesis range (39–43%) was not affected.
 differ from pooled values by up to 7 points, so pooled numbers describe the large sessions. The
 intervals are for this one person only, and at n = 10 they are too narrow. The assumptions (the
 detector in E3, whether a summary is enough in A4/A5) move the numbers far more.
+
+## Cycle C5 — where the money goes (`C5-money.md`)
+
+**Found.** At list-price ratios (output at 5×), cache reads are 71–74% of all spending, 1-hour
+cache writes 16%, output an estimated 9–12%, uncached input about nothing. 76% of the main
+sessions' cache-read money is for context carried from finished instructions: about half of all
+money (52–54%), 62–64% with the re-writes after expiry. Sub-agents are 3.8% of input but about 5%
+of money (a fifth of it output). Ranked by money, the levers keep their order (ceiling 200k 50–52%,
+restart above 200k 43–45%, ceiling 390k 33–35% of total money); each shrinks by about a fifth
+(price weighting, untouched sub-agents, output, the summaries' own output). The floor reproduces
+exactly (8.92% of input-side money; 7.9–8.1% with output).
+
+**Review.** Output is the weak part: recorded counts are placeholders everywhere but S01's main
+session, so output is transferred from S01 through visible output and thinking-signature length
+(held-out error +6% within S01; across sessions it is untested). Nothing in the ordering depends on
+it: the band only rescales every lever. The "carried" split uses cycle B's definition, which counts
+invisible carried content and post-compaction summaries as carried; the visible-only definition
+would give about a third of all money, a lower bound.
+
+**Discussion.** This is the plainest statement of the thesis in money: about half of what was paid
+went to re-reading finished work. It supports leading with the cost view, not the token view, when
+talking about levers. A third disclosure would help: output and thinking tokens per call, as
+recorded by the API.

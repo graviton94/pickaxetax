@@ -31,6 +31,11 @@ quarter of every cycle takes 35% of all main-session input (cycle D2). The agent
 has already read all the time (about three reads in four, compaction or not), so content dropped
 from the context does come back when needed.
 
+**In money** (cycle C5, list-price ratios, output at 5×): cache reads are 71–74% of all spending,
+1-hour cache writes 16%, output an estimated 9–12% (event logs record only placeholders), uncached
+input about nothing. **About half of all money (52–54%) re-reads context carried from instructions
+already finished**, 62–64% with its re-writes after the cache expired.
+
 **The ceiling sets the average.** Compaction fires only near the ceiling, so a long session's
 context runs a sawtooth between about 64k and 783k whatever goes into it. A policy that only slows
 the growth (trimming, pointers) mostly delays the next compaction and leaves the average about where
@@ -61,6 +66,10 @@ Share of main-session input that would not have been processed, with what each l
 | **Compaction ceiling at 150–200k instead of 783k** | **66–72% of input** (about 56–64% of cost) | more frequent summaries lose nothing needed | no | harness (one setting) | B4 |
 | Compact before leaving (breaks over 1 h) | up to 29% of cost | a 30k summary is enough | no | the user / harness | C |
 | Delegate reading to sub-agents (11–50 calls) | 1.4–5.1× cheaper than reading in the main session | the same reads were needed | no | the agent | D |
+
+In money (output included, cycle C5) every saving shrinks by about a fifth and the order stays the
+same: ceiling 200k 50–52%, restart above 200k 43–45%, ceiling 390k 33–35%. Only the floor changes
+standing: about 0 in tokens, about 8% of money.
 
 (Savings are not additive: several levers act on the same context. In the full bundle the restart
 rule does almost all the work; an earlier compaction adds 1.6 points and pointers 0.5, cycle B3.)
