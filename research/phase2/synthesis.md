@@ -61,6 +61,7 @@ Share of main-session input that would not have been processed, with what each l
 | Carry a pointer instead of what the agent wrote | about 20% if compactions stayed where they were; **about 0 (−4%) alone** when compaction fires at the ceiling; negative in cost (re-fetched content is written at 2×) | the agent re-reads when it needs it | no | harness / agent convention | A2, B3 |
 | **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; 52–55% (47–50% of cost) with the re-reads observed after real compactions; 43% (31%) at the worst plausible re-read rate (4–19× the observed); 52–53% (47–48%) with a median real cold start charged to every restart, 41% at the 90th percentile | that each restart loses nothing the re-reads do not restore | no | the user, today | B, B3, A4, A5, B5 |
 | New session every 3 / 10 instructions | 55.1% / 23.0% | same | no | the user, today | B |
+| New session only when returning after a break over 1 h (context above 200k) | 16% of input, 20% of cost, 48 restarts | same; the returning call re-writes the whole context anyway | no | the user, today | A6, C |
 | Compact at half the usual ceiling (about 390k instead of 780k) | 39–44% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3 |
 | **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |
 | **Compaction ceiling at 150–200k instead of 783k** | **67–73% of input** (about 61–65% of input-side cost) | more frequent summaries lose nothing needed | no | harness (one setting) | B4, E6 |
@@ -115,6 +116,10 @@ at n = 10 (cycle D3).
    re-obtained 10–21k distinct tokens, beside about 22k restored by the harness, and no damage was
    visible in error rates or step counts (cycle A5). The cost of re-reading therefore does not limit
    the restart lever; whether quality survives 150 restarts instead of 34 compactions is the open part.
+   No signal known at the boundary (the new prompt's overlap with the context, its length, the
+   break before it) picks boundaries where less is re-read afterwards; refusing a boundary only moves
+   the restart to the next one (cycle A6). So the restart rule cannot be made safer by being
+   selective; it can only be tested.
 4. **Every large saving rests on an untested assumption** — that a summary, a pointer or a
    sub-agent's answer is enough. Phase 3 has to test exactly that, on real tasks with outcomes
    checked by tests.

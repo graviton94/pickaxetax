@@ -595,3 +595,31 @@ gives a CI of 0.65–1.54. Mock after-sets of 5 or 10 of its own sessions give C
 and 0.67–1.52. So one person's before/after can detect only a change to about 0.6× or less. The
 restart lever alone predicts about 0.45–0.5× if it is followed. Smaller levers (pointers, scripts
 that print only numbers) cannot be seen this way; they need E2's paired task set.
+
+## Cycle A6 — can a rule without foresight choose safer restart points? (`A6-restart-boundaries.md`)
+
+**Found.** The design was pre-specified before outcomes were seen.
+- 65% of the boundaries above 200k are followed by some re-read or re-run in the next instruction,
+  but the amounts are small: 0.9k tokens on average, and 0.9% of boundaries reach 10k. Most of it
+  is habit and the length of the next instruction.
+- No signal known at the boundary ranks this outcome. The new prompt's overlap with the context
+  gives an AUC of 0.46–0.54, with the sign flipping between sessions. Longer prompts and longer
+  breaks predict more re-reading, not less. Only the length of the instruction just finished carries
+  a signal, and it argues against restarting where the context is largest.
+- A rule chosen on half the sessions and tested on the other half keeps 89–90% of the charged
+  saving. Its harm rate is no lower than refusing boundaries at random (75/61% against 76/59%),
+  because a refused boundary only moves the restart to the next one.
+- With every restart charged a median cold start and its observed re-reads, the full rule saves
+  52.7% of input (47.6% of cost). Restarting only on return from a break over 1 h saves 16% of input
+  and 20% of cost with 48 restarts; those returns re-write the whole context at the write price
+  anyway.
+
+**Review.** The outcome is measured in sessions where no restart happened, so it sees re-reading
+habit, not loss of quality. Its small size (0.9k) is consistent with A5 and B5: the charge of a
+restart is a few points, not tens. The post-hoc parts (stratified AUC, hindsight bound,
+random-refusal control) are labelled as such in the memo.
+
+**Discussion.** The restart lever cannot be made safer by being selective, only tested (E2 in the
+phase 3 plan). The return-after-a-break rule is the cleanest version for a user. It costs nothing
+the return does not already cost, and it is easy to follow: "after an hour away, start a new
+session with a summary".
