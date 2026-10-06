@@ -335,3 +335,17 @@ is multiplied, which the numbers cannot see.
 **Discussion.** Today's ceiling sits about 5–8× above the token-optimal one. This is the cleanest
 structural result of phase 2: one harness setting, a closed-form optimum, and a single unknown (the
 quality cost per summary) for an experiment to measure.
+
+## Cycle A3 — the pointer lever replayed with real behaviour (`A3-pointer-behaviour.md`)
+
+**Found.** 1,352 file writes (458 Write tool, 894 shell). 68% are used again (median 2 calls later),
+16% are later edited, 29% read back, 23% rewritten. **When the agent edits a file it wrote itself, it
+did not re-read it first 81% of the time** (it edits from the copy carried in its context); files it did
+not write are re-read before 99.9% of edits. Replaying "stub after writing, re-fetch at the first edit
+not preceded by a read" gives 20.3% of input with the observed compaction points (lexical estimate on
+the same group: 19.0%) and **−3.8% when compaction is left to fire at the ceiling** — independent
+confirmation of cycle B3.
+
+**Discussion.** The carried copy of what the agent wrote is used: it is what the agent edits from.
+A pointer convention would turn those edits into re-reads (cheap, 7.5% of files). Its saving exists
+only where the boundary already moved; the ceiling result stands.
