@@ -16,20 +16,49 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#1f7a5a">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="landing.css">
 </head>
 <body>
   <header class="top">
     <a class="brand" href="./">PICKAXE<span>TAX</span></a>
     <nav>
-      <a href="https://github.com/graviton94/pickaxetax">GitHub</a>
+      <a href="#analyze" data-i18n="nav_check">Check</a>
+      <a href="#know" data-i18n="nav_know">Did you know?</a>
+      <a href="#bill" data-i18n="nav_bill">The first bill</a>
+      <a href="#about" data-i18n="nav_about">About us</a>
       <button id="lang" class="ghost" type="button" aria-label="language">한국어</button>
     </nav>
   </header>
 
+  <section id="intro" aria-label="intro">
+    <div class="chat" role="presentation">
+      <div class="chat-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>Pickaxe Tax</b>
+        <span class="chat-ctl"><button type="button" id="intro-skip" class="link-btn">Skip</button><button type="button" id="intro-replay" class="link-btn" hidden>Replay</button></span></div>
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <div class="composer"><div class="composer-text" id="composer-text" data-placeholder="Message"></div><button type="button" class="composer-send" id="composer-send" tabindex="-1" aria-hidden="true">↑</button></div>
+    </div>
+    <a class="scroll-cue" href="#know" aria-label="scroll">↓</a>
+  </section>
+
   <main>
-    <section id="hero">
+    <section id="know" class="band">
+      <p class="eyebrow" data-i18n="know_eyebrow">You know?</p>
+      <h2 data-i18n="know_title"></h2>
+      <p class="lede" data-i18n="know_lede"></p>
+      <div class="facts">
+        <article class="fact"><b data-i18n="k1_v">73.6%</b><p data-i18n="k1_t"></p></article>
+        <article class="fact"><b data-i18n="k2_v">0.2%</b><p data-i18n="k2_t"></p></article>
+        <article class="fact"><b data-i18n="k3_v">78만</b><p data-i18n="k3_t"></p></article>
+        <article class="fact"><b data-i18n="k4_v">45.6%</b><p data-i18n="k4_t"></p></article>
+        <article class="fact"><b data-i18n="k5_v">1.49×</b><p data-i18n="k5_t"></p></article>
+        <article class="fact"><b data-i18n="k6_v">586</b><p data-i18n="k6_t"></p></article>
+      </div>
+      <p class="src"><span data-i18n="know_src"></span> <a href="report/user01.html" data-i18n="bill_open"></a></p>
+    </section>
+
+    <section id="hero" class="band">
       <p class="kicker"><span data-i18n="kicker">Stop paying the pickaxe tax.</span> <b>#AntiTokenMaxing</b></p>
-      <h1 data-i18n="hero_title">Your AI re-reads the whole conversation, every single turn.</h1>
+      <h2 data-i18n="hero_title">Your AI re-reads the whole conversation, every single turn.</h2>
       <p class="lede" data-i18n="hero_lede"></p>
       <p class="privacy-badge" data-i18n="badge">🔒 Runs in your browser. Nothing is uploaded.</p>
     </section>
@@ -61,11 +90,43 @@
 
     <section id="result" hidden></section>
 
+    <section id="bill" class="band">
+      <p class="eyebrow" data-i18n="bill_eyebrow">The first bill</p>
+      <h2 data-i18n="bill_title"></h2>
+      <div class="bill-card">
+        <dl class="bill-fields">
+          <div><dt data-i18n="bill_f1">Subject</dt><dd data-i18n="bill_v1"></dd></div>
+          <div><dt data-i18n="bill_f2">Period</dt><dd data-i18n="bill_v2"></dd></div>
+          <div><dt data-i18n="bill_f3">Source</dt><dd data-i18n="bill_v3"></dd></div>
+        </dl>
+        <div class="bill-amount"><b data-i18n="bill_amount">58.71억</b><span data-i18n="bill_amount_note"></span></div>
+        <p class="lede" data-i18n="bill_lede"></p>
+        <div class="row"><a class="btn" href="report/user01.html" data-i18n="bill_open"></a></div>
+      </div>
+      <h3 data-i18n="bill_cmd_title"></h3>
+      <pre class="cmd">pip install pickaxetax
+pxt survey measure ~/.claude/projects --out my-dataset.json
+pxt survey report my-dataset.json --out my-report.html</pre>
+      <p class="muted" data-i18n="bill_cmd_note"></p>
+    </section>
+
     <section id="impact" hidden>
       <h2 data-i18n="impact_title"></h2>
       <p class="muted" data-i18n="impact_lede"></p>
       <div class="grid" id="impact-stats"></div>
       <div class="card" id="impact-topics" hidden><h3 data-i18n="impact_topics"></h3><div class="chips" id="impact-chips"></div></div>
+    </section>
+
+    <section id="about" class="band">
+      <p class="eyebrow" data-i18n="about_eyebrow">About us</p>
+      <h2 data-i18n="about_title"></h2>
+      <p class="lede" data-i18n="about_lede"></p>
+      <div class="principles">
+        <article><h3 data-i18n="p1_t"></h3><p data-i18n="p1_d"></p></article>
+        <article><h3 data-i18n="p2_t"></h3><p data-i18n="p2_d"></p></article>
+        <article><h3 data-i18n="p3_t"></h3><p data-i18n="p3_d"></p></article>
+      </div>
+      <p class="links"><a href="https://github.com/graviton94/pickaxetax">GitHub</a> · <a href="https://github.com/graviton94/pickaxetax/tree/HEAD/research" data-i18n="about_research"></a> · <a href="https://github.com/graviton94/pickaxetax/blob/HEAD/CONTRIBUTING.md" data-i18n="about_contribute"></a></p>
     </section>
   </main>
 
@@ -76,5 +137,6 @@
   <script src="config.js"></script>
   <script src="data/aggregate.js"></script>
   <script type="module" src="app.js"></script>
+  <script type="module" src="intro.js"></script>
 </body>
 </html>
