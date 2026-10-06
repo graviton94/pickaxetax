@@ -178,6 +178,12 @@ def main(argv: list[str] | None = None) -> int:
     sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
     sa.add_argument("labels", nargs=2)
     sa.add_argument("--json", action="store_true")
+    sc = svsub.add_parser("compare", help="before/after comparison of two datasets (experiment E1; numbers only)")
+    sc.add_argument("before", help="a dataset JSON, or a `pxt survey run` folder (dataset.json, floor.json if present)")
+    sc.add_argument("after", help="the same, for the sessions after the change")
+    sc.add_argument("--out", help="write the numbers as JSON")
+    sc.add_argument("--seed", type=int, default=20261006)
+    sc.add_argument("--reps", type=int, default=2000, help="bootstrap resamples (default 2000)")
 
     co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
     cosub = co.add_subparsers(dest="contrib_cmd", required=True)
@@ -452,6 +458,18 @@ def _survey(args) -> int:
         for k, v in t["saved_pct"].items():
             print(f"  {k:32} {t[k]:>16,}  {v:5.1f}% less")
         print("Counterfactuals under stated assumptions (a summary is enough; nothing has to be re-read): not waste judgments.")
+        return 0
+    if args.survey_cmd == "compare":
+        from .survey import compare
+        try:
+            r = compare.compare_paths(args.before, args.after, seed=args.seed, reps=args.reps)
+        except (OSError, ValueError) as err:
+            print(f"error: {err}", file=sys.stderr)
+            return 2
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as f:
+                json.dump(r, f, ensure_ascii=False, indent=1)
+        print(compare.render(r))
         return 0
     if args.survey_cmd == "report":
         with open(args.dataset, encoding="utf-8") as f:

@@ -579,3 +579,19 @@ suspected, because a segment and the calls just before it share ancestry. Forget
 forgetting, is the larger lever" stands, and so does note 2's framing. Its "4~25%" (lexical-v1 over
 nine settings) contains the supported range. The pre-registered secondary W5 analysis will still
 test the time-mirror definition against human labels.
+
+## Cycle B6 — tooling and a pre-registration for phase 3's first experiment
+
+`pxt survey compare BEFORE AFTER` compares two survey datasets or `pxt survey run` folders. Its
+primary measure is median main-session input per instruction, as a ratio, with a 90% bootstrap CI
+that resamples sessions (instructions are clustered). Its secondary measures are those of E1 in
+`phase3-experiments.md`. It warns when a side has fewer than 5 sessions or 30 instructions
+(`tests/test_compare.py`). `research/protocol/e1-before-after.md` pre-registers E1 against the ten
+measured sessions (digest `75f10a83…`). It is a draft for the data owner's approval, because adopting
+the bundle is their decision.
+
+The resolution found while writing it matters for the design. Comparing the before set with itself
+gives a CI of 0.65–1.54. Mock after-sets of 5 or 10 of its own sessions give CIs of about 0.61–1.64
+and 0.67–1.52. So one person's before/after can detect only a change to about 0.6× or less. The
+restart lever alone predicts about 0.45–0.5× if it is followed. Smaller levers (pointers, scripts
+that print only numbers) cannot be seen this way; they need E2's paired task set.
