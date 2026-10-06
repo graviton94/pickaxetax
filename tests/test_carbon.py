@@ -34,7 +34,7 @@ def test_published_numbers():
     # the figures the site and the launch notes print
     line = carbon.footprint(427_524)
     assert round(line["g_co2"], 1) == 10.8 and round(line["tree_hours"]) == 16 and round(line["twig_g"]) == 6
-    user01 = carbon.footprint(5_871_292_005)
-    assert round(user01["tree_years"]) == 25 and round(user01["g_co2"] / 1000) == 148
+    user01 = carbon.footprint(6_839_974_268)  # dataset v2
+    assert round(user01["tree_years"]) == 29 and round(user01["g_co2"] / 1000) == 173
     s = carbon.summary(427_524)
     assert math.isclose(s["upper"]["wh"], 10 * s["central"]["wh"])

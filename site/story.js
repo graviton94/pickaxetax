@@ -7,8 +7,8 @@ import { footprint, WH_PER_TOKEN, WH_PER_TOKEN_UPPER, G_CO2_PER_KWH, PHONE_CHARG
 import { observe } from "./motion.js";
 
 const LINE_TOKENS = 427524; // median re-read per call in a long working session (user01)
-const USER01_TOKENS = 5871292005; // user01, all Claude Code input, 2026-07-10 – 10-05
-const CARRIED = 0.736; // share of context carried over from finished instructions (user01)
+const USER01_TOKENS = 6839974268; // user01, all Claude Code input, 2026-07-10 – 10-05
+const CARRIED = 0.761; // share of context carried over from finished instructions (user01)
 const RESEARCH = "https://github.com/graviton94/pickaxetax/blob/HEAD/research/carbon-factors.md";
 
 const line = footprint(LINE_TOKENS);
@@ -41,11 +41,11 @@ const COPY = {
     title2a: "나무 한 그루의 ",
     title2b: `${years}년`,
     title2c: ".",
-    lede2: `AI가 다시 읽은 58억 7천만 토큰. 탄소 ${kg} kg. 나무 한 그루가 ${years}년 동안 흡수해야 하는 양입니다.*`,
+    lede2: `AI가 다시 읽은 68억 4천만 토큰. 탄소 ${kg} kg. 나무 한 그루가 ${years}년 동안 흡수해야 하는 양입니다.*`,
     foot2: "* 한 사용자가 석 달 동안 쓴 Claude Code 전체(영수증 No.01) 기준 추정입니다.",
     forestLabel: `나무 한 그루의 ${years}년. 그중 ${carriedYears}년은 이미 끝난 지시를 다시 읽는 데 쓰였습니다.`,
     key: "아이콘 하나 = 나무 한 그루의 1년",
-    legendA: `이미 끝난 지시를 다시 읽는 데 쓴 몫 (73.6%) · ${carriedYears}년`,
+    legendA: `이미 끝난 지시를 다시 읽는 데 쓴 몫 (76.1%) · ${carriedYears}년`,
     legendB: `나머지 · ${years - carriedYears}년`,
     upper: `캐시 할인 없이 계산하면 10배입니다. 나무 ${r(upper.trees_10y)}그루가 10년 동안 흡수할 양.`,
     punch: "그리고 이건, 단 한 사람입니다.",
@@ -61,7 +61,7 @@ const COPY = {
         ["데이터센터 전력", "2030년 전망. 2024년의 2.3배, 오늘 일본 전체가 쓰는 전기보다 많습니다", "945 TWh", "2"],
         ["그 전력의 탄소", `2030년 정점 전망. 나무 ${Math.round(costTrees / 1e8)}억 그루가 1년 내내 흡수해야 하는 양 (비유)`, "3.2억 t CO₂", "2,5"],
         ["전자폐기물", "생성형 AI가 2020~2030년에 남길 수명 다한 GPU·서버, 누적 추정", "최대 500만 t", "3"],
-        ["이미 끝난 지시의 잔재", "매 호출이 다시 읽은 컨텍스트 중 끝난 지시에서 넘어온 몫. 이 중 정말 필요 없었던 양은 공개한 기준으로 판정 중입니다. 출력이 기록된 세션 3개에서 AI는 1,000토큰을 읽고 2~4토큰을 썼습니다", "73.6%", "4"],
+        ["이미 끝난 지시의 잔재", "매 호출이 다시 읽은 컨텍스트 중 끝난 지시에서 넘어온 몫. 이 중 정말 필요 없었던 양은 공개한 기준으로 판정 중입니다. 출력이 기록된 세션 3개에서 AI는 1,000토큰을 읽고 2~4토큰을 썼습니다", "76.1%", "4"],
       ],
       total: ["결제 수단", "지구"],
       stance: "AI를 반대하지 않습니다. 낭비를 반대합니다.",
@@ -73,7 +73,7 @@ const COPY = {
         ["영수증 No.01: 한 사용자의 석 달치 Claude Code 실측. 출력은 출력 기록이 남은 세션 3개에서 입력의 0.19~0.43%. 낭비 판정 기준(v1)은 연구 저장소에 공개.", "report/user01.html", "https://github.com/graviton94/pickaxetax/blob/HEAD/research/protocol/waste-codebook-v1.md"],
         ["나무 비유: 미국 EPA, 도시 묘목 한 그루가 1년에 CO₂ 6 kg 흡수(10년 60 kg)로 환산.", "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator-calculations-and-references"],
       ],
-      caveat: "각주 1~3은 AI와 데이터센터 전체의 수치이고, 각주 4는 한 사용자의 실측입니다. 73.6%를 전 세계 연산의 낭비율로 읽어서는 안 됩니다. 그 비율을 재는 것이 이 프로젝트가 하려는 일입니다.",
+      caveat: "각주 1~3은 AI와 데이터센터 전체의 수치이고, 각주 4는 한 사용자의 실측입니다. 76.1%를 전 세계 연산의 낭비율로 읽어서는 안 됩니다. 그 비율을 재는 것이 이 프로젝트가 하려는 일입니다.",
     },
     method: "어떻게 계산했나요? 추정이고, 일부는 비유입니다",
     chain: [
@@ -101,11 +101,11 @@ const COPY = {
     title2a: "",
     title2b: `${years} years`,
     title2c: " of a tree’s life.",
-    lede2: `5.87 billion tokens re-read by AI. ${kg} kg of CO₂: what one tree absorbs in ${years} years.*`,
+    lede2: `6.84 billion tokens re-read by AI. ${kg} kg of CO₂: what one tree absorbs in ${years} years.*`,
     foot2: "* All Claude Code use of one user over three months (Receipt No. 01). An estimate.",
     forestLabel: `${years} years of one tree. ${carriedYears} of them went to re-reading instructions that were already finished.`,
     key: "Each icon = one year of one tree",
-    legendA: `Re-reading finished instructions (73.6%) · ${carriedYears} years`,
+    legendA: `Re-reading finished instructions (76.1%) · ${carriedYears} years`,
     legendB: `Everything else · ${years - carriedYears} years`,
     upper: `Without the cache discount it is ten times this: what ${r(upper.trees_10y)} trees absorb in ten years.`,
     punch: "And that is just one person.",
@@ -121,7 +121,7 @@ const COPY = {
         ["Data-center electricity", "2030 outlook. 2.3× 2024, more than all of Japan uses today", "945 TWh", "2"],
         ["Its carbon", `2030 peak outlook. What ${Math.round(costTrees / 1e9)} billion trees absorb in a whole year (metaphor)`, "320 Mt CO₂", "2,5"],
         ["E-waste", "GPUs and servers retired by generative AI, 2020–2030, cumulative estimate", "up to 5 Mt", "3"],
-        ["Leftovers of finished instructions", "Context re-read on every call that was carried over from finished instructions. How much of it was truly unneeded is being judged under published criteria. In the 3 sessions whose output was recorded, the AI read 1,000 tokens to write 2–4", "73.6%", "4"],
+        ["Leftovers of finished instructions", "Context re-read on every call that was carried over from finished instructions. How much of it was truly unneeded is being judged under published criteria. In the 3 sessions whose output was recorded, the AI read 1,000 tokens to write 2–4", "76.1%", "4"],
       ],
       total: ["Paid by", "Earth"],
       stance: "We are not against AI. We are against waste.",
@@ -133,7 +133,7 @@ const COPY = {
         ["Receipt No. 01: one user’s three months of Claude Code, measured. Output was 0.19–0.43% of input in the 3 sessions whose output was recorded. The criteria for judging waste (v1) are public in the research repository.", "report/user01.html", "https://github.com/graviton94/pickaxetax/blob/HEAD/research/protocol/waste-codebook-v1.md"],
         ["Tree metaphor: US EPA, one urban seedling absorbs 6 kg of CO₂ a year (60 kg in 10 years).", "https://www.epa.gov/energy/greenhouse-gas-equivalencies-calculator-calculations-and-references"],
       ],
-      caveat: "Notes 1–3 cover AI and data centres as a whole; note 4 is one user’s measurement. 73.6% is not the waste rate of the world’s compute. Measuring that rate is what this project is for.",
+      caveat: "Notes 1–3 cover AI and data centres as a whole; note 4 is one user’s measurement. 76.1% is not the waste rate of the world’s compute. Measuring that rate is what this project is for.",
     },
     method: "How did we compute this? It is an estimate, and partly a metaphor",
     chain: [
@@ -176,6 +176,7 @@ function counted(text, cls) {
 
 function forest(c) {
   const box = el("div", "forest");
+  box.style.setProperty("--cols", String(years)); // one row of trees on wide screens
   box.setAttribute("role", "img");
   box.setAttribute("aria-label", c.forestLabel);
   box.dataset.stagger = "";

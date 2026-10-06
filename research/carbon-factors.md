@@ -25,9 +25,11 @@ That is a short chat prompt. The call below re-reads 427,524 tokens.
 | | Tokens | Energy | CO₂ | As trees and twigs |
 |---|---|---|---|---|
 | One line ("Hello") in a long working session: the median re-read per call | 427,524 | 24 Wh (1.3 phone charges) | **10.8 g** | one tree's **16 hours**; burning a **6 g dry twig** |
-| user01, three months of Claude Code | 5,871,292,005 | 333 kWh | **148 kg** | one tree's **25 years** (2.5 trees grown for 10 years) |
-| …of which context carried over from finished instructions (73.6%) | | | ≈109 kg | one tree's ≈18 years |
-| Upper bound (no cache discount) for user01 | | 3,330 kWh | 1.48 t | ≈25 trees grown for 10 years |
+| user01, three months of Claude Code (dataset v2) | 6,839,974,268 | 388 kWh | **173 kg** | one tree's **29 years** (2.9 trees grown for 10 years) |
+| …of which context carried over from finished instructions (76.1%) | | | ≈131 kg | one tree's ≈22 years |
+| Upper bound (no cache discount) for user01 | | 3,880 kWh | 1.73 t | ≈29 trees grown for 10 years |
+
+Research note 1 used dataset v1 (5,871,292,005 tokens, a lower bound because S09 was partial): 333 kWh, 148 kg, one tree's 25 years.
 
 ## Limits, stated plainly
 
@@ -58,7 +60,7 @@ That is a short chat prompt. The call below re-reads 427,524 tokens.
 결과 (중심값, 상한은 ×10):
 
 - "안녕하세요" 한 줄 (긴 작업 세션에서 호출 한 번이 다시 읽는 양의 중앙값 427,524토큰): 24 Wh, CO₂ **10.8 g**. 나무 한 그루의 **16시간**, 마른 나뭇가지 **6 g**을 태운 만큼.
-- user01의 석 달 (58억 7천만 토큰): 333 kWh, CO₂ **148 kg**. 나무 한 그루의 **25년**. 그중 이미 끝난 지시의 컨텍스트(73.6%)가 약 109 kg, 나무 한 그루의 약 18년.
+- user01의 석 달 (판 2, 68억 4천만 토큰): 388 kWh, CO₂ **173 kg**. 나무 한 그루의 **29년**. 그중 이미 끝난 지시의 컨텍스트(76.1%)가 약 131 kg, 나무 한 그루의 약 22년. (노트 1편은 판 1의 58억 7천만 토큰, 148 kg, 25년을 썼습니다. S09 부분 측정이라 하한이었습니다.)
 
 "나뭇가지를 태운 만큼", "나무의 몇 시간"은 1 g의 CO₂를 떠올리게 하려는 비유입니다. 상쇄량도 아니고, 실제로 나무가 베였다는 뜻도 아닙니다.
 
@@ -75,4 +77,4 @@ line is our own measurement; it is not the waste rate of the world's compute.
 | Data-centre electricity | 415 TWh (2024) → about 945 TWh (2030), "slightly more than Japan's total electricity consumption today" | [IEA, Energy and AI (2025)](https://www.iea.org/reports/energy-and-ai/executive-summary) |
 | Its CO₂ | about 180 Mt today → a peak of about 320 Mt in 2030 (Base Case) ≈ what 53 billion urban trees absorb in a year at EPA's 6 kg each (metaphor) | IEA, same report; EPA (above) |
 | Generative-AI e-waste | 1.2–5.0 Mt accumulated over 2020–2030 | [Wang et al. 2024, Nature Computational Science](https://www.nature.com/articles/s43588-024-00712-6) |
-| Leftovers of finished instructions (ours; not yet judged as waste, see `research/protocol/waste-codebook-v1.md`) | 73.6% of context re-read on each call was carried over from finished instructions; output 0.19–0.43% of input | `research/survey/user01/` |
+| Leftovers of finished instructions (ours; not yet judged as waste, see `research/protocol/waste-codebook-v1.md`) | 76.1% of context re-read on each call was carried over from finished instructions (dataset v2; 73.6% in v1); output 0.19–0.43% of input | `research/survey/user01/` |
