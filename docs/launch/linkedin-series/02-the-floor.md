@@ -5,7 +5,7 @@
   결정 반영: 본 결과는 v1 규칙(5.79%)과 민감도 범위, 해석은 "쉰 것이 아니라 구조가 비효율적".
 - 목적: 판정 기준 v1의 첫 적용(기계 판정 세 갈래)과, 기록만으로 잴 수 있는 구조의 몫(오라클 최소치, 낭비 판정 아님).
   1편 숫자 정정(S09 완전 측정). 다음 단계(블라인드 판정) 예고.
-- 분량: 한국어 본문 739자(공백 포함). 게시물 전체(한·영) 2444자. 붙여넣기용 `02-post.txt`.
+- 분량: 한국어 본문 831자(공백 포함). 게시물 전체(한·영) 2680자. 붙여넣기용 `02-post.txt`.
 - 이미지: 4장씩, `img/note02/ko/01~04.png`, `img/note02/en/01~04.png` (1080×1350). 원본 `figures/note02-slides.html`,
   `figures/note02-slides.en.html`. 숫자는 데이터 파일에서 바로 뽑는다: `python3 docs/launch/linkedin-series/figures/note02-slides.py`,
   그림은 `node docs/launch/linkedin-series/figures/render-slides.mjs <html> <폴더>`.
@@ -21,9 +21,9 @@
 
 중복과 오류로 받은 토큰 자체는 0.001%도 안 됩니다. 하지만 그 한 걸음을 내딛느라 AI는 매번 맥락 전체를 다시 읽었고, 그렇게 쓰인 입력이 2.6%입니다. 비용으로 보면 5.79%입니다. 거의 전부가 이미 처리한 맥락(평균 44만 토큰)을 처음부터 다시 처리한 값이고, 그 79%는 제가 1시간 넘게 쉬었다 돌아온 직후였습니다. 쉰 것이 낭비가 아니라, 그렇게 만드는 구조가 비효율적입니다.
 
-진짜 질문은 따로 있습니다. 매 호출 맥락의 76%는 이미 끝난 지시에서 넘어온 내용이었습니다. 그 내용이 뒤에서 다시 쓰였는지 기록을 추적했습니다. 끝까지 다시 쓰이지 않을 내용만 버렸다면 줄었을 입력은 생각보다 적었습니다(4~25%). 대부분은 언젠가 다시 쓰였지만, 그때까지 쓰이지 않은 채 매 호출마다 다시 읽혔습니다. 필요할 때 정확히 불러오는 이상적인 구조였다면 입력의 35~54%가 필요 없었습니다.
+진짜 질문은 따로 있습니다. 매 호출 맥락의 76%는 이미 끝난 지시에서 넘어온 내용이었습니다. 그 내용이 뒤에서 다시 쓰였는지 기록을 추적했습니다. 끝까지 다시 쓰이지 않을 내용만 버렸다면 줄었을 입력은 생각보다 적었습니다(4~25%). 대부분은 언젠가 다시 쓰였지만, 그때까지 쓰이지 않은 채 매 호출마다 다시 읽혔습니다. 필요할 때 정확히 불러오는 이상적인 구조였다면 입력의 35~54%가 필요 없었습니다. 다만 과거만 보고 정하는 단순한 규칙으로는 필요한 내용을 거의 놓치지 않으면서 3% 남짓밖에 줄이지 못했습니다.
 
-버릴 것이 많은 게 아니라, 전부를 늘 들고 다니는 방식이 문제입니다. 다시 쓰였는지는 글자 겹침으로 추정한 값이라, 다음은 두 사람의 블라인드 판정으로 검증합니다. (계속)
+버릴 것이 많은 게 아니라, 전부를 늘 들고 다니는 방식이 문제입니다. 그리고 그 방식을 바꾸는 일은 생각보다 어렵습니다. 다시 쓰였는지는 글자 겹침으로 추정한 값이라, 다음은 두 사람의 블라인드 판정으로 검증합니다. (계속)
 
 
 — English —
@@ -34,9 +34,9 @@ Note 1 defined waste in eight categories. Today I counted the three that the rec
 
 The duplicate and error results themselves are under 0.001% of the tokens. But to take each of those steps the AI re-read its whole context, and those steps took 2.6% of the input. In cost it is 5.79%. Almost all of that is context already processed being processed again from scratch (440,000 tokens on average), and 79% of it came right after I returned from more than an hour away. The break is not the waste; the structure that makes it so expensive is inefficient.
 
-The real question is elsewhere. 76% of each call's context was carried over from instructions already finished. I traced whether that content was used again later. Dropping only what was never used again would have saved less than I expected (4–25% of the input). Most of it was used again at some point, but until then it was re-read, unused, on every call. With an ideal structure that fetches content exactly when it is needed, 35–54% of the input would not have been needed.
+The real question is elsewhere. 76% of each call's context was carried over from instructions already finished. I traced whether that content was used again later. Dropping only what was never used again would have saved less than I expected (4–25% of the input). Most of it was used again at some point, but until then it was re-read, unused, on every call. With an ideal structure that fetches content exactly when it is needed, 35–54% of the input would not have been needed. But simple rules that decide from the past alone, without missing needed content, cut only about 3%.
 
-The problem is not that much should be thrown away. It is carrying everything, all the time. Reuse was estimated from overlapping words, so next, two people will check it by blind labeling. (To be continued)
+The problem is not that much should be thrown away. It is carrying everything, all the time, and changing that is harder than it looks. Reuse was estimated from overlapping words, so next, two people will check it by blind labeling. (To be continued)
 
 #AntiTokenMaxing #AI #LLM #TOKENMAXING #GREENAI
 
@@ -69,3 +69,6 @@ Data, rules and results: the links above (in English and Korean).
 - 4~25%, 35~54%: 오라클 최소치(`opportunity-v1.md`), 주 세션 6,579,410,935토큰. 다시는 안 쓰인 것만 버리기(P = ∞) 5.6%,
   9가지 탐지 기준(보정) 3.5~24.7%. 필요할 때 다시 불러오기(P = 1,000) 41.5%, 같은 9가지 35.2~53.9%(보정 없이 16.2~28.1%).
   미래를 아는 오라클의 값(기회의 크기)이고, 재사용은 글자 겹침(`lexical-v1`)으로 추정해 아직 블라인드 판정으로 검증하지 않았다.
+- 3% 남짓: 사전 등록 백테스트(`research/survey/user01/backtest-v1.json`, 규약 `research/protocol/backtest-v1.md`)와 그 밖의
+  탐색. 최근 N번 호출 안에 쓰인 것만 들고 가는 정책은 N = 64에서 놓침 2.5%, 덜 읽은 몫 2.9%(세션 중앙값; 합산 3.4%).
+  규약 기본값 N = 8은 17.6%를 줄이지만 필요한 내용을 30.3% 놓친다. `opportunity-v1.md` 5절.

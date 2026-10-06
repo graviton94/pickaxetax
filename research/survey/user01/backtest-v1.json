@@ -1,0 +1,1328 @@
+{
+ "protocol": "backtest-v1",
+ "method": "lexical-v1",
+ "tool_version": "0.4.0",
+ "git_sha": "18b551bdd14abd4005e4f3e331ee4ba7dc36768a",
+ "created_at": "2026-10-06T15:47:35+00:00",
+ "manifest_digest": "5bc4074ed1920ac73f3cc718faf6f867ad8a6f7a6a314b2196565a0806f4faa0",
+ "contributors": 1,
+ "contributor_digest": "6b86b273ff34",
+ "sessions": {
+  "loaded": 10,
+  "excluded_short": 0,
+  "kept": 10,
+  "dev": 2,
+  "test": 8
+ },
+ "tuned_on_dev": {
+  "window": {
+   "n": 8,
+   "why": "dev split has 2 < 5 sessions: pre-registered default"
+  },
+  "recency": {
+   "n": 8,
+   "why": "dev split has 2 < 5 sessions: pre-registered default"
+  },
+  "pointer": {
+   "n": 8,
+   "why": "dev split has 2 < 5 sessions: pre-registered default"
+  }
+ },
+ "aggregate": {
+  "sensitivity": [
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 1,
+    "common_frac": 0.01,
+    "sessions": 10,
+    "median_P0": 25.7,
+    "median_Pinf": 4.5,
+    "median_difference": 18.9
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 1,
+    "common_frac": 0.02,
+    "sessions": 10,
+    "median_P0": 24.1,
+    "median_Pinf": 3.2,
+    "median_difference": 20.2
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 1,
+    "common_frac": 0.05,
+    "sessions": 10,
+    "median_P0": 21.5,
+    "median_Pinf": 1.9,
+    "median_difference": 19.1
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 2,
+    "common_frac": 0.01,
+    "sessions": 10,
+    "median_P0": 27.8,
+    "median_Pinf": 9.6,
+    "median_difference": 16.4
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 2,
+    "common_frac": 0.02,
+    "sessions": 10,
+    "median_P0": 27.1,
+    "median_Pinf": 7.7,
+    "median_difference": 17.0
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 2,
+    "common_frac": 0.05,
+    "sessions": 10,
+    "median_P0": 25.0,
+    "median_Pinf": 5.2,
+    "median_difference": 19.4
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 3,
+    "common_frac": 0.01,
+    "sessions": 10,
+    "median_P0": 28.4,
+    "median_Pinf": 13.2,
+    "median_difference": 14.8
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 3,
+    "common_frac": 0.02,
+    "sessions": 10,
+    "median_P0": 28.0,
+    "median_Pinf": 10.4,
+    "median_difference": 15.7
+   },
+   {
+    "variant": "agents_uncalibrated",
+    "min_shared": 3,
+    "common_frac": 0.05,
+    "sessions": 10,
+    "median_P0": 26.5,
+    "median_Pinf": 7.3,
+    "median_difference": 17.9
+   },
+   {
+    "variant": "primary",
+    "min_shared": 1,
+    "common_frac": 0.01,
+    "sessions": 10,
+    "median_P0": 47.8,
+    "median_Pinf": 8.2,
+    "median_difference": 36.1
+   },
+   {
+    "variant": "primary",
+    "min_shared": 1,
+    "common_frac": 0.02,
+    "sessions": 10,
+    "median_P0": 45.2,
+    "median_Pinf": 5.7,
+    "median_difference": 38.9
+   },
+   {
+    "variant": "primary",
+    "min_shared": 1,
+    "common_frac": 0.05,
+    "sessions": 10,
+    "median_P0": 41.1,
+    "median_Pinf": 3.8,
+    "median_difference": 37.5
+   },
+   {
+    "variant": "primary",
+    "min_shared": 2,
+    "common_frac": 0.01,
+    "sessions": 10,
+    "median_P0": 51.6,
+    "median_Pinf": 18.9,
+    "median_difference": 29.9
+   },
+   {
+    "variant": "primary",
+    "min_shared": 2,
+    "common_frac": 0.02,
+    "sessions": 10,
+    "median_P0": 50.0,
+    "median_Pinf": 14.0,
+    "median_difference": 32.3
+   },
+   {
+    "variant": "primary",
+    "min_shared": 2,
+    "common_frac": 0.05,
+    "sessions": 10,
+    "median_P0": 47.4,
+    "median_Pinf": 9.7,
+    "median_difference": 37.1
+   },
+   {
+    "variant": "primary",
+    "min_shared": 3,
+    "common_frac": 0.01,
+    "sessions": 10,
+    "median_P0": 52.8,
+    "median_Pinf": 25.6,
+    "median_difference": 26.6
+   },
+   {
+    "variant": "primary",
+    "min_shared": 3,
+    "common_frac": 0.02,
+    "sessions": 10,
+    "median_P0": 51.9,
+    "median_Pinf": 20.0,
+    "median_difference": 28.6
+   },
+   {
+    "variant": "primary",
+    "min_shared": 3,
+    "common_frac": 0.05,
+    "sessions": 10,
+    "median_P0": 49.7,
+    "median_Pinf": 14.0,
+    "median_difference": 34.1
+   }
+  ],
+  "paging_beats_forgetting_in_every_cell": true,
+  "all_sessions": {
+   "sessions": 10,
+   "insufficient": false,
+   "oracle_P0": {
+    "n": 10,
+    "median": 45.2,
+    "q1": 40.2,
+    "q3": 48.4,
+    "ci95": [
+     38.7,
+     49.2
+    ]
+   },
+   "oracle_Pinf": {
+    "n": 10,
+    "median": 5.7,
+    "q1": 5.1,
+    "q3": 7.2,
+    "ci95": [
+     4.9,
+     8.8
+    ]
+   },
+   "paging_minus_forgetting": {
+    "n": 10,
+    "median": 38.8,
+    "q1": 30.4,
+    "q3": 40.9,
+    "ci95": [
+     30.1,
+     41.1
+    ]
+   },
+   "pinned_pct": {
+    "n": 10,
+    "median": 45.1,
+    "q1": 40.6,
+    "q3": 51.5,
+    "ci95": [
+     40.1,
+     52.3
+    ]
+   },
+   "online_window": {
+    "n": 8,
+    "saved_pct": {
+     "n": 10,
+     "median": 37.1,
+     "q1": 34.4,
+     "q3": 40.4,
+     "ci95": [
+      31.7,
+      41.5
+     ]
+    },
+    "miss_rate": {
+     "n": 10,
+     "median": 88.9,
+     "q1": 82.1,
+     "q3": 91.7,
+     "ci95": [
+      79.3,
+      91.8
+     ]
+    }
+   },
+   "online_recency": {
+    "n": 8,
+    "saved_pct": {
+     "n": 10,
+     "median": 17.6,
+     "q1": 15.1,
+     "q3": 20.5,
+     "ci95": [
+      11.9,
+      22.2
+     ]
+    },
+    "miss_rate": {
+     "n": 10,
+     "median": 30.3,
+     "q1": 25.6,
+     "q3": 31.7,
+     "ci95": [
+      25.3,
+      31.9
+     ]
+    }
+   },
+   "online_pointer": {
+    "n": 8,
+    "saved_pct": {
+     "n": 10,
+     "median": 16.4,
+     "q1": 13.8,
+     "q3": 18.5,
+     "ci95": [
+      10.7,
+      20.4
+     ]
+    },
+    "miss_rate": {
+     "n": 10,
+     "median": 30.3,
+     "q1": 25.6,
+     "q3": 31.7,
+     "ci95": [
+      25.3,
+      31.9
+     ]
+    }
+   }
+  },
+  "test_split": {
+   "sessions": 8,
+   "insufficient": true,
+   "oracle_P0": {
+    "n": 8,
+    "median": 45.2,
+    "q1": 43.2,
+    "q3": 47.0,
+    "ci95": [
+     38.7,
+     48.1
+    ]
+   },
+   "oracle_Pinf": {
+    "n": 8,
+    "median": 5.7,
+    "q1": 5.3,
+    "q3": 8.4,
+    "ci95": [
+     4.9,
+     11.0
+    ]
+   },
+   "paging_minus_forgetting": {
+    "n": 8,
+    "median": 38.8,
+    "q1": 30.9,
+    "q3": 40.6,
+    "ci95": [
+     30.1,
+     41.1
+    ]
+   },
+   "pinned_pct": {
+    "n": 8,
+    "median": 45.1,
+    "q1": 41.5,
+    "q3": 50.4,
+    "ci95": [
+     40.0,
+     52.1
+    ]
+   },
+   "online_window": {
+    "n": 8,
+    "saved_pct": {
+     "n": 8,
+     "median": 37.1,
+     "q1": 35.7,
+     "q3": 40.2,
+     "ci95": [
+      33.7,
+      44.0
+     ]
+    },
+    "miss_rate": {
+     "n": 8,
+     "median": 88.9,
+     "q1": 83.5,
+     "q3": 91.5,
+     "ci95": [
+      81.4,
+      92.2
+     ]
+    }
+   },
+   "online_recency": {
+    "n": 8,
+    "saved_pct": {
+     "n": 8,
+     "median": 17.6,
+     "q1": 16.6,
+     "q3": 21.5,
+     "ci95": [
+      14.3,
+      24.2
+     ]
+    },
+    "miss_rate": {
+     "n": 8,
+     "median": 31.3,
+     "q1": 26.1,
+     "q3": 31.9,
+     "ci95": [
+      24.9,
+      31.9
+     ]
+    }
+   },
+   "online_pointer": {
+    "n": 8,
+    "saved_pct": {
+     "n": 8,
+     "median": 16.4,
+     "q1": 14.9,
+     "q3": 19.6,
+     "ci95": [
+      13.2,
+      22.5
+     ]
+    },
+    "miss_rate": {
+     "n": 8,
+     "median": 31.3,
+     "q1": 26.1,
+     "q3": 31.9,
+     "ci95": [
+      24.9,
+      31.9
+     ]
+    }
+   }
+  },
+  "by_source": {
+   "claude-code": {
+    "sessions": 10,
+    "insufficient": false,
+    "oracle_P0": {
+     "n": 10,
+     "median": 45.2,
+     "q1": 40.2,
+     "q3": 48.4,
+     "ci95": [
+      38.7,
+      49.2
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 10,
+     "median": 5.7,
+     "q1": 5.1,
+     "q3": 7.2,
+     "ci95": [
+      4.9,
+      8.8
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 10,
+     "median": 38.8,
+     "q1": 30.4,
+     "q3": 40.9,
+     "ci95": [
+      29.9,
+      41.5
+     ]
+    },
+    "pinned_pct": {
+     "n": 10,
+     "median": 45.1,
+     "q1": 40.6,
+     "q3": 51.5,
+     "ci95": [
+      40.1,
+      52.3
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 10,
+      "median": 37.1,
+      "q1": 34.4,
+      "q3": 40.4,
+      "ci95": [
+       31.7,
+       41.5
+      ]
+     },
+     "miss_rate": {
+      "n": 10,
+      "median": 88.9,
+      "q1": 82.1,
+      "q3": 91.7,
+      "ci95": [
+       79.3,
+       91.8
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 10,
+      "median": 17.6,
+      "q1": 15.1,
+      "q3": 20.5,
+      "ci95": [
+       11.9,
+       22.2
+      ]
+     },
+     "miss_rate": {
+      "n": 10,
+      "median": 30.3,
+      "q1": 25.6,
+      "q3": 31.7,
+      "ci95": [
+       25.3,
+       31.9
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 10,
+      "median": 16.4,
+      "q1": 13.8,
+      "q3": 18.5,
+      "ci95": [
+       10.7,
+       20.4
+      ]
+     },
+     "miss_rate": {
+      "n": 10,
+      "median": 30.3,
+      "q1": 25.6,
+      "q3": 31.7,
+      "ci95": [
+       25.3,
+       31.9
+      ]
+     }
+    }
+   }
+  },
+  "by_length": {
+   "200+": {
+    "sessions": 7,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 7,
+     "median": 46.0,
+     "q1": 45.0,
+     "q3": 49.5,
+     "ci95": [
+      44.7,
+      49.9
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 7,
+     "median": 5.9,
+     "q1": 5.2,
+     "q3": 7.0,
+     "ci95": [
+      4.9,
+      7.5
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 7,
+     "median": 40.4,
+     "q1": 38.8,
+     "q3": 41.9,
+     "ci95": [
+      38.8,
+      42.7
+     ]
+    },
+    "pinned_pct": {
+     "n": 7,
+     "median": 42.0,
+     "q1": 40.1,
+     "q3": 45.1,
+     "ci95": [
+      40.0,
+      47.5
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 7,
+      "median": 37.2,
+      "q1": 36.7,
+      "q3": 42.5,
+      "ci95": [
+       36.4,
+       44.0
+      ]
+     },
+     "miss_rate": {
+      "n": 7,
+      "median": 91.2,
+      "q1": 88.9,
+      "q3": 92.0,
+      "ci95": [
+       87.1,
+       92.2
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 7,
+      "median": 17.8,
+      "q1": 17.4,
+      "q3": 20.4,
+      "ci95": [
+       17.3,
+       20.6
+      ]
+     },
+     "miss_rate": {
+      "n": 7,
+      "median": 31.2,
+      "q1": 25.1,
+      "q3": 31.6,
+      "ci95": [
+       24.9,
+       31.9
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 7,
+      "median": 16.7,
+      "q1": 15.8,
+      "q3": 18.5,
+      "ci95": [
+       15.5,
+       18.6
+      ]
+     },
+     "miss_rate": {
+      "n": 7,
+      "median": 31.2,
+      "q1": 25.1,
+      "q3": 31.6,
+      "ci95": [
+       24.9,
+       31.9
+      ]
+     }
+    }
+   },
+   "50-199": {
+    "sessions": 3,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 3,
+     "median": 35.6,
+     "q1": 27.4,
+     "q3": 40.4,
+     "ci95": [
+      19.1,
+      45.1
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 3,
+     "median": 5.5,
+     "q1": 5.2,
+     "q3": 10.9,
+     "ci95": [
+      4.8,
+      16.4
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 3,
+     "median": 28.7,
+     "q1": 21.5,
+     "q3": 29.4,
+     "ci95": [
+      14.3,
+      30.1
+     ]
+    },
+    "pinned_pct": {
+     "n": 3,
+     "median": 52.1,
+     "q1": 51.0,
+     "q3": 63.6,
+     "ci95": [
+      49.8,
+      75.1
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 3,
+      "median": 27.1,
+      "q1": 21.2,
+      "q3": 33.0,
+      "ci95": [
+       15.3,
+       38.9
+      ]
+     },
+     "miss_rate": {
+      "n": 3,
+      "median": 74.3,
+      "q1": 73.7,
+      "q3": 77.9,
+      "ci95": [
+       73.0,
+       81.4
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 3,
+      "median": 6.5,
+      "q1": 6.0,
+      "q3": 15.4,
+      "ci95": [
+       5.6,
+       24.2
+      ]
+     },
+     "miss_rate": {
+      "n": 3,
+      "median": 29.4,
+      "q1": 27.9,
+      "q3": 36.6,
+      "ci95": [
+       26.5,
+       43.8
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 3,
+      "median": 5.9,
+      "q1": 5.3,
+      "q3": 14.2,
+      "ci95": [
+       4.7,
+       22.5
+      ]
+     },
+     "miss_rate": {
+      "n": 3,
+      "median": 29.4,
+      "q1": 27.9,
+      "q3": 36.6,
+      "ci95": [
+       26.5,
+       43.8
+      ]
+     }
+    }
+   }
+  },
+  "by_source_and_length": {
+   "claude-code|200+": {
+    "sessions": 7,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 7,
+     "median": 46.0,
+     "q1": 45.0,
+     "q3": 49.5,
+     "ci95": [
+      44.7,
+      49.9
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 7,
+     "median": 5.9,
+     "q1": 5.2,
+     "q3": 7.0,
+     "ci95": [
+      4.9,
+      7.5
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 7,
+     "median": 40.4,
+     "q1": 38.8,
+     "q3": 41.9,
+     "ci95": [
+      38.8,
+      42.7
+     ]
+    },
+    "pinned_pct": {
+     "n": 7,
+     "median": 42.0,
+     "q1": 40.1,
+     "q3": 45.1,
+     "ci95": [
+      40.0,
+      47.5
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 7,
+      "median": 37.2,
+      "q1": 36.7,
+      "q3": 42.5,
+      "ci95": [
+       36.4,
+       44.0
+      ]
+     },
+     "miss_rate": {
+      "n": 7,
+      "median": 91.2,
+      "q1": 88.9,
+      "q3": 92.0,
+      "ci95": [
+       87.1,
+       92.2
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 7,
+      "median": 17.8,
+      "q1": 17.4,
+      "q3": 20.4,
+      "ci95": [
+       17.3,
+       20.6
+      ]
+     },
+     "miss_rate": {
+      "n": 7,
+      "median": 31.2,
+      "q1": 25.1,
+      "q3": 31.6,
+      "ci95": [
+       24.9,
+       31.9
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 7,
+      "median": 16.7,
+      "q1": 15.8,
+      "q3": 18.5,
+      "ci95": [
+       15.5,
+       18.6
+      ]
+     },
+     "miss_rate": {
+      "n": 7,
+      "median": 31.2,
+      "q1": 25.1,
+      "q3": 31.6,
+      "ci95": [
+       24.9,
+       31.9
+      ]
+     }
+    }
+   },
+   "claude-code|50-199": {
+    "sessions": 3,
+    "insufficient": true,
+    "oracle_P0": {
+     "n": 3,
+     "median": 35.6,
+     "q1": 27.4,
+     "q3": 40.4,
+     "ci95": [
+      19.1,
+      45.1
+     ]
+    },
+    "oracle_Pinf": {
+     "n": 3,
+     "median": 5.5,
+     "q1": 5.2,
+     "q3": 10.9,
+     "ci95": [
+      4.8,
+      16.4
+     ]
+    },
+    "paging_minus_forgetting": {
+     "n": 3,
+     "median": 28.7,
+     "q1": 21.5,
+     "q3": 29.4,
+     "ci95": [
+      14.3,
+      30.1
+     ]
+    },
+    "pinned_pct": {
+     "n": 3,
+     "median": 52.1,
+     "q1": 51.0,
+     "q3": 63.6,
+     "ci95": [
+      49.8,
+      75.1
+     ]
+    },
+    "online_window": {
+     "n": 8,
+     "saved_pct": {
+      "n": 3,
+      "median": 27.1,
+      "q1": 21.2,
+      "q3": 33.0,
+      "ci95": [
+       15.3,
+       38.9
+      ]
+     },
+     "miss_rate": {
+      "n": 3,
+      "median": 74.3,
+      "q1": 73.7,
+      "q3": 77.9,
+      "ci95": [
+       73.0,
+       81.4
+      ]
+     }
+    },
+    "online_recency": {
+     "n": 8,
+     "saved_pct": {
+      "n": 3,
+      "median": 6.5,
+      "q1": 6.0,
+      "q3": 15.4,
+      "ci95": [
+       5.6,
+       24.2
+      ]
+     },
+     "miss_rate": {
+      "n": 3,
+      "median": 29.4,
+      "q1": 27.9,
+      "q3": 36.6,
+      "ci95": [
+       26.5,
+       43.8
+      ]
+     }
+    },
+    "online_pointer": {
+     "n": 8,
+     "saved_pct": {
+      "n": 3,
+      "median": 5.9,
+      "q1": 5.3,
+      "q3": 14.2,
+      "ci95": [
+       4.7,
+       22.5
+      ]
+     },
+     "miss_rate": {
+      "n": 3,
+      "median": 29.4,
+      "q1": 27.9,
+      "q3": 36.6,
+      "ci95": [
+       26.5,
+       43.8
+      ]
+     }
+    }
+   }
+  }
+ },
+ "per_session": [
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 400,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 169482468,
+   "pinned_pct": 42.02,
+   "oracle": {
+    "P0": 49.9,
+    "P1000": 47.4,
+    "P10000": 34.7,
+    "Pinf": 11.0
+   },
+   "paging_minus_forgetting": 38.9,
+   "online": {
+    "window": {
+     "saved_pct": 45.0,
+     "miss_rate": 84.24,
+     "gap_closed_pct": 94.9
+    },
+    "recency": {
+     "saved_pct": 25.98,
+     "miss_rate": 31.35,
+     "gap_closed_pct": 54.8
+    },
+    "pointer": {
+     "saved_pct": 24.8,
+     "miss_rate": 31.35,
+     "gap_closed_pct": 52.3
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 1303,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 574746376,
+   "pinned_pct": 37.84,
+   "oracle": {
+    "P0": 50.2,
+    "P1000": 46.8,
+    "P10000": 30.3,
+    "Pinf": 5.5
+   },
+   "paging_minus_forgetting": 44.7,
+   "online": {
+    "window": {
+     "saved_pct": 44.05,
+     "miss_rate": 90.74,
+     "gap_closed_pct": 94.1
+    },
+    "recency": {
+     "saved_pct": 17.8,
+     "miss_rate": 31.86,
+     "gap_closed_pct": 38.0
+    },
+    "pointer": {
+     "saved_pct": 16.66,
+     "miss_rate": 31.86,
+     "gap_closed_pct": 35.6
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 4820,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 2055390268,
+   "pinned_pct": 40.01,
+   "oracle": {
+    "P0": 45.3,
+    "P1000": 41.0,
+    "P10000": 23.3,
+    "Pinf": 4.9
+   },
+   "paging_minus_forgetting": 40.4,
+   "online": {
+    "window": {
+     "saved_pct": 37.22,
+     "miss_rate": 91.25,
+     "gap_closed_pct": 90.8
+    },
+    "recency": {
+     "saved_pct": 14.34,
+     "miss_rate": 23.35,
+     "gap_closed_pct": 35.0
+    },
+    "pointer": {
+     "saved_pct": 13.25,
+     "miss_rate": 23.35,
+     "gap_closed_pct": 32.3
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 166,
+   "bucket": "50-199",
+   "split": "test",
+   "measured_input": 29775192,
+   "pinned_pct": 49.8,
+   "oracle": {
+    "P0": 45.1,
+    "P1000": 42.7,
+    "P10000": 31.8,
+    "Pinf": 16.4
+   },
+   "paging_minus_forgetting": 28.7,
+   "online": {
+    "window": {
+     "saved_pct": 38.85,
+     "miss_rate": 81.44,
+     "gap_closed_pct": 91.0
+    },
+    "recency": {
+     "saved_pct": 24.25,
+     "miss_rate": 43.83,
+     "gap_closed_pct": 56.8
+    },
+    "pointer": {
+     "saved_pct": 22.52,
+     "miss_rate": 43.83,
+     "gap_closed_pct": 52.7
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 1923,
+   "bucket": "200+",
+   "split": "dev",
+   "measured_input": 778555782,
+   "pinned_pct": 40.14,
+   "oracle": {
+    "P0": 49.2,
+    "P1000": 44.3,
+    "P10000": 23.8,
+    "Pinf": 6.5
+   },
+   "paging_minus_forgetting": 42.7,
+   "online": {
+    "window": {
+     "saved_pct": 40.92,
+     "miss_rate": 91.85,
+     "gap_closed_pct": 92.4
+    },
+    "recency": {
+     "saved_pct": 20.1,
+     "miss_rate": 25.33,
+     "gap_closed_pct": 45.4
+    },
+    "pointer": {
+     "saved_pct": 18.3,
+     "miss_rate": 25.33,
+     "gap_closed_pct": 41.3
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 464,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 166314408,
+   "pinned_pct": 54.79,
+   "oracle": {
+    "P0": 38.7,
+    "P1000": 35.8,
+    "P10000": 22.9,
+    "Pinf": 7.5
+   },
+   "paging_minus_forgetting": 31.2,
+   "online": {
+    "window": {
+     "saved_pct": 33.71,
+     "miss_rate": 87.07,
+     "gap_closed_pct": 94.2
+    },
+    "recency": {
+     "saved_pct": 17.49,
+     "miss_rate": 31.24,
+     "gap_closed_pct": 48.8
+    },
+    "pointer": {
+     "saved_pct": 16.05,
+     "miss_rate": 31.24,
+     "gap_closed_pct": 44.8
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 66,
+   "bucket": "50-199",
+   "split": "test",
+   "measured_input": 8624118,
+   "pinned_pct": 52.13,
+   "oracle": {
+    "P0": 35.6,
+    "P1000": 32.6,
+    "P10000": 18.7,
+    "Pinf": 5.5
+   },
+   "paging_minus_forgetting": 30.1,
+   "online": {
+    "window": {
+     "saved_pct": 27.07,
+     "miss_rate": 72.97,
+     "gap_closed_pct": 83.0
+    },
+    "recency": {
+     "saved_pct": 6.51,
+     "miss_rate": 26.49,
+     "gap_closed_pct": 20.0
+    },
+    "pointer": {
+     "saved_pct": 5.9,
+     "miss_rate": 26.49,
+     "gap_closed_pct": 18.1
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 105,
+   "bucket": "50-199",
+   "split": "dev",
+   "measured_input": 19233919,
+   "pinned_pct": 75.14,
+   "oracle": {
+    "P0": 19.1,
+    "P1000": 17.7,
+    "P10000": 11.1,
+    "Pinf": 4.8
+   },
+   "paging_minus_forgetting": 14.3,
+   "online": {
+    "window": {
+     "saved_pct": 15.32,
+     "miss_rate": 74.33,
+     "gap_closed_pct": 86.6
+    },
+    "recency": {
+     "saved_pct": 5.57,
+     "miss_rate": 29.4,
+     "gap_closed_pct": 31.5
+    },
+    "pointer": {
+     "saved_pct": 4.7,
+     "miss_rate": 29.4,
+     "gap_closed_pct": 26.5
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 4056,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 1658330482,
+   "pinned_pct": 42.76,
+   "oracle": {
+    "P0": 46.0,
+    "P1000": 40.3,
+    "P10000": 18.7,
+    "Pinf": 4.9
+   },
+   "paging_minus_forgetting": 41.1,
+   "online": {
+    "window": {
+     "saved_pct": 36.4,
+     "miss_rate": 92.38,
+     "gap_closed_pct": 90.3
+    },
+    "recency": {
+     "saved_pct": 17.34,
+     "miss_rate": 24.92,
+     "gap_closed_pct": 43.0
+    },
+    "pointer": {
+     "saved_pct": 15.47,
+     "miss_rate": 24.92,
+     "gap_closed_pct": 38.4
+    }
+   }
+  },
+  {
+   "source": "claude-code",
+   "kind": "agent",
+   "calls": 2878,
+   "bucket": "200+",
+   "split": "test",
+   "measured_input": 1118957922,
+   "pinned_pct": 47.45,
+   "oracle": {
+    "P0": 44.7,
+    "P1000": 39.8,
+    "P10000": 20.6,
+    "Pinf": 5.9
+   },
+   "paging_minus_forgetting": 38.8,
+   "online": {
+    "window": {
+     "saved_pct": 36.92,
+     "miss_rate": 92.23,
+     "gap_closed_pct": 92.8
+    },
+    "recency": {
+     "saved_pct": 20.65,
+     "miss_rate": 31.9,
+     "gap_closed_pct": 51.9
+    },
+    "pointer": {
+     "saved_pct": 18.61,
+     "miss_rate": 31.9,
+     "gap_closed_pct": 46.8
+    }
+   }
+  }
+ ],
+ "note": "Pre-registered protocol backtest-v1 run on user01's 10 Claude Code sessions (dataset-v2 snapshots). The dev split has 2 sessions (< 5), so the pre-registered default N = 8 applies. The manifest of session fingerprints is private."
+}
