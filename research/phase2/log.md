@@ -412,3 +412,27 @@ would give about a third of all money, a lower bound.
 went to re-reading finished work. It supports leading with the cost view, not the token view, when
 talking about levers. A third disclosure would help: output and thinking tokens per call, as
 recorded by the API.
+
+## Cycle A5 — the real compactions as a natural experiment (`A5-compaction-natural-experiment.md`)
+
+**Found.** Before each of the 34 compactions about 474k visible tokens are in context. By lexical
+reuse 83% of them reappear in the next 50 calls (94% in 200; 29–44% at stricter settings). By
+behaviour the agent re-obtained 10k distinct tokens in 50 calls and 21k in 200, beside about 22k the
+harness restores. That is a ratio of 0.03–0.13 at the loosest setting and below 0.25 for every
+compaction. A placebo settles which one measures need: scoring the same segments against the window
+after an unrelated compaction gives 95–99% of the "demand" in the same session and 72–87% in
+another. Only 11–17% of demanded tokens have their source re-fetched. Error rates (1.7% → 2.0%
+against a drift of +0.16 points) and the steps of the instruction around the compaction show no
+damage, though both are weak proxies.
+
+**Review.** The disagreement of cycle A4 is resolved in favour of behaviour. Lexical reuse at one
+shared term is mostly project vocabulary. Behaviour is a lower bound: it cannot see what the summary
+carried or what the agent did without. Placebo-adjusted, the ratio is about 0.1–0.5, and 1 is
+excluded. Rescaled by the observed ratio, the every-boundary restart rule saves 52–55% of input
+(47–50% of cost), against 26.7–45.7% in A4. At a ratio of 0.5 it is 43% (31%). The A4 range in the
+synthesis is replaced.
+
+**Discussion.** The cost of re-reading no longer limits the restart and ceiling levers. Quality
+does: whether about 150 restarts lose what 34 compactions apparently did not. Logs cannot answer
+that; E2 in `phase3-experiments.md` can. The finding also qualifies every reuse-based number in
+phase 2 (the oracle bound, W5, W8): at the loosest setting they are upper bounds on need.

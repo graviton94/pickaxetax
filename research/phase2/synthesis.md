@@ -59,7 +59,7 @@ Share of main-session input that would not have been processed, with what each l
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | cut part re-read on reuse | no | harness | A |
 | Remove every retry and polling loop | about 1.4% (0.3–2.1%) | loops were avoidable | no | agent | B2 |
 | Carry a pointer instead of what the agent wrote | about 20% if compactions stayed where they were; **about 0 (−4%) alone** when compaction fires at the ceiling; negative in cost (re-fetched content is written at 2×) | the agent re-reads when it needs it | no | harness / agent convention | A2, B3 |
-| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; 27–46% (12–37% of cost) if every lexically reused earlier token had to be re-read | how much of the old context the next task needs | no | the user, today | B, B3, A4 |
+| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; 52–55% (47–50% of cost) with the re-reads observed after real compactions; 43% (31%) if they were ten times higher | that each restart loses nothing the re-reads do not restore | no | the user, today | B, B3, A4, A5 |
 | New session every 3 / 10 instructions | 55.1% / 22.3% | same | no | the user, today | B |
 | Compact at half the usual ceiling (about 390k instead of 780k) | 39–43% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3 |
 | **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |
@@ -100,10 +100,16 @@ at n = 10 (cycle D3).
    or delegate to a sub-agent with its own small context. Trimming what goes in helps only once the
    boundary has moved; under today's ceiling it mostly postpones the next compaction. The largest
    lever is available to a user today (a restart rule).
-3. **Every large saving rests on an untested assumption** — that a summary, a pointer or a
+3. **What a summary must carry is small by behaviour.** Lexical reuse makes the next instruction
+   look as if it needed most of the old context (cycle A4), but an unrelated window scores 72–99% of
+   the same "demand": it measures shared vocabulary. After the 34 real compactions the agent
+   re-obtained 10–21k distinct tokens, beside about 22k restored by the harness, and no damage was
+   visible in error rates or step counts (cycle A5). The cost of re-reading therefore does not limit
+   the restart lever; whether quality survives 150 restarts instead of 34 compactions is the open part.
+4. **Every large saving rests on an untested assumption** — that a summary, a pointer or a
    sub-agent's answer is enough. Phase 3 has to test exactly that, on real tasks with outcomes
    checked by tests.
-4. **Two disclosures would remove the largest unknowns**: thinking tokens reported separately in
+5. **Two disclosures would remove the largest unknowns**: thinking tokens reported separately in
    usage, and final output tokens in event logs.
 
 ## 5. Open in phase 2
