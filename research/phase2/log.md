@@ -124,3 +124,24 @@ Long sub-agent runs re-create the problem inside the sub-agent.
 **Ideation.** A single model for every lever: input = Σ over calls of context. Rank the levers
 (restart, delegation, earlier compaction, trimming outputs, forgetting, paging, simple online
 policies) on that one scale, with the assumption each one rests on (wave 2 synthesis).
+
+## Cycle C2 — the invisible third (`C2-invisible-third.md`)
+
+**Found.** The context growth that matches no visible piece of the transcript (26–43% of growth by
+source) splits, pooled over the event-API sessions, into about **49% the model's own thinking**
+(tracked through the length of the thinking blocks' signatures; their text is empty), about 38%
+a constant per-call overhead (about 230 tokens a call, harness framing), and about 13% images
+(about 1,400 tokens an image). In S01, the only session with real output counts, the previous
+call's invisible output enters the next call's context about one for one (slope 0.98).
+
+**Review.** Fits are loose (R² 0.05–0.8 by source); the split of the remainder is weak; the thinking
+share is consistent across all ten sources. `agent.bound` counts images as zero tokens: they end up
+in the pinned invisible share, which keeps the bound conservative but hides a visible cost.
+
+**Discussion.** Part of what is re-read on every call is the model's own reasoning from earlier
+calls. Whether it is dropped at an instruction boundary cannot be told from these records; only a
+provider field for thinking tokens (or `count_tokens` with and without thinking blocks) would
+settle it. That is a concrete disclosure to ask for.
+
+**Develop (later).** Count images in the bound (as a visible segment kind) — a `lexical-v1` change,
+so a new method version; deferred until after the labels.

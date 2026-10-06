@@ -17,7 +17,7 @@ still open. Kept up to date as cycles find new ones (`log.md`).
 |---|---|
 | **Two sources** (local transcripts, event-API pages) may differ. | Usage matches the in-session measurement exactly where both exist (S02, S03). No sign of truncated tool results in event pages. Instruction splitting differs slightly (S02 49 vs 48, S03 299 vs 275); dataset counts keep the in-session values. Output tokens from event pages are stream-start placeholders and are never used. |
 | **Prices.** Costs use list-price ratios (uncached 1, cache read 0.1, cache write 1.25 for 5 minutes and 2 for 1 hour). Subscriptions are priced differently. | Each call's writes are priced by the split its usage records. A first version priced all writes at 1.25 and understated the cost view (corrected; `self-audit-log.md`). The token views do not depend on prices. |
-| **The invisible third.** About 30% of context growth matches no visible piece of the transcript. | Pinned in every counterfactual (the oracle may not drop it), which makes the opportunity numbers conservative. Its nature is under study (cycle C2). |
+| **The invisible third.** About 30% of context growth matches no visible piece of the transcript. | Pinned in every counterfactual (the oracle may not drop it), which makes the opportunity numbers conservative. Cycle C2: about half is the model's thinking, about 38% a constant per-call overhead, about 13% images (which `agent.bound` counts as zero tokens). |
 
 ## Methods
 
