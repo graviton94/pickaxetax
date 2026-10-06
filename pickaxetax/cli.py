@@ -121,6 +121,16 @@ def main(argv: list[str] | None = None) -> int:
     bv = btsub.add_parser("validation", help="summarize detector validation labels")
     bv.add_argument("labels")
 
+    sv = sub.add_parser("survey", help="phenomenon survey of Claude Code use: measure sessions, render a report")
+    svsub = sv.add_subparsers(dest="survey_cmd", required=True)
+    sm = svsub.add_parser("measure", help="measure transcripts into a dataset (numbers only)")
+    sm.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    sm.add_argument("--label", default="me", help="how the subject is named in the report")
+    sm.add_argument("--out", default="survey-dataset.json")
+    sr = svsub.add_parser("report", help="render a dataset as a self-contained HTML report")
+    sr.add_argument("dataset")
+    sr.add_argument("--out", default="survey-report.html")
+
     co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
     cosub = co.add_subparsers(dest="contrib_cmd", required=True)
     for name, hlp in (("send", "send anonymously (one click, no account)"), ("github", "open a prefilled GitHub issue (verified)"),
@@ -143,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = ap.parse_args(argv)
 
-    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute", "backtest"):
+    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute", "backtest", "survey"):
         return _tools(args)
 
     if args.cmd == "serve":
@@ -261,6 +271,8 @@ def _tools(args) -> int:
         return _agent(args)
     if args.cmd == "backtest":
         return _backtest(args)
+    if args.cmd == "survey":
+        return _survey(args)
 
     if args.cmd == "contribute":
         return _contribute(args)
@@ -359,6 +371,44 @@ def _agent_bound(files: list[str], args) -> int:
         best = m["policies"].get("P=0", {}).get("bound_input", measured)
         print(f"\ninput per token written to disk: {measured / m['written_tokens']:,.0f} (oracle: {best / m['written_tokens']:,.0f})")
     print("References are detected lexically; see research/belady-bound.md for what that means for these numbers.")
+    return 0
+
+
+def _survey(args) -> int:
+    from .survey import dataset, report
+
+    if args.survey_cmd == "report":
+        with open(args.dataset, encoding="utf-8") as f:
+            ds = json.load(f)
+        with open(args.out, "w", encoding="utf-8") as f:
+            f.write(report.render(ds))
+        print(f"wrote {args.out} (dataset sha256 {dataset.digest(ds)[:16]}…)")
+        return 0
+    from datetime import datetime, timezone
+
+    from .agent import find_transcripts
+    from .survey.measure import with_subagents
+
+    files = find_transcripts(args.paths or None)
+    sessions = []
+    for i, path in enumerate(files, 1):
+        m = with_subagents(path, include_series=True)
+        if not m["api_calls"]:
+            continue
+        models = m.get("models") or {}
+        sessions.append({"id": f"S{i:02d}", "type": "", "model": max(models, key=models.get) if models else "",
+                         "origin": "", "span_hours": m["span_hours"], "session_list": None, "measurement": m,
+                         "source": "local", "partial": False, "base_override": None})
+    if not sessions:
+        print("no Claude Code transcripts with API calls found", file=sys.stderr)
+        return 1
+    stamps = datetime.now(timezone.utc).date().isoformat()
+    ds = dataset.build({"label": args.label, "who": args.label, "scope": "Claude Code (local transcripts)",
+                        "period": f"measured {stamps}", "sources": "provider-recorded usage in local transcripts",
+                        "dataset_path": args.out, "notes": []}, sessions)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(ds, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"measured {len(sessions)} sessions -> {args.out} (numbers only; no text, paths or ids)")
     return 0
 
 

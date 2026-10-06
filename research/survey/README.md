@@ -14,6 +14,10 @@
 | 3. claude.ai 채팅 | 대화 수, 길이, 구조 | 데이터 내보내기 | 추정(사용량 미기록) | 파일 필요 |
 | 4. VS Code 확장, Cowork | 1·2층과 같은 항목 | 각 기기의 세션 기록 | 실측 | 파일 필요 |
 
+## 레포트
+
+`user01/dataset.json` → `pxt survey report research/survey/user01/dataset.json --out report.html` → `user01/report.html`. 같은 데이터셋이면 같은 레포트가 나온다. 자기 사용을 재려면 `pxt survey measure ~/.claude/projects`로 시작한다.
+
 ## 원칙
 - 세션 제목과 프로젝트 이름은 공개하지 않고, 작업 종류(일반화한 범주)만 적는다.
 - 진행 중인 세션은 숫자가 계속 바뀌므로, 측정 시각을 함께 적는다.

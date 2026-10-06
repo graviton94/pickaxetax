@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- **Survey:** `pxt survey measure` turns Claude Code transcripts into a numbers-only dataset (per-call context series, instruction boundaries, tools, compactions). `pxt survey report` renders it as a self-contained HTML report that is byte-for-byte reproducible from the dataset: context decomposition (fixed / carried over / current), the context sawtooth, steps × carried context, instruction-level concentration, measured vs displayed usage. The first published case is `research/survey/user01/report.html`.
 - **Benchmark:** `pxt backtest run` measures many sessions from any provider (ChatGPT, Claude and Gemini exports, transcripts, Claude Code logs) under the pre-registered protocol `research/protocol/backtest-v1.md`. It reports the offline bound, online policies (window, recency, pointer) tuned on a dev split and reported on a held-out test split, bootstrap confidence intervals, strata by source and length, and a sensitivity grid. `pxt backtest label` validates the use detector by hand.
 - **Contributions:** the anonymous `agent` contribution can carry the context bound (`pxt agent bound --export | pxt contribute send -`). Both validators check it, and the public aggregate reports medians over sessions.
 - Gemini API (`contents` / `parts`) JSON is accepted as input.
