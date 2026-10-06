@@ -1,6 +1,9 @@
 // Opening scene: a chat window types "Hello", sends it, and the assistant answers
 // with what that one line actually costs. Every number is a measurement from the
-// first survey report (report/user01.html). No network, no inline script (CSP).
+// first survey report (report/user01.html); the carbon line is an estimate from
+// carbon.js, labelled as such. No network, no inline script (CSP).
+
+import { footprint } from "./carbon.js";
 
 const COPY = {
   ko: {
@@ -10,12 +13,14 @@ const COPY = {
     lines: [
       "안녕하세요, 사용자님.",
       "방금 보내신 다섯 글자에 답하려고, 저는 이 대화를 처음부터 끝까지 다시 읽었습니다. 427,524토큰입니다.",
-      "이 프로젝트를 만든 사람은 석 달 동안 이렇게 58억 7천만 토큰을 읽혔습니다. 그중 73.6%는 이미 끝난 대화였습니다.",
+      "그 한 줄로, 나무 한 그루가 {h}시간 동안 들이마셔야 할 탄소가 나왔습니다. 마른 나뭇가지 하나를 태운 만큼입니다.",
+      "이 프로젝트를 만든 사람은 석 달 동안 이렇게 58억 7천만 토큰을 읽혔습니다. 나무 한 그루의 {y}년입니다. 그중 73.6%는 이미 끝난 대화였습니다.",
       "당신의 대화는 얼마나 다시 읽혔을까요?",
     ],
-    footnote: "427,524토큰: 실측한 긴 작업 세션에서 호출 한 번이 다시 읽은 양의 중앙값. 58억 7천만, 73.6%: 첫 번째 고지서(user01).",
+    carbon: "≈ {g} g CO₂ · 나무 한 그루의 {h}시간 (추정)",
+    footnote: "427,524토큰: 실측한 긴 작업 세션에서 호출 한 번이 다시 읽은 양의 중앙값. 58억 7천만, 73.6%: 첫 번째 고지서(user01). 탄소와 나무는 공개 측정값과 공식 계수로 낸 추정이자 비유입니다. 계산과 출처는 아래 ‘한 줄의 무게’에 있습니다.",
     cta1: "내 대화 진단하기",
-    cta2: "알고 계셨나요?",
+    cta2: "한 줄의 무게",
     replay: "다시 보기",
     skip: "건너뛰기",
     placeholder: "메시지를 입력하세요",
@@ -28,12 +33,14 @@ const COPY = {
     lines: [
       "Hello.",
       "To answer those five letters, I just re-read this entire conversation from the very beginning. That was 427,524 tokens.",
-      "The person who started this project made AI re-read 5.87 billion tokens in three months. 73.6% of it was conversation that was already over.",
+      "That one line released the carbon a tree needs {h} hours to breathe in. About what burning a dry twig gives off.",
+      "The person who started this project made AI re-read 5.87 billion tokens in three months. That is {y} years of a tree’s life. 73.6% of it was conversation that was already over.",
       "How much of your conversation gets re-read?",
     ],
-    footnote: "427,524 tokens: the measured median re-read per call in a long working session. 5.87 billion and 73.6%: the first bill (user01).",
+    carbon: "≈ {g} g CO₂ · {h} hours of a tree (est.)",
+    footnote: "427,524 tokens: the measured median re-read per call in a long working session. 5.87 billion and 73.6%: the first bill (user01). Carbon and trees are estimates and metaphors built from published measurements and official factors; the calculation and sources are below, in “The weight of a line”.",
     cta1: "Check my conversation",
-    cta2: "Did you know?",
+    cta2: "The weight of a line",
     replay: "Replay",
     skip: "Skip",
     placeholder: "Message",
@@ -41,6 +48,10 @@ const COPY = {
   },
 };
 const TOKENS = 427524;
+const LINE = footprint(TOKENS);
+const USER01 = footprint(5871292005);
+const VARS = { h: String(Math.round(LINE.tree_hours)), y: String(Math.round(USER01.tree_years)), g: (Math.round(LINE.g_co2 * 10) / 10).toFixed(1) };
+const subst = (text) => text.replace(/\{(\w)\}/g, (_, k) => VARS[k]);
 
 const $ = (id) => document.getElementById(id);
 const reduce = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -81,7 +92,8 @@ function counter(c) {
   const bar = el("div", "reading-bar");
   const fill = el("i");
   bar.append(fill);
-  box.append(label, num, bar);
+  const co2 = el("div", "reading-co2", subst(c.carbon));
+  box.append(label, num, bar, co2);
   return { box, n, fill, label };
 }
 
@@ -90,9 +102,14 @@ function cta(c) {
   const a = el("a", "btn", c.cta1);
   a.href = "#analyze";
   const b = el("a", "btn ghost-btn", c.cta2);
-  b.href = "#know";
+  b.href = "#weight";
   row.append(a, b);
   return row;
+}
+
+// the carbon line is the punch; the last line is the question
+function lineClass(c, i) {
+  return i === c.lines.length - 1 ? "ask" : i === 2 ? "hit" : "";
 }
 
 function fmt(n, l) {
@@ -111,7 +128,7 @@ function renderFinal() {
   k.fill.style.transform = "scaleX(1)";
   k.box.classList.add("done");
   body.append(k.box);
-  c.lines.forEach((line, i) => body.append(el("p", i === c.lines.length - 1 ? "ask" : "", line)));
+  c.lines.forEach((line, i) => body.append(el("p", lineClass(c, i), subst(line))));
   body.append(cta(c), el("p", "foot", c.footnote));
   log.append(row);
   $("composer-text").textContent = "";
@@ -169,9 +186,9 @@ async function play() {
     k.box.classList.add("done");
     await sleep(300, id);
     for (let i = 0; i < c.lines.length; i++) {
-      const p = el("p", i === c.lines.length - 1 ? "ask" : "");
+      const p = el("p", lineClass(c, i));
       body.append(p);
-      const words = c.lines[i].split(/(\s+)/);
+      const words = subst(c.lines[i]).split(/(\s+)/);
       for (const w of words) {
         p.textContent += w;
         if (w.trim()) await sleep(l === "ko" ? 70 : 45, id);

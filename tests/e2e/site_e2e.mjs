@@ -55,6 +55,10 @@ const errors = [];
   }));
   check(violation === "connect-src", `CSP itself blocks outbound fetch (violation: ${violation})`);
   check(await page.isVisible("text=Download skeleton (JSON)"), "download button shown");
+  check((await page.textContent("#result")).includes("g CO₂"), "result shows the carbon estimate");
+  check(await page.locator("#weight .forest .tree").count() === 25, "carbon story renders 25 tree-years");
+  check((await page.textContent("#weight .mega")).includes("10.8") || (await page.getAttribute("#weight .mega-n", "data-count")) === "10.8", "carbon story headline is 10.8 g");
+  check((await page.locator("#weight .sources li").count()) >= 5, "carbon story cites its sources");
   // link input gives bookmarklet guidance instead of fetching
   await page.fill("#input", "https://chatgpt.com/share/abc");
   await page.click("#go");

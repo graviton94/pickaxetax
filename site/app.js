@@ -2,6 +2,7 @@
 // (connect-src 'none') makes it impossible to send the conversation anywhere.
 import { analyzeInput, analyzeTurns, LinkInput } from "./engine.js";
 import { skeletonContribution, solvePow, validateContribution } from "./contrib.js";
+import { footprint } from "./carbon.js";
 
 export const ENGINE_VERSION = "0.3.1"; // kept equal to pyproject.toml by tests/test_contrib.py
 const CONFIG = window.PXT_CONFIG || { contribUrl: "", repo: "graviton94/pickaxetax" };
@@ -10,6 +11,7 @@ const CONFIG = window.PXT_CONFIG || { contribUrl: "", repo: "graviton94/pickaxet
 const T = {
   en: {
     nav_check: "Check",
+    nav_weight: "The weight of a line",
     nav_know: "Did you know?",
     nav_bill: "The first bill",
     nav_about: "About us",
@@ -75,6 +77,7 @@ const T = {
     billed: "Billed input tokens", billed_s: "{v} visible tokens re-sent every turn",
     oneshot: "If asked in one go", oneshot_s: "lower bound: every requirement in one prompt",
     energy: "Avoidable energy (est.)", energy_s: "assumes {f} Wh / 1k units",
+    co2: "Carbon of the re-reading (est.)", co2_s: "≈ {h} of a tree absorbing it · factors in “The weight of a line”", co2_h: "{v} hours", co2_m: "{v} minutes",
     shape: "Shape", shape_s: "{u} prompts · {b} topic threads · max depth {d}",
     waste_title: "Where it leaked", w_ack: "Thank-you / ok messages", w_sup: "Discarded answers (corrections, retries)", w_off: "Re-sending unrelated topics", w_rest: "Necessary",
     skeleton_title: "Conversation skeleton", skeleton_note: "x = order, y = topic thread & depth, size = tokens. Dashed outline = wasted turn.",
@@ -92,6 +95,7 @@ const T = {
   },
   ko: {
     nav_check: "진단",
+    nav_weight: "한 줄의 무게",
     nav_know: "알고 계셨나요?",
     nav_bill: "첫 번째 고지서",
     nav_about: "소개",
@@ -157,6 +161,7 @@ const T = {
     billed: "실제 과금 입력 토큰", billed_s: "보이는 텍스트 {v} 토큰을 매 턴 재전송",
     oneshot: "한 번에 물었다면", oneshot_s: "모든 요구를 한 프롬프트에 담은 하한선",
     energy: "회피 가능 전력 (추정)", energy_s: "가정치 {f} Wh / 1k 단위",
+    co2: "다시 읽기의 탄소 (추정)", co2_s: "나무 한 그루가 {h} 동안 흡수할 양 · 계수는 ‘한 줄의 무게’ 참고", co2_h: "{v}시간", co2_m: "{v}분",
     shape: "대화 형태", shape_s: "{u}개 질문 · {b}개 주제 갈래 · 최대 깊이 {d}",
     waste_title: "어디서 새었나", w_ack: "감사·확인 메시지", w_sup: "버려진 답변 (수정·재질문)", w_off: "관련 없는 주제의 재전송", w_rest: "필요한 연산",
     skeleton_title: "대화 골격", skeleton_note: "x = 순서, y = 주제 갈래·깊이, 크기 = 토큰. 점선 테두리 = 낭비된 턴.",
@@ -218,6 +223,13 @@ function applyI18n() {
 // ---------- rendering ----------
 function statCard(k, v, sub, hero = false) {
   return h("div", { class: "stat" + (hero ? " hero" : "") }, h("div", { class: "k" }, k), h("div", { class: "v" }, v), sub ? h("div", { class: "s" }, sub) : null);
+}
+
+function co2Card(tokens) {
+  const f = footprint(tokens || 0);
+  const g = f.g_co2 >= 10 ? fmt(Math.round(f.g_co2)) : f.g_co2.toFixed(f.g_co2 >= 1 ? 1 : 2);
+  const span = f.tree_hours >= 1 ? t("co2_h", { v: f.tree_hours.toFixed(f.tree_hours >= 10 ? 0 : 1) }) : t("co2_m", { v: Math.max(1, Math.round(f.tree_hours * 60)) });
+  return statCard(t("co2"), `${g} g CO₂`, t("co2_s", { h: span }));
 }
 
 function wasteBar(parts) {
@@ -307,6 +319,7 @@ function renderResult() {
     statCard(t("billed"), fmt(m.billed_input_tokens), t("billed_s", { v: fmt(m.visible_tokens) })),
     statCard(t("oneshot"), `${m.one_shot_savings_pct}%`, t("oneshot_s")),
     statCard(t("energy"), `${m.energy_wh_avoidable} Wh`, t("energy_s", { f: m.assumptions.wh_per_1k_units })),
+    co2Card(m.billed_input_tokens),
     statCard(t("shape"), `${m.user_turns}/${m.branches}/${m.max_depth}`, t("shape_s", { u: m.user_turns, b: m.branches, d: m.max_depth })),
   ));
   const rest = Math.max(0, Math.round((100 - w.ack_pct - w.superseded_pct - w.offtopic_context_pct) * 10) / 10);
