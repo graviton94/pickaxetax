@@ -6,30 +6,73 @@
   <!-- connect-src 'none': this page cannot send anything anywhere. Analysis runs in your browser. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Pickaxe Tax</title>
+  <title>#AntiTokenMaxing</title>
   <meta name="description" content="See how much compute your AI conversation didn't need. Runs entirely in your browser; nothing is uploaded.">
-  <meta property="og:title" content="Pickaxe Tax — stop paying the pickaxe tax">
+  <meta property="og:title" content="#AntiTokenMaxing — the receipt of the 21st-century gold rush">
   <meta property="og:description" content="Your AI re-reads the whole conversation on every turn. See how much compute you didn't need. Runs in your browser; nothing is uploaded.">
   <meta property="og:image" content="https://graviton94.github.io/pickaxetax/og.png">
   <meta property="og:url" content="https://graviton94.github.io/pickaxetax/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#1f7a5a">
+  <meta name="theme-color" content="#000000">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="landing.css">
 </head>
 <body>
-  <header class="top">
-    <a class="brand" href="./">PICKAXE<span>TAX</span></a>
-    <nav>
-      <a href="https://github.com/graviton94/pickaxetax">GitHub</a>
-      <button id="lang" class="ghost" type="button" aria-label="language">한국어</button>
-    </nav>
+  <svg class="defs" aria-hidden="true" focusable="false">
+    <symbol id="i-tree" viewBox="0 0 24 32"><path d="M12 1 4.5 11.5H8.5L3.5 19H8L2.5 26.5h19L16 19h4.5l-5-7.5h4L12 1Z"/><rect x="10.4" y="25" width="3.2" height="7" rx="1"/></symbol>
+    <symbol id="i-twig" viewBox="0 0 24 24"><path d="M3 21 21 3M9 15 4.5 13.8M12.5 11.5l.9-5M16 8l4.6.9M6.5 17.5l-.6 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-hour" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  </svg>
+  <header class="top-bar">
+    <div class="top">
+      <a class="brand" href="./">#ANTI<span>TOKEN</span>MAXING</a>
+      <nav>
+        <a href="#weight" data-i18n="nav_weight">The weight of a line</a>
+        <a href="#cost" data-i18n="nav_cost">The cost</a>
+        <a href="#check" data-i18n="nav_check">Check</a>
+        <a href="#bill" data-i18n="nav_bill">The receipt</a>
+        <a href="#about" data-i18n="nav_about">About us</a>
+        <button id="lang" class="ghost" type="button" aria-label="language">한국어</button>
+      </nav>
+    </div>
   </header>
 
+  <section id="intro" class="theater" aria-label="intro">
+    <p class="intro-tag" data-i18n="intro_tag">The receipt of the 21st-century gold rush</p>
+    <div class="chat" role="presentation">
+      <div class="chat-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b>#AntiTokenMaxing</b>
+        <span class="chat-ctl"><button type="button" id="intro-skip" class="link-btn">Skip</button><button type="button" id="intro-replay" class="link-btn" hidden>Replay</button></span></div>
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <div class="composer"><div class="composer-text" id="composer-text" data-placeholder="Message"></div><button type="button" class="composer-send" id="composer-send" tabindex="-1" aria-hidden="true">↑</button></div>
+    </div>
+    <a class="scroll-cue" href="#weight" aria-label="scroll">↓</a>
+  </section>
+
+  <section id="weight" class="theater" aria-labelledby="weight-title"></section>
+  <section id="cost" class="theater" aria-labelledby="cost-title"></section>
+
   <main>
-    <section id="hero">
-      <p class="kicker"><span data-i18n="kicker">Stop paying the pickaxe tax.</span> <b>#AntiTokenMaxing</b></p>
-      <h1 data-i18n="hero_title">Your AI re-reads the whole conversation, every single turn.</h1>
+    <section id="know" class="band" data-reveal>
+      <p class="eyebrow" data-i18n="know_eyebrow">You know?</p>
+      <h2 data-i18n="know_title"></h2>
+      <p class="lede" data-i18n="know_lede"></p>
+      <div class="facts" data-stagger>
+        <article class="fact"><b data-i18n="k1_v">73.6%</b><p data-i18n="k1_t"></p></article>
+        <article class="fact"><b data-i18n="k2_v">0.2%</b><p data-i18n="k2_t"></p></article>
+        <article class="fact"><b data-i18n="k3_v">78만</b><p data-i18n="k3_t"></p></article>
+        <article class="fact"><b data-i18n="k4_v">45.6%</b><p data-i18n="k4_t"></p></article>
+        <article class="fact"><b data-i18n="k5_v">1.49×</b><p data-i18n="k5_t"></p></article>
+        <article class="fact"><b data-i18n="k6_v">586</b><p data-i18n="k6_t"></p></article>
+      </div>
+      <p class="src"><span data-i18n="know_src"></span> <a href="report/user01.html" data-i18n="bill_open"></a></p>
+    </section>
+
+    <div id="check">
+    <section id="hero" class="band" data-reveal>
+      <p class="kicker"><b>#AntiTokenMaxing</b> <span data-i18n="kicker">Check your own receipt first.</span></p>
+      <h2 data-i18n="hero_title">Your AI re-reads the whole conversation, every single turn.</h2>
       <p class="lede" data-i18n="hero_lede"></p>
       <p class="privacy-badge" data-i18n="badge">🔒 Runs in your browser. Nothing is uploaded.</p>
     </section>
@@ -52,20 +95,54 @@
     <section id="link" class="card linkbox">
       <h3 data-i18n="link_title"></h3>
       <ol>
-        <li><span data-i18n="link_step1"></span> <a id="bookmarklet" class="bookmarklet" href="#">⛏ Pickaxe Tax</a></li>
+        <li><span data-i18n="link_step1"></span> <a id="bookmarklet" class="bookmarklet" href="#">⛏ AntiTokenMaxing</a></li>
         <li data-i18n="link_step2"></li>
         <li data-i18n="link_step3"></li>
       </ol>
       <p class="muted-box" data-i18n="link_note"></p>
     </section>
+    </div>
 
     <section id="result" hidden></section>
+
+    <section id="bill" class="band" data-reveal>
+      <p class="eyebrow" data-i18n="bill_eyebrow">Receipt No. 01</p>
+      <h2 data-i18n="bill_title"></h2>
+      <div class="bill-card">
+        <dl class="bill-fields">
+          <div><dt data-i18n="bill_f1">Subject</dt><dd data-i18n="bill_v1"></dd></div>
+          <div><dt data-i18n="bill_f2">Period</dt><dd data-i18n="bill_v2"></dd></div>
+          <div><dt data-i18n="bill_f3">Source</dt><dd data-i18n="bill_v3"></dd></div>
+        </dl>
+        <div class="bill-amount"><b data-i18n="bill_amount">58.71억</b><span data-i18n="bill_amount_note"></span></div>
+        <div class="bill-carbon" id="bill-carbon"></div>
+        <p class="lede" data-i18n="bill_lede"></p>
+        <div class="row"><a class="btn" href="report/user01.html" data-i18n="bill_open"></a></div>
+      </div>
+      <h3 data-i18n="bill_cmd_title"></h3>
+      <pre class="cmd">pip install pickaxetax
+pxt survey measure ~/.claude/projects --out my-dataset.json
+pxt survey report my-dataset.json --out my-report.html</pre>
+      <p class="muted" data-i18n="bill_cmd_note"></p>
+    </section>
 
     <section id="impact" hidden>
       <h2 data-i18n="impact_title"></h2>
       <p class="muted" data-i18n="impact_lede"></p>
       <div class="grid" id="impact-stats"></div>
       <div class="card" id="impact-topics" hidden><h3 data-i18n="impact_topics"></h3><div class="chips" id="impact-chips"></div></div>
+    </section>
+
+    <section id="about" class="band" data-reveal>
+      <p class="eyebrow" data-i18n="about_eyebrow">About us</p>
+      <h2 data-i18n="about_title"></h2>
+      <p class="lede" data-i18n="about_lede"></p>
+      <div class="principles" data-stagger>
+        <article><h3 data-i18n="p1_t"></h3><p data-i18n="p1_d"></p></article>
+        <article><h3 data-i18n="p2_t"></h3><p data-i18n="p2_d"></p></article>
+        <article><h3 data-i18n="p3_t"></h3><p data-i18n="p3_d"></p></article>
+      </div>
+      <p class="links"><a href="https://github.com/graviton94/pickaxetax">GitHub</a> · <a href="https://github.com/graviton94/pickaxetax/tree/HEAD/research" data-i18n="about_research"></a> · <a href="https://github.com/graviton94/pickaxetax/blob/HEAD/CONTRIBUTING.md" data-i18n="about_contribute"></a></p>
     </section>
   </main>
 
@@ -76,5 +153,7 @@
   <script src="config.js"></script>
   <script src="data/aggregate.js"></script>
   <script type="module" src="app.js"></script>
+  <script type="module" src="intro.js"></script>
+  <script type="module" src="story.js"></script>
 </body>
 </html>

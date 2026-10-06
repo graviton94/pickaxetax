@@ -1,7 +1,8 @@
-// Pickaxe Tax static site. Everything happens in this tab: the page's CSP
+// #AntiTokenMaxing static site. Everything happens in this tab: the page's CSP
 // (connect-src 'none') makes it impossible to send the conversation anywhere.
 import { analyzeInput, analyzeTurns, LinkInput } from "./engine.js";
 import { skeletonContribution, solvePow, validateContribution } from "./contrib.js";
+import { footprint } from "./carbon.js";
 
 export const ENGINE_VERSION = "0.3.1"; // kept equal to pyproject.toml by tests/test_contrib.py
 const CONFIG = window.PXT_CONFIG || { contribUrl: "", repo: "graviton94/pickaxetax" };
@@ -9,7 +10,55 @@ const CONFIG = window.PXT_CONFIG || { contribUrl: "", repo: "graviton94/pickaxet
 // ---------- i18n ----------
 const T = {
   en: {
-    kicker: "Stop paying the pickaxe tax.",
+    nav_check: "Check",
+    nav_weight: "The weight of a line",
+    nav_know: "Did you know?",
+    nav_bill: "The receipt",
+    nav_cost: "The cost",
+    intro_tag: "The receipt of the 21st-century gold rush",
+    nav_about: "About us",
+    know_eyebrow: "You know?",
+    know_title: "Measured to the token.",
+    know_lede: "Real AI usage, re-measured from the usage the provider recorded for every call. No estimates.",
+    k1_v: "73.6%",
+    k1_t: "of the context carried on every call was left over from instructions that were already finished.",
+    k2_v: "0.2–0.4%",
+    k2_t: "is how much the AI wrote compared with what it re-read.",
+    k3_v: "780K",
+    k3_t: "tokens is the ceiling. Context is compacted only when it fills up, so sessions run almost full.",
+    k4_v: "45.6%",
+    k4_t: "of all input came from the top 10% of instructions. One instruction used 220 million tokens.",
+    k5_v: "1.49×",
+    k5_t: "more usage than the session list shows. Older sessions showed only a quarter to a half of it.",
+    k6_v: "10M",
+    k6_t: "tokens re-read per instruction on average, across 586 instructions.",
+    know_src: "Source: Receipt No. 01. One user, 10 Claude Code sessions, 2026-07-10 – 10-05, recomputed from a public dataset.",
+    bill_eyebrow: "Receipt No. 01",
+    bill_title: "The receipt of the 21st-century gold rush",
+    bill_f1: "Subject",
+    bill_v1: "The project's founder (anonymized)",
+    bill_f2: "Period",
+    bill_v2: "2026-07-10 – 2026-10-05, 10 Claude Code sessions",
+    bill_f3: "Source",
+    bill_v3: "Provider-recorded usage for every API call",
+    bill_amount: "5.87B",
+    bill_amount_note: "input tokens processed (lower bound)",
+    bill_lede: "Every number on the receipt is recomputed from a public dataset each time the report is built. Same dataset, same report, byte for byte.",
+    bill_open: "Open the full receipt",
+    bill_cmd_title: "Get your own receipt",
+    bill_cmd_note: "Runs on your machine. The dataset holds numbers only: no text, paths or ids.",
+    about_eyebrow: "About us",
+    about_title: "Judge AI by how little it needs, not by how much it burns.",
+    about_lede: "#AntiTokenMaxing is a public-interest, open-source project. In a gold rush the people who get rich sell the pickaxes; in this one the pickaxes are chips and data centers, and everyone splits the receipt: in power bills, carbon and waste. We read that receipt line by line, and build tools that strike out the lines nobody needed. We are not against AI. We are against waste.",
+    p1_t: "Local first",
+    p1_d: "Your conversation text never leaves this page. Its security policy blocks every outgoing request except the numbers-only contribution you choose to send.",
+    p2_t: "Measured, not guessed",
+    p2_d: "Every number comes from recorded usage, with its source and its limits. Failed hypotheses are published too.",
+    p3_t: "Open",
+    p3_d: "Code under Apache-2.0, data under ODbL. Anyone can recompute every number, including people who disagree.",
+    about_research: "Research",
+    about_contribute: "Contribute",
+    kicker: "Check your own receipt first.",
     hero_title: "Your AI re-reads the whole conversation, every single turn.",
     hero_lede: "Paste a conversation, drop an export file, or use a share link. We keep only its shape (agenda, flow, depth) and show how much of the compute it didn't need.",
     badge: "🔒 Runs in your browser. Nothing is uploaded.",
@@ -21,7 +70,7 @@ const T = {
     link_step2: "Open the shared conversation (ChatGPT, Claude, Gemini…).",
     link_step3: "Click the bookmark on that page. The conversation is read from the page you already have open and handed to this tab. No server is involved.",
     link_note: "Why a bookmark? Browsers don't allow one website to read another, and fetching the link through a server would mean someone else's server sees your conversation. The bookmark reads the page you're already looking at.",
-    link_detected: "That's a share link. Open it, then click the ⛏ Pickaxe Tax bookmark on that page (see the steps below).",
+    link_detected: "That's a share link. Open it, then click the ⛏ AntiTokenMaxing bookmark on that page (see the steps below).",
     drag_hint: "Drag this button to your bookmarks bar, then click it on a shared conversation page.",
     footer: "Your text is analyzed in this tab and never leaves it. The analyzer calls no AI model: a project about saving tokens shouldn't spend them.",
     engine_note: "same engine as the Python package, parity-tested",
@@ -30,6 +79,7 @@ const T = {
     billed: "Billed input tokens", billed_s: "{v} visible tokens re-sent every turn",
     oneshot: "If asked in one go", oneshot_s: "lower bound: every requirement in one prompt",
     energy: "Avoidable energy (est.)", energy_s: "assumes {f} Wh / 1k units",
+    co2: "Carbon of the re-reading (est.)", co2_s: "≈ {h} of a tree absorbing it · factors in “The weight of a line”", co2_h: "{v} hours", co2_m: "{v} minutes",
     shape: "Shape", shape_s: "{u} prompts · {b} topic threads · max depth {d}",
     waste_title: "Where it leaked", w_ack: "Thank-you / ok messages", w_sup: "Discarded answers (corrections, retries)", w_off: "Re-sending unrelated topics", w_rest: "Necessary",
     skeleton_title: "Conversation skeleton", skeleton_note: "x = order, y = topic thread & depth, size = tokens. Dashed outline = wasted turn.",
@@ -46,7 +96,55 @@ const T = {
     intents: { ask: "ask", instruct: "instruct", clarify: "clarify", correct: "correct", retry: "retry", continue: "continue", ack: "thanks/ok", context: "big paste", answer: "answer", code: "code", followup_question: "asks back", apology_fix: "apology/fix", refusal: "refusal" },
   },
   ko: {
-    kicker: "곡괭이세를 그만 내자.",
+    nav_check: "진단",
+    nav_weight: "한 줄의 무게",
+    nav_know: "알고 계셨나요?",
+    nav_bill: "영수증",
+    nav_cost: "그 대가",
+    intro_tag: "21세기 골드러시의 영수증",
+    nav_about: "소개",
+    know_eyebrow: "You know?",
+    know_title: "토큰 단위까지, 다시 쟀습니다.",
+    know_lede: "실제 AI 사용 기록을, 제공사가 호출마다 남긴 사용량으로 다시 쟀습니다. 추정은 없습니다.",
+    k1_v: "73.6%",
+    k1_t: "매 호출이 들고 간 컨텍스트 가운데, 이미 끝난 지시들이 남긴 내용의 비중입니다.",
+    k2_v: "0.2~0.4%",
+    k2_t: "AI가 다시 읽은 양에 비해 실제로 써낸 양입니다.",
+    k3_v: "78만",
+    k3_t: "토큰이 천장입니다. 컨텍스트는 여기에 닿을 때만 압축되고, 세션은 거의 늘 가득 찬 채로 돕니다.",
+    k4_v: "45.6%",
+    k4_t: "상위 10% 지시가 쓴 입력의 비중입니다. 지시 하나가 2억 2천만 토큰을 쓴 적도 있습니다.",
+    k5_v: "1.49배",
+    k5_t: "세션 목록에 표시된 것보다 실제 사용량이 이만큼 많았습니다. 오래된 세션은 실제의 4분의 1~2분의 1만 표시됐습니다.",
+    k6_v: "1,000만",
+    k6_t: "토큰이 지시 한 번에 평균적으로 다시 읽혔습니다. 지시 586번의 평균입니다.",
+    know_src: "출처: 영수증 No.01. 한 사용자의 Claude Code 세션 10개, 2026-07-10 ~ 10-05, 공개 데이터셋에서 재계산",
+    bill_eyebrow: "Receipt No. 01",
+    bill_title: "21세기 골드러시의 영수증",
+    bill_f1: "조사 대상",
+    bill_v1: "프로젝트 대표 본인 (익명)",
+    bill_f2: "조사 기간",
+    bill_v2: "2026-07-10 ~ 2026-10-05, Claude Code 세션 10개",
+    bill_f3: "측정 원천",
+    bill_v3: "제공사가 API 호출마다 기록한 사용량",
+    bill_amount: "58.71억",
+    bill_amount_note: "토큰의 입력을 처리했습니다 (하한)",
+    bill_lede: "영수증의 모든 숫자는 레포트를 만들 때마다 공개 데이터셋에서 다시 계산됩니다. 같은 데이터셋이면 같은 레포트가 바이트 단위까지 똑같이 나옵니다.",
+    bill_open: "영수증 전문 보기",
+    bill_cmd_title: "내 영수증 받기",
+    bill_cmd_note: "내 컴퓨터에서 실행됩니다. 데이터셋에는 숫자만 담기고, 텍스트·경로·ID는 담기지 않습니다.",
+    about_eyebrow: "About us",
+    about_title: "AI는 얼마나 많이 태웠는지가 아니라, 얼마나 적게 쓰고 해냈는지로 평가받아야 합니다.",
+    about_lede: "#AntiTokenMaxing은 공익 오픈소스 프로젝트입니다. 골드러시에서 돈을 버는 건 곡괭이를 파는 쪽입니다. 이번 골드러시의 곡괭이는 반도체와 데이터센터이고, 영수증은 모두가 나눠 냅니다. 전기요금으로, 탄소로, 쓰레기로. 우리는 그 영수증을 한 줄씩 뜯어보고, 아무도 필요하지 않았던 줄을 지우는 도구를 만듭니다. AI를 반대하지 않습니다. 낭비를 반대합니다.",
+    p1_t: "로컬 우선",
+    p1_d: "대화 원문은 이 페이지 밖으로 나가지 않습니다. 보안 정책이, 직접 선택한 숫자 기여 말고는 모든 외부 요청을 막습니다.",
+    p2_t: "추정이 아니라 측정",
+    p2_d: "모든 숫자는 기록된 사용량에서 나오고, 출처와 한계를 함께 적습니다. 틀린 가설도 공개합니다.",
+    p3_t: "공개",
+    p3_d: "코드는 Apache-2.0, 데이터는 ODbL입니다. 동의하지 않는 사람도 모든 숫자를 다시 계산할 수 있어야 합니다.",
+    about_research: "연구",
+    about_contribute: "기여하기",
+    kicker: "당신의 영수증부터 확인하세요.",
     hero_title: "AI는 같은 대화를 매번 처음부터 다시 읽습니다.",
     hero_lede: "대화를 붙여넣거나, 내보내기 파일을 올리거나, 공유 링크를 쓰세요. 대화의 구조(아젠다·흐름·깊이)만 남겨 불필요했던 연산이 얼마인지 보여줍니다.",
     badge: "🔒 브라우저 안에서만 처리됩니다. 아무것도 업로드되지 않습니다.",
@@ -58,7 +156,7 @@ const T = {
     link_step2: "공유된 대화 페이지(ChatGPT, Claude, Gemini 등)를 엽니다.",
     link_step3: "그 페이지에서 북마크를 클릭하세요. 이미 열려 있는 페이지에서 대화를 읽어 이 탭으로 넘깁니다. 서버를 거치지 않습니다.",
     link_note: "왜 북마크인가요? 브라우저는 한 사이트가 다른 사이트를 읽는 것을 막습니다. 서버로 링크를 대신 가져오면 남의 서버가 대화를 보게 됩니다. 북마크는 지금 보고 있는 페이지를 직접 읽습니다.",
-    link_detected: "공유 링크입니다. 링크를 연 뒤, 그 페이지에서 ⛏ Pickaxe Tax 북마크를 클릭하세요 (아래 안내 참고).",
+    link_detected: "공유 링크입니다. 링크를 연 뒤, 그 페이지에서 ⛏ AntiTokenMaxing 북마크를 클릭하세요 (아래 안내 참고).",
     drag_hint: "이 버튼을 북마크바로 끌어다 놓은 뒤, 공유 대화 페이지에서 클릭하세요.",
     footer: "텍스트는 이 탭 안에서만 분석되고 밖으로 나가지 않습니다. 분석기는 AI 모델을 호출하지 않습니다. 토큰을 아끼자는 프로젝트가 토큰을 쓸 수는 없으니까요.",
     engine_note: "Python 패키지와 동일한 엔진 (동등성 테스트 통과)",
@@ -67,6 +165,7 @@ const T = {
     billed: "실제 과금 입력 토큰", billed_s: "보이는 텍스트 {v} 토큰을 매 턴 재전송",
     oneshot: "한 번에 물었다면", oneshot_s: "모든 요구를 한 프롬프트에 담은 하한선",
     energy: "회피 가능 전력 (추정)", energy_s: "가정치 {f} Wh / 1k 단위",
+    co2: "다시 읽기의 탄소 (추정)", co2_s: "나무 한 그루가 {h} 동안 흡수할 양 · 계수는 ‘한 줄의 무게’ 참고", co2_h: "{v}시간", co2_m: "{v}분",
     shape: "대화 형태", shape_s: "{u}개 질문 · {b}개 주제 갈래 · 최대 깊이 {d}",
     waste_title: "어디서 새었나", w_ack: "감사·확인 메시지", w_sup: "버려진 답변 (수정·재질문)", w_off: "관련 없는 주제의 재전송", w_rest: "필요한 연산",
     skeleton_title: "대화 골격", skeleton_note: "x = 순서, y = 주제 갈래·깊이, 크기 = 토큰. 점선 테두리 = 낭비된 턴.",
@@ -128,6 +227,13 @@ function applyI18n() {
 // ---------- rendering ----------
 function statCard(k, v, sub, hero = false) {
   return h("div", { class: "stat" + (hero ? " hero" : "") }, h("div", { class: "k" }, k), h("div", { class: "v" }, v), sub ? h("div", { class: "s" }, sub) : null);
+}
+
+function co2Card(tokens) {
+  const f = footprint(tokens || 0);
+  const g = f.g_co2 >= 10 ? fmt(Math.round(f.g_co2)) : f.g_co2.toFixed(f.g_co2 >= 1 ? 1 : 2);
+  const span = f.tree_hours >= 1 ? t("co2_h", { v: f.tree_hours.toFixed(f.tree_hours >= 10 ? 0 : 1) }) : t("co2_m", { v: Math.max(1, Math.round(f.tree_hours * 60)) });
+  return statCard(t("co2"), `${g} g CO₂`, t("co2_s", { h: span }));
 }
 
 function wasteBar(parts) {
@@ -217,6 +323,7 @@ function renderResult() {
     statCard(t("billed"), fmt(m.billed_input_tokens), t("billed_s", { v: fmt(m.visible_tokens) })),
     statCard(t("oneshot"), `${m.one_shot_savings_pct}%`, t("oneshot_s")),
     statCard(t("energy"), `${m.energy_wh_avoidable} Wh`, t("energy_s", { f: m.assumptions.wh_per_1k_units })),
+    co2Card(m.billed_input_tokens),
     statCard(t("shape"), `${m.user_turns}/${m.branches}/${m.max_depth}`, t("shape_s", { u: m.user_turns, b: m.branches, d: m.max_depth })),
   ));
   const rest = Math.max(0, Math.round((100 - w.ack_pct - w.superseded_pct - w.offtopic_context_pct) * 10) / 10);
@@ -378,7 +485,7 @@ function pxtBookmarklet(SITE) {
   for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
   var b64 = btoa(bin);
   if (b64.length > 1500000) {
-    alert("Pickaxe Tax: this conversation is too long to hand over by link. Select all (Ctrl/Cmd+A), copy, and paste it into the page instead.");
+    alert("#AntiTokenMaxing: this conversation is too long to hand over by link. Select all (Ctrl/Cmd+A), copy, and paste it into the page instead.");
     window.open(SITE, "_blank");
     return;
   }
@@ -432,7 +539,10 @@ $("form").addEventListener("submit", async (ev) => {
 });
 $("sample").addEventListener("click", () => { $("input").value = SAMPLE[lang]; $("file").value = ""; $("file-name").textContent = ""; });
 $("file").addEventListener("change", () => { $("file-name").textContent = $("file").files[0]?.name || ""; });
-$("lang").addEventListener("click", () => { lang = lang === "ko" ? "en" : "ko"; store.set("lang", lang); applyI18n(); renderResult(); renderImpact(); });
+$("lang").addEventListener("click", () => {
+  lang = lang === "ko" ? "en" : "ko"; store.set("lang", lang); applyI18n(); renderResult(); renderImpact();
+  document.dispatchEvent(new CustomEvent("pxt:lang", { detail: lang }));
+});
 
 applyI18n();
 renderImpact();

@@ -158,7 +158,7 @@ def tips(m: dict) -> list[dict]:
     return sorted(t, key=lambda x: -x["weight"])
 
 
-def export(m: dict) -> dict:
+def export(m: dict, bound: dict | None = None) -> dict:
     """Anonymous aggregate for contribution: counts only, no paths, commands or ids."""
     keep = ("sessions", "api_calls", "subagent_calls", "compactions", "tool_calls", "tokens", "cache_hit_pct",
             "peak_context", "duplicate_reads", "large_results", "failed_repeats", "carried_share_pct")
@@ -169,4 +169,6 @@ def export(m: dict) -> dict:
     out["by_tool"] = {k: dict(v) for k, v in by_tool.items()}
     out["schema"] = "pickaxetax.agent.v1"
     out["agent"] = "claude-code"
+    if bound:
+        out["bound"] = bound
     return out

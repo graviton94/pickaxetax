@@ -1,0 +1,257 @@
+{
+ "main": {
+  "api_calls": 322,
+  "compactions": 1,
+  "segments": 1166,
+  "measured_input": 149273256,
+  "modeled_resident": 134233602,
+  "unmodeled_input": 15039654,
+  "pinned_input": 63395044,
+  "written_tokens": 79021,
+  "policies": {
+   "P=0": {
+    "needed_resident": 59512665,
+    "bound_input": 74552319,
+    "avoidable_pct": 50.1
+   },
+   "P=1000": {
+    "needed_resident": 63274698,
+    "bound_input": 78314352,
+    "avoidable_pct": 47.5
+   },
+   "P=10000": {
+    "needed_resident": 82464220,
+    "bound_input": 97503874,
+    "avoidable_pct": 34.7
+   },
+   "P=inf": {
+    "needed_resident": 120615652,
+    "bound_input": 135655306,
+    "avoidable_pct": 9.1
+   }
+  },
+  "by_kind": {
+   "unattributed": {
+    "tokens": 293010,
+    "resident": 48355390,
+    "share_of_resident_pct": 36.0,
+    "dead_after_last_use_pct": 0.0,
+    "unneeded_pct": 0.0
+   },
+   "persisted_write": {
+    "tokens": 160569,
+    "resident": 33724212,
+    "share_of_resident_pct": 25.1,
+    "dead_after_last_use_pct": 11.1,
+    "unneeded_pct": 83.5
+   },
+   "tool_input": {
+    "tokens": 189124,
+    "resident": 30728773,
+    "share_of_resident_pct": 22.9,
+    "dead_after_last_use_pct": 19.7,
+    "unneeded_pct": 88.9
+   },
+   "tool_result": {
+    "tokens": 134468,
+    "resident": 14235117,
+    "share_of_resident_pct": 10.6,
+    "dead_after_last_use_pct": 21.9,
+    "unneeded_pct": 90.9
+   },
+   "assistant_text": {
+    "tokens": 43430,
+    "resident": 6427343,
+    "share_of_resident_pct": 4.8,
+    "dead_after_last_use_pct": 8.3,
+    "unneeded_pct": 89.2
+   },
+   "user_prompt": {
+    "tokens": 4355,
+    "resident": 445760,
+    "share_of_resident_pct": 0.3,
+    "dead_after_last_use_pct": 33.2,
+    "unneeded_pct": 95.3
+   },
+   "compact_summary": {
+    "tokens": 9933,
+    "resident": 268207,
+    "share_of_resident_pct": 0.2,
+    "dead_after_last_use_pct": 3.7,
+    "unneeded_pct": 33.3
+   },
+   "harness": {
+    "tokens": 191,
+    "resident": 48796,
+    "share_of_resident_pct": 0.0,
+    "dead_after_last_use_pct": 35.2,
+    "unneeded_pct": 97.9
+   }
+  },
+  "tokenizer_factor": 1.93
+ },
+ "sensitivity_avoidable_pct": [
+  {
+   "calibrated": true,
+   "min_shared": 1,
+   "common_frac": 0.01,
+   "P=0": 54.2,
+   "P=1000": 53.1,
+   "P=10000": 46.0,
+   "P=inf": 18.7
+  },
+  {
+   "calibrated": true,
+   "min_shared": 1,
+   "common_frac": 0.02,
+   "P=0": 50.1,
+   "P=1000": 47.5,
+   "P=10000": 34.7,
+   "P=inf": 9.1
+  },
+  {
+   "calibrated": true,
+   "min_shared": 1,
+   "common_frac": 0.05,
+   "P=0": 42.7,
+   "P=1000": 37.9,
+   "P=10000": 21.0,
+   "P=inf": 3.6
+  },
+  {
+   "calibrated": true,
+   "min_shared": 2,
+   "common_frac": 0.01,
+   "P=0": 56.0,
+   "P=1000": 55.7,
+   "P=10000": 53.2,
+   "P=inf": 32.5
+  },
+  {
+   "calibrated": true,
+   "min_shared": 2,
+   "common_frac": 0.02,
+   "P=0": 53.8,
+   "P=1000": 52.8,
+   "P=10000": 46.5,
+   "P=inf": 21.7
+  },
+  {
+   "calibrated": true,
+   "min_shared": 2,
+   "common_frac": 0.05,
+   "P=0": 48.9,
+   "P=1000": 46.5,
+   "P=10000": 34.3,
+   "P=inf": 10.1
+  },
+  {
+   "calibrated": true,
+   "min_shared": 3,
+   "common_frac": 0.01,
+   "P=0": 56.5,
+   "P=1000": 56.3,
+   "P=10000": 54.9,
+   "P=inf": 38.5
+  },
+  {
+   "calibrated": true,
+   "min_shared": 3,
+   "common_frac": 0.02,
+   "P=0": 55.1,
+   "P=1000": 54.5,
+   "P=10000": 50.6,
+   "P=inf": 29.0
+  },
+  {
+   "calibrated": true,
+   "min_shared": 3,
+   "common_frac": 0.05,
+   "P=0": 51.3,
+   "P=1000": 49.7,
+   "P=10000": 40.7,
+   "P=inf": 16.0
+  },
+  {
+   "calibrated": false,
+   "min_shared": 1,
+   "common_frac": 0.01,
+   "P=0": 28.8,
+   "P=1000": 27.7,
+   "P=10000": 22.2,
+   "P=inf": 9.8
+  },
+  {
+   "calibrated": false,
+   "min_shared": 1,
+   "common_frac": 0.02,
+   "P=0": 26.6,
+   "P=1000": 24.2,
+   "P=10000": 15.1,
+   "P=inf": 4.8
+  },
+  {
+   "calibrated": false,
+   "min_shared": 1,
+   "common_frac": 0.05,
+   "P=0": 22.7,
+   "P=1000": 18.4,
+   "P=10000": 7.9,
+   "P=inf": 1.9
+  },
+  {
+   "calibrated": false,
+   "min_shared": 2,
+   "common_frac": 0.01,
+   "P=0": 29.8,
+   "P=1000": 29.4,
+   "P=10000": 27.3,
+   "P=inf": 17.1
+  },
+  {
+   "calibrated": false,
+   "min_shared": 2,
+   "common_frac": 0.02,
+   "P=0": 28.6,
+   "P=1000": 27.7,
+   "P=10000": 22.6,
+   "P=inf": 11.4
+  },
+  {
+   "calibrated": false,
+   "min_shared": 2,
+   "common_frac": 0.05,
+   "P=0": 26.0,
+   "P=1000": 23.7,
+   "P=10000": 15.2,
+   "P=inf": 5.3
+  },
+  {
+   "calibrated": false,
+   "min_shared": 3,
+   "common_frac": 0.01,
+   "P=0": 30.0,
+   "P=1000": 29.9,
+   "P=10000": 28.6,
+   "P=inf": 20.4
+  },
+  {
+   "calibrated": false,
+   "min_shared": 3,
+   "common_frac": 0.02,
+   "P=0": 29.3,
+   "P=1000": 28.7,
+   "P=10000": 25.5,
+   "P=inf": 15.3
+  },
+  {
+   "calibrated": false,
+   "min_shared": 3,
+   "common_frac": 0.05,
+   "P=0": 27.3,
+   "P=1000": 25.8,
+   "P=10000": 19.0,
+   "P=inf": 8.4
+  }
+ ]
+}

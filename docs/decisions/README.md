@@ -11,5 +11,8 @@ Each step of the project is decided through an interview, then a design approval
 | [0005](0005-coding-agent-audit-and-guard.md) | Coding agents: transcript audit + opt-in guard hook against unchanged re-reads (Claude Code plugin) | 2026-10-05 |
 | [0006](0006-contribution-paths.md) | Two contribution paths: one-click anonymous (Cloudflare Worker, proof-of-work) + verified GitHub issues | 2026-10-05 |
 | [0007](0007-first-public-launch.md) | First public launch: X, LinkedIn and Reddit kit, `main` branch, anonymized real numbers, repo hygiene | 2026-10-05 |
+| [0008](0008-research-track.md) | Research track: compute per valuable outcome → memory residency; offline-optimal context bound (`pxt agent bound`); English preprint + Korean summary | 2026-10-05 |
+| [0009](0009-linkedin-series.md) | LinkedIn research notes, written one at a time together as the research progresses (no fixed series plan) | 2026-10-05 |
+| [0010](0010-benchmark-and-backtest.md) | Bound in anonymous contributions; pre-registered cross-provider backtest (`pxt backtest`); essays Korean-first | 2026-10-05 |
 
 Template: context → options considered → decision → consequences.

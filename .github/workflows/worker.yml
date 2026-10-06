@@ -37,6 +37,13 @@ jobs:
           npm install --no-audit --no-fund
           url=$(python3 deploy.py)
           echo "Worker: $url" >> "$GITHUB_STEP_SUMMARY"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        id: deploy
+      - name: Smoke test the live worker (leaves no data)
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          set -o pipefail
+          node worker/test/smoke.mjs "${{ steps.deploy.outputs.url }}" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Rebuild the site with the worker URL
         if: steps.secrets.outputs.ok == 'true'
         env:

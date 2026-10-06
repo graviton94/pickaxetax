@@ -28,6 +28,10 @@ const AGENT_NUMS = ["sessions", "api_calls", "subagent_calls", "compactions", "t
 const AGENT_TOKENS = ["input", "cache_read", "cache_write", "output", "processed_input"];
 const AGENT_COST = ["count", "tokens", "carried_tokens"];
 const AGENT_TOOL = ["calls", "result_tokens", "carried_tokens", "errors", "images"];
+const BOUND_METHODS = ["lexical-v1"];
+const BOUND_NUMS = ["sessions", "api_calls", "measured_input", "pinned_input", "written_tokens"];
+const BOUND_PCTS = ["P0", "P1000", "P10000", "Pinf"];
+const BOUND_ROWS = 200;
 
 const LABEL_RE = /^[\p{L}\p{N}][\p{L}\p{N}+#.\-]{1,31}$/u;
 const MODEL_RE = /^[A-Za-z0-9._:\/\-]{0,64}$/;
@@ -146,9 +150,41 @@ function validateLedger(d, errs) {
   });
 }
 
+const pctOk = (x) => isNum(x) && x >= 0 && x <= 100;
+
+function validateBound(b, errs) {
+  const keys = ["method", ...BOUND_NUMS, "tokenizer_factor", "avoidable_pct", "per_session"];
+  if (!checkKeys(b, keys, "data.bound", errs)) return;
+  if (!BOUND_METHODS.includes(b.method)) errs.push("data.bound.method: unknown");
+  checkNums(b, BOUND_NUMS, "data.bound", errs);
+  checkNums(b, ["tokenizer_factor"], "data.bound", errs, { ints: false, max: 20 });
+  if (checkKeys(b.avoidable_pct, BOUND_PCTS, "data.bound.avoidable_pct", errs)) {
+    checkNums(b.avoidable_pct, BOUND_PCTS, "data.bound.avoidable_pct", errs, { ints: false, max: 100 });
+  }
+  const rows = b.per_session;
+  if (!Array.isArray(rows) || rows.length < 1 || rows.length > BOUND_ROWS) {
+    errs.push(`data.bound.per_session: 1..${BOUND_ROWS} rows`);
+    return;
+  }
+  rows.forEach((r, i) => {
+    const ok = Array.isArray(r) && r.length === 7 && isInt(r[0]) && r[0] >= 1 && r[0] <= BIG && isInt(r[1]) && r[1] >= 0 && r[1] <= BIG
+      && r.slice(2).every(pctOk) && r[3] >= r[4] && r[4] >= r[5] && r[5] >= r[6] && r[3] <= 100 - r[2] + 0.1;
+    if (!ok) errs.push(`data.bound.per_session[${i}]: bad row`);
+  });
+  if (errs.length) return;
+  const a = b.avoidable_pct;
+  if (!(a.P0 >= a.P1000 && a.P1000 >= a.P10000 && a.P10000 >= a.Pinf)) errs.push("consistency: bound policies out of order");
+  if (b.pinned_input > b.measured_input) errs.push("consistency: pinned > measured");
+  else if (b.measured_input && a.P0 > 100 * (b.measured_input - b.pinned_input) / b.measured_input + 0.1) errs.push("consistency: bound above ceiling");
+  if (rows.length !== Math.min(b.sessions, BOUND_ROWS)) errs.push("consistency: bound session rows");
+  else if (rows.length === b.sessions && (rows.reduce((s, r) => s + r[0], 0) !== b.api_calls || rows.reduce((s, r) => s + r[1], 0) !== b.measured_input)) {
+    errs.push("consistency: bound session totals");
+  }
+}
+
 function validateAgent(d, errs) {
-  const keys = ["agent", ...AGENT_NUMS, "tokens", "duplicate_reads", "large_results", "failed_repeats", "by_tool"];
-  if (!checkKeys(d, keys, "data", errs)) return;
+  const keys = ["agent", ...AGENT_NUMS, "tokens", "duplicate_reads", "large_results", "failed_repeats", "by_tool", "bound"];
+  if (!checkKeys(d, keys, "data", errs, keys.slice(0, -1))) return;
   if (d.agent !== "claude-code") errs.push("data.agent: unknown");
   checkNums(d, AGENT_NUMS.filter((k) => !k.endsWith("_pct")), "data", errs);
   checkNums(d, AGENT_NUMS.filter((k) => k.endsWith("_pct")), "data", errs, { ints: false, max: 100 });
@@ -164,6 +200,7 @@ function validateAgent(d, errs) {
       else if (checkKeys(d.by_tool[n], AGENT_TOOL, `data.by_tool.${n}`, errs)) checkNums(d.by_tool[n], AGENT_TOOL, `data.by_tool.${n}`, errs);
     }
   } else errs.push("data.by_tool: must be an object");
+  if ("bound" in d) validateBound(d.bound, errs);
   if (!errs.length && d.tokens.processed_input !== d.tokens.input + d.tokens.cache_read + d.tokens.cache_write) errs.push("consistency: processed_input");
 }
 

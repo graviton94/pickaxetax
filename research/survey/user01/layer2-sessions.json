@@ -1,0 +1,1134 @@
+{
+ "S01": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 3424,
+  "event_types": {
+   "assistant": 1028,
+   "attachment": 851,
+   "user": 511,
+   "last-prompt": 227,
+   "atis-latch": 219,
+   "ai-title": 218,
+   "mode": 192,
+   "queue-operation": 124,
+   "system": 37,
+   "cost-state": 17
+  },
+  "api_calls": 425,
+  "subagent_calls": 0,
+  "user_instructions": 24,
+  "compactions": 1,
+  "tokens": {
+   "input_processed": 180581779,
+   "cache_read": 178557464,
+   "cache_write": 2023429,
+   "output": 777160
+  },
+  "context": {
+   "first": 46707,
+   "peak": 783184,
+   "quartiles": [
+    224244,
+    419763,
+    629678
+   ],
+   "curve_40": [
+    46707,
+    99023,
+    127384,
+    169676,
+    205379,
+    242211,
+    305226,
+    331591,
+    359121,
+    408493,
+    467188,
+    485709,
+    504100,
+    507710,
+    557134,
+    590016,
+    609076,
+    624553,
+    650183,
+    670736,
+    680801,
+    707231,
+    713605,
+    722124,
+    730357,
+    750885,
+    757538,
+    783184,
+    102489,
+    130650,
+    157514,
+    175989,
+    215020,
+    253273,
+    289409,
+    322129,
+    363984,
+    395713,
+    449378,
+    493147
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    4,
+    11,
+    21
+   ],
+   "calls_max": 109,
+   "input_quartiles": [
+    1944039,
+    3301153,
+    6939061
+   ],
+   "input_max": 54655130
+  },
+  "tools": {
+   "Bash": 259,
+   "mcp": 77,
+   "Write": 64,
+   "AskUserQuestion": 23,
+   "Read": 18,
+   "ToolSearch": 7,
+   "Agent": 4,
+   "Edit": 2,
+   "SendUserFile": 2,
+   "Monitor": 2,
+   "ScheduleWakeup": 1,
+   "ReadNotifications": 1
+  },
+  "tool_calls": 460,
+  "tool_errors": 20,
+  "images": 17,
+  "models": {
+   "claude-opus-5-5": 425
+  },
+  "span_hours": 9.92,
+  "active_hours": 5.9,
+  "source": "local_transcript",
+  "measured_at": "2026-10-05T15:00Z"
+ },
+ "S08": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 593,
+  "event_types": {
+   "system": 228,
+   "assistant": 227,
+   "user": 138
+  },
+  "api_calls": 105,
+  "subagent_calls": 0,
+  "user_instructions": 6,
+  "compactions": 0,
+  "tokens": {
+   "input_processed": 19233919,
+   "cache_read": 18473343,
+   "cache_write": 760379,
+   "output": 957
+  },
+  "context": {
+   "first": 39018,
+   "peak": 287073,
+   "quartiles": [
+    146127,
+    191660,
+    219488
+   ],
+   "curve_40": [
+    39018,
+    80372,
+    107236,
+    125138,
+    127742,
+    130076,
+    132284,
+    135645,
+    141782,
+    144105,
+    147224,
+    150614,
+    154729,
+    159135,
+    161688,
+    164544,
+    167776,
+    170199,
+    179055,
+    187733,
+    192655,
+    196850,
+    204301,
+    210748,
+    213777,
+    216235,
+    206034,
+    211381,
+    217616,
+    219065,
+    222940,
+    228087,
+    232739,
+    236731,
+    239704,
+    241382,
+    248480,
+    254632,
+    256231,
+    287073
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    4,
+    14,
+    26
+   ],
+   "calls_max": 43,
+   "input_quartiles": [
+    1108780,
+    2799296,
+    5396929
+   ],
+   "input_max": 6320391
+  },
+  "tools": {
+   "Edit": 45,
+   "Bash": 41,
+   "Read": 24,
+   "Grep": 8,
+   "SendUserFile": 3,
+   "Write": 1
+  },
+  "tool_calls": 122,
+  "tool_errors": 4,
+  "images": 16,
+  "models": {
+   "claude-fable-5": 105
+  },
+  "span_hours": 1298.8,
+  "active_hours": 1.8,
+  "source": "events_api",
+  "pages": 8,
+  "measured_at": "2026-10-05T15:15Z",
+  "note": "includes one measurement-request turn added 2026-10-05 (its resume rewrote 287,071 tokens to cache); output tokens from the events API are stream-start placeholders, not totals"
+ },
+ "S03": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 33408,
+  "event_types": {
+   "assistant": 9584,
+   "attachment": 6362,
+   "user": 5314,
+   "frame-link": 2100,
+   "last-prompt": 2066,
+   "atis-latch": 1985,
+   "ai-title": 1984,
+   "mode": 1960,
+   "queue-operation": 1403,
+   "system": 531,
+   "cost-state": 119
+  },
+  "api_calls": 4820,
+  "subagent_calls": 0,
+  "user_instructions": 275,
+  "compactions": 14,
+  "tokens": {
+   "input_processed": 2055390268,
+   "cache_read": 2033795938,
+   "cache_write": 21584289,
+   "output": 5607353
+  },
+  "context": {
+   "first": 57883,
+   "peak": 784164,
+   "quartiles": [
+    252248,
+    427524,
+    602396
+   ],
+   "curve_40": [
+    57883,
+    518713,
+    134688,
+    602143,
+    149326,
+    398422,
+    696028,
+    250668,
+    474848,
+    700054,
+    300920,
+    534643,
+    746081,
+    260968,
+    483832,
+    104872,
+    485451,
+    715185,
+    325964,
+    567848,
+    152921,
+    410773,
+    596801,
+    77079,
+    236631,
+    594256,
+    191216,
+    525600,
+    85847,
+    399986,
+    648031,
+    247200,
+    471960,
+    723364,
+    247758,
+    485660,
+    717664,
+    237776,
+    448541,
+    668550
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    5,
+    11,
+    22
+   ],
+   "calls_max": 133,
+   "input_quartiles": [
+    1678382,
+    4336257,
+    9813686
+   ],
+   "input_max": 47119725
+  },
+  "tools": {
+   "Bash": 3569,
+   "Read": 445,
+   "mcp": 145,
+   "Artifact": 134,
+   "Write": 116,
+   "TaskUpdate": 91,
+   "TaskCreate": 59,
+   "ToolSearch": 49,
+   "Agent": 37,
+   "SendUserFile": 11,
+   "Monitor": 10,
+   "Skill": 9,
+   "ReadNotifications": 9,
+   "TaskStop": 8,
+   "SendMessage": 7,
+   "WebSearch": 6,
+   "ScheduleWakeup": 3,
+   "WebFetch": 1,
+   "AskUserQuestion": 1
+  },
+  "tool_calls": 4710,
+  "tool_errors": 72,
+  "images": 436,
+  "models": {
+   "claude-opus-5-5": 4820
+  },
+  "span_hours": 136.64,
+  "active_hours": 60.52,
+  "subagents": {
+   "count": 37,
+   "api_calls": 460,
+   "tokens": {
+    "input_processed": 49528227,
+    "cache_read": 46180874,
+    "cache_write": 3346415,
+    "output": 5923
+   },
+   "models": {
+    "claude-opus-5-5": 460
+   }
+  },
+  "source": "local_transcript (run in the session at the owner's request)",
+  "measured_at": "2026-10-05T22:4xZ",
+  "note": "session-list usage at 15:00Z was 2,259,792,783 input / 6,312,669 output; the local transcript holds 2,104,918,495 input incl. subagents (93%)"
+ },
+ "S07": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 321,
+  "event_types": {
+   "assistant": 127,
+   "system": 123,
+   "user": 71
+  },
+  "api_calls": 66,
+  "subagent_calls": 0,
+  "user_instructions": 4,
+  "compactions": 0,
+  "tokens": {
+   "input_processed": 8624118,
+   "cache_read": 8450842,
+   "cache_write": 173152,
+   "output": 487
+  },
+  "context": {
+   "first": 49964,
+   "peak": 182779,
+   "quartiles": [
+    111302,
+    134995,
+    154047
+   ],
+   "curve_40": [
+    49964,
+    63496,
+    71096,
+    75846,
+    80349,
+    86553,
+    90496,
+    94357,
+    105181,
+    110691,
+    112267,
+    113091,
+    117818,
+    120960,
+    123344,
+    124892,
+    126247,
+    128504,
+    131512,
+    134473,
+    135517,
+    140069,
+    142574,
+    143346,
+    148064,
+    150317,
+    150910,
+    151874,
+    152937,
+    153387,
+    154602,
+    159279,
+    161378,
+    164004,
+    168846,
+    170344,
+    175163,
+    177848,
+    179665,
+    182779
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    6,
+    8,
+    18
+   ],
+   "calls_max": 47,
+   "input_quartiles": [
+    498790,
+    715492,
+    2372732
+   ],
+   "input_max": 6828286
+  },
+  "tools": {
+   "Bash": 51,
+   "Edit": 6,
+   "Read": 5,
+   "Write": 2,
+   "ToolSearch": 1,
+   "AskUserQuestion": 1,
+   "SendUserFile": 1
+  },
+  "tool_calls": 67,
+  "tool_errors": 0,
+  "images": 2,
+  "models": {
+   "claude-opus-5": 66
+  },
+  "span_hours": 0.7,
+  "active_hours": 0.7,
+  "source": "events_api",
+  "pages": 5,
+  "measured_at": "2026-10-05T23:0xZ",
+  "note": "events API; output tokens are stream-start placeholders. Session-list input was 9,006,245"
+ },
+ "S05": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 8699,
+  "event_types": {
+   "system": 3654,
+   "assistant": 3001,
+   "user": 2044
+  },
+  "api_calls": 1923,
+  "subagent_calls": 0,
+  "user_instructions": 56,
+  "compactions": 3,
+  "tokens": {
+   "input_processed": 778555782,
+   "cache_read": 770044919,
+   "cache_write": 8507084,
+   "output": 20541
+  },
+  "context": {
+   "first": 50581,
+   "peak": 783953,
+   "quartiles": [
+    248170,
+    394514,
+    555002
+   ],
+   "curve_40": [
+    50581,
+    162666,
+    236847,
+    277654,
+    313870,
+    365507,
+    402434,
+    448812,
+    479614,
+    538253,
+    609311,
+    668712,
+    760031,
+    139535,
+    225892,
+    289892,
+    376009,
+    449640,
+    498726,
+    611146,
+    679746,
+    776022,
+    142277,
+    205834,
+    278270,
+    343418,
+    403941,
+    472907,
+    560641,
+    669608,
+    751580,
+    104499,
+    170437,
+    236729,
+    318760,
+    373827,
+    461155,
+    533878,
+    604628,
+    670711
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    6,
+    12,
+    24
+   ],
+   "calls_max": 560,
+   "input_quartiles": [
+    3288708,
+    7425106,
+    13307300
+   ],
+   "input_max": 219620777
+  },
+  "tools": {
+   "Bash": 1586,
+   "Read": 190,
+   "Edit": 104,
+   "SendUserFile": 11,
+   "Write": 4,
+   "AskUserQuestion": 3,
+   "ToolSearch": 1,
+   "Skill": 1
+  },
+  "tool_calls": 1900,
+  "tool_errors": 37,
+  "images": 100,
+  "models": {
+   "claude-opus-5": 1923
+  },
+  "span_hours": 41.71,
+  "active_hours": 18.19,
+  "source": "events_api",
+  "pages": 109,
+  "measured_at": "2026-10-05T23:0xZ",
+  "note": "events API; output tokens are stream-start placeholders. Session-list input was 237,849,931"
+ },
+ "S04": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 862,
+  "event_types": {
+   "system": 364,
+   "assistant": 315,
+   "user": 183
+  },
+  "api_calls": 166,
+  "subagent_calls": 0,
+  "user_instructions": 10,
+  "compactions": 0,
+  "tokens": {
+   "input_processed": 29775192,
+   "cache_read": 28130179,
+   "cache_write": 1644681,
+   "output": 1285
+  },
+  "context": {
+   "first": 53948,
+   "peak": 342521,
+   "quartiles": [
+    111043,
+    171038,
+    261846
+   ],
+   "curve_40": [
+    53948,
+    64282,
+    66631,
+    72988,
+    76711,
+    79445,
+    81191,
+    85431,
+    97064,
+    103256,
+    111966,
+    118233,
+    119738,
+    122708,
+    131702,
+    142524,
+    147273,
+    150588,
+    154668,
+    161395,
+    176559,
+    188557,
+    192984,
+    195316,
+    199152,
+    204180,
+    209743,
+    220442,
+    231028,
+    259859,
+    265988,
+    277200,
+    282080,
+    290674,
+    297007,
+    299424,
+    304055,
+    312578,
+    318580,
+    342521
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    11,
+    16,
+    20
+   ],
+   "calls_max": 32,
+   "input_quartiles": [
+    2398446,
+    3005474,
+    3697640
+   ],
+   "input_max": 4410790
+  },
+  "tools": {
+   "Bash": 95,
+   "Write": 38,
+   "Edit": 17,
+   "Read": 17,
+   "SendUserFile": 3
+  },
+  "tool_calls": 170,
+  "tool_errors": 12,
+  "images": 17,
+  "models": {
+   "claude-fable-5": 51,
+   "claude-opus-5": 115
+  },
+  "span_hours": 15.65,
+  "active_hours": 2.44,
+  "source": "events_api",
+  "pages": 12,
+  "measured_at": "2026-10-05T23:2xZ",
+  "note": "events API; output tokens are stream-start placeholders. Session-list input was 14,938,208"
+ },
+ "S06": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 2352,
+  "event_types": {
+   "system": 1015,
+   "assistant": 834,
+   "user": 503
+  },
+  "api_calls": 464,
+  "subagent_calls": 0,
+  "user_instructions": 36,
+  "compactions": 1,
+  "tokens": {
+   "input_processed": 166314408,
+   "cache_read": 163950945,
+   "cache_write": 2362049,
+   "output": 4205
+  },
+  "context": {
+   "first": 50457,
+   "peak": 783519,
+   "quartiles": [
+    163539,
+    272451,
+    557418
+   ],
+   "curve_40": [
+    50457,
+    80195,
+    119156,
+    146389,
+    179828,
+    203790,
+    222681,
+    239472,
+    248733,
+    273404,
+    303971,
+    345646,
+    367475,
+    404813,
+    429250,
+    457394,
+    498395,
+    518000,
+    537529,
+    577025,
+    598701,
+    611030,
+    625220,
+    651463,
+    671642,
+    702335,
+    754896,
+    771116,
+    779928,
+    72323,
+    95020,
+    117471,
+    141019,
+    150545,
+    156799,
+    170700,
+    183780,
+    222459,
+    251567,
+    272352
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    4,
+    10,
+    20
+   ],
+   "calls_max": 52,
+   "input_quartiles": [
+    1220892,
+    3159480,
+    7096738
+   ],
+   "input_max": 14824546
+  },
+  "tools": {
+   "Bash": 255,
+   "Read": 73,
+   "Edit": 54,
+   "Write": 47,
+   "SendUserFile": 16,
+   "mcp": 5,
+   "ToolSearch": 4,
+   "WebFetch": 1,
+   "AskUserQuestion": 1
+  },
+  "tool_calls": 456,
+  "tool_errors": 7,
+  "images": 60,
+  "models": {
+   "claude-opus-5": 464
+  },
+  "span_hours": 649.35,
+  "active_hours": 5.85,
+  "source": "events_api",
+  "pages": 30,
+  "measured_at": "2026-10-05T23:2xZ",
+  "note": "events API; output tokens are stream-start placeholders. Session-list input was 67,217,416"
+ },
+ "S02": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 9298,
+  "event_types": {
+   "assistant": 2493,
+   "attachment": 2425,
+   "user": 1443,
+   "last-prompt": 529,
+   "atis-latch": 507,
+   "ai-title": 506,
+   "mode": 493,
+   "frame-link": 398,
+   "queue-operation": 310,
+   "system": 143,
+   "cost-state": 51
+  },
+  "api_calls": 1303,
+  "subagent_calls": 0,
+  "user_instructions": 48,
+  "compactions": 3,
+  "tokens": {
+   "input_processed": 574746376,
+   "cache_read": 568155208,
+   "cache_write": 6588396,
+   "output": 1109474
+  },
+  "context": {
+   "first": 64633,
+   "peak": 783881,
+   "quartiles": [
+    273629,
+    439397,
+    618178
+   ],
+   "curve_40": [
+    64633,
+    209490,
+    313098,
+    393349,
+    469853,
+    633792,
+    688703,
+    734557,
+    93802,
+    183172,
+    275418,
+    400180,
+    463391,
+    525652,
+    575684,
+    629969,
+    691211,
+    726768,
+    773550,
+    138444,
+    205213,
+    259339,
+    324663,
+    364776,
+    439397,
+    503516,
+    547653,
+    600730,
+    651719,
+    721239,
+    111727,
+    178514,
+    227424,
+    275701,
+    338361,
+    380732,
+    464904,
+    540954,
+    622139,
+    666386
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    7,
+    18,
+    36
+   ],
+   "calls_max": 164,
+   "input_quartiles": [
+    3352557,
+    7473969,
+    14276379
+   ],
+   "input_max": 75853496
+  },
+  "tools": {
+   "Bash": 895,
+   "mcp": 107,
+   "Read": 95,
+   "ReadNotifications": 58,
+   "TaskUpdate": 41,
+   "TaskCreate": 29,
+   "Artifact": 20,
+   "Write": 19,
+   "ToolSearch": 8,
+   "Edit": 8,
+   "Agent": 7,
+   "SendUserFile": 6,
+   "TaskStop": 2,
+   "Skill": 1,
+   "AskUserQuestion": 1
+  },
+  "tool_calls": 1297,
+  "tool_errors": 9,
+  "images": 85,
+  "models": {
+   "claude-opus-5-5": 1303
+  },
+  "span_hours": 48.06,
+  "active_hours": 13.73,
+  "subagents": {
+   "count": 7,
+   "api_calls": 221,
+   "tokens": {
+    "input_processed": 37008380,
+    "cache_read": 35586228,
+    "cache_write": 1421710,
+    "output": 4563
+   },
+   "models": {
+    "claude-opus-5-5": 221
+   }
+  },
+  "source": "local_transcript (run in the session at the owner's request)",
+  "measured_at": "2026-10-06",
+  "note": "session-list input was 602,304,650; transcript incl. subagents 611,754,756 (1.02)"
+ },
+ "S10": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 12746,
+  "event_types": {
+   "system": 5052,
+   "assistant": 4596,
+   "user": 3098
+  },
+  "api_calls": 2878,
+  "subagent_calls": 0,
+  "user_instructions": 75,
+  "compactions": 5,
+  "tokens": {
+   "input_processed": 1118957922,
+   "cache_read": 1105185436,
+   "cache_write": 13765681,
+   "output": 32313
+  },
+  "context": {
+   "first": 48377,
+   "peak": 789164,
+   "quartiles": [
+    211361,
+    370933,
+    563948
+   ],
+   "curve_40": [
+    48377,
+    171109,
+    322733,
+    488409,
+    694770,
+    115760,
+    194333,
+    273315,
+    402869,
+    573471,
+    730232,
+    113207,
+    209735,
+    278551,
+    363359,
+    477862,
+    592999,
+    686704,
+    84187,
+    187559,
+    290501,
+    392558,
+    507103,
+    611931,
+    714510,
+    120646,
+    209375,
+    273357,
+    361782,
+    427546,
+    519603,
+    596355,
+    701076,
+    82910,
+    165177,
+    255114,
+    362390,
+    473975,
+    601160,
+    667478
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    6,
+    15,
+    50
+   ],
+   "calls_max": 280,
+   "input_quartiles": [
+    3667344,
+    8590374,
+    24212646
+   ],
+   "input_max": 63779201
+  },
+  "tools": {
+   "Bash": 2095,
+   "Edit": 387,
+   "Read": 161,
+   "TaskUpdate": 114,
+   "TaskCreate": 83,
+   "Write": 76,
+   "SendUserFile": 15,
+   "ToolSearch": 6,
+   "AskUserQuestion": 2,
+   "WebFetch": 1,
+   "mcp": 1,
+   "Grep": 1
+  },
+  "tool_calls": 2942,
+  "tool_errors": 72,
+  "images": 114,
+  "models": {
+   "claude-opus-5": 2878
+  },
+  "span_hours": 54.09,
+  "active_hours": 22.38,
+  "source": "events_api",
+  "pages": 147,
+  "measured_at": "2026-10-06",
+  "note": "events API, complete (147 pages); output tokens are stream-start placeholders. Session-list input was 280,915,363"
+ },
+ "S09": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 12856,
+  "event_types": {
+   "system": 5052,
+   "assistant": 4747,
+   "user": 3057
+  },
+  "api_calls": 2103,
+  "subagent_calls": 841,
+  "user_instructions": 57,
+  "compactions": 4,
+  "tokens": {
+   "input_processed": 863674945,
+   "cache_read": 855382684,
+   "cache_write": 8288244,
+   "output": 24250
+  },
+  "context": {
+   "first": 773978,
+   "peak": 783974,
+   "quartiles": [
+    230717,
+    400857,
+    597183
+   ],
+   "curve_40": [
+    773978,
+    101701,
+    190936,
+    255302,
+    339582,
+    411366,
+    467696,
+    544862,
+    653058,
+    723889,
+    74933,
+    136531,
+    189166,
+    255914,
+    346102,
+    459143,
+    591772,
+    682161,
+    734915,
+    96919,
+    191907,
+    256539,
+    302087,
+    348968,
+    410135,
+    461795,
+    521788,
+    594442,
+    654866,
+    706433,
+    73818,
+    128327,
+    197916,
+    243732,
+    325326,
+    390149,
+    461596,
+    558727,
+    676438,
+    761471
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    8,
+    14,
+    42
+   ],
+   "calls_max": 273,
+   "input_quartiles": [
+    3898140,
+    7597742,
+    18271770
+   ],
+   "input_max": 87196245
+  },
+  "tools": {
+   "Bash": 1860,
+   "Edit": 109,
+   "Write": 33,
+   "Read": 17,
+   "TaskUpdate": 16,
+   "TaskCreate": 12,
+   "Agent": 10,
+   "SendUserFile": 4,
+   "AskUserQuestion": 3,
+   "WebFetch": 3,
+   "ToolSearch": 2,
+   "mcp": 1
+  },
+  "tool_calls": 2070,
+  "tool_errors": 28,
+  "images": 14,
+  "models": {
+   "claude-opus-5": 2103
+  },
+  "span_hours": 58.23,
+  "active_hours": 18.76,
+  "source": "events_api",
+  "pages": 150,
+  "measured_at": "2026-10-06",
+  "partial": true,
+  "note": "events API, PARTIAL: 150 pages covering events from 2026-08-15T01:08Z onward; earlier events not fetched (cost). A lower bound. Session-list input was 302,398,414"
+ }
+}

@@ -88,9 +88,48 @@ def main(argv: list[str] | None = None) -> int:
     aa.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
     aa.add_argument("--json", action="store_true", help="print the full report as JSON (local, includes paths)")
     aa.add_argument("--export", action="store_true", help="print an anonymous aggregate for contribution")
+    ab = agsub.add_parser("bound", help="how far from the least context it needed was each session? (offline-optimal bound)")
+    ab.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    ab.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
+    ab.add_argument("--min-shared", type=int, default=1, help="distinctive tokens a later output must reuse to count as a use")
+    ab.add_argument("--raw", action="store_true", help="skip calibration against measured context growth")
+    ab.add_argument("--json", action="store_true", help="print the aggregate as JSON")
+    ab.add_argument("--export", action="store_true", help="print an anonymous aggregate (audit + bound) for contribution")
     ah = agsub.add_parser("hook", help="guard hook (called by Claude Code) and its installer")
     ah.add_argument("action", choices=["pre-tool-use", "pre-compact", "install", "uninstall"])
     ah.add_argument("--scope", choices=["user", "project"], default="user")
+
+    bt = sub.add_parser("backtest", help="pre-registered backtest and benchmark over many sessions (any provider)")
+    btsub = bt.add_subparsers(dest="backtest_cmd", required=True)
+    br = btsub.add_parser("run", help="measure sessions and write the report (aggregates only)")
+    br.add_argument("paths", nargs="+", help="chat exports (ChatGPT, Claude, Gemini, ...), transcripts or agent logs")
+    br.add_argument("--source", default=None, help="provider label for every session in these files (overrides detection)")
+    br.add_argument("--contributor", default="1", help="opaque label of who supplied the files (stored as a short hash)")
+    br.add_argument("--out", default="backtest-report.json", help="publishable report (no text, paths or ids)")
+    br.add_argument("--manifest", default="backtest-manifest.txt", help="private list of session fingerprints (keep it)")
+    bl = btsub.add_parser("label", help="validate the use detector by hand (text shown locally, only answers saved)")
+    bl.add_argument("paths", nargs="+")
+    bl.add_argument("--source", default=None)
+    bl.add_argument("--n", type=int, default=100, help="pairs to label (half detected, half not)")
+    bl.add_argument("--labels", default="backtest-labels.json")
+    bl.add_argument("--sheet", default=None, help="write a sheet to answer later instead of asking in the terminal")
+    bl.add_argument("--key", default="backtest-label-key.json", help="with --sheet: item numbers -> pair ids (no text)")
+    ba = btsub.add_parser("answer", help="apply answers to a label sheet, e.g. '1y 2n 3s'")
+    ba.add_argument("key")
+    ba.add_argument("answers")
+    ba.add_argument("--labels", default="backtest-labels.json")
+    bv = btsub.add_parser("validation", help="summarize detector validation labels")
+    bv.add_argument("labels")
+
+    sv = sub.add_parser("survey", help="phenomenon survey of Claude Code use: measure sessions, render a report")
+    svsub = sv.add_subparsers(dest="survey_cmd", required=True)
+    sm = svsub.add_parser("measure", help="measure transcripts into a dataset (numbers only)")
+    sm.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    sm.add_argument("--label", default="me", help="how the subject is named in the report")
+    sm.add_argument("--out", default="survey-dataset.json")
+    sr = svsub.add_parser("report", help="render a dataset as a self-contained HTML report")
+    sr.add_argument("dataset")
+    sr.add_argument("--out", default="survey-report.html")
 
     co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
     cosub = co.add_subparsers(dest="contrib_cmd", required=True)
@@ -114,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
 
     args = ap.parse_args(argv)
 
-    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute"):
+    if args.cmd in ("proxy", "ledger", "bench", "cbi", "agent", "contribute", "backtest", "survey"):
         return _tools(args)
 
     if args.cmd == "serve":
@@ -230,6 +269,10 @@ def _tools(args) -> int:
 
     if args.cmd == "agent":
         return _agent(args)
+    if args.cmd == "backtest":
+        return _backtest(args)
+    if args.cmd == "survey":
+        return _survey(args)
 
     if args.cmd == "contribute":
         return _contribute(args)
@@ -266,11 +309,16 @@ def _agent(args) -> int:
     if not files:
         print("no Claude Code transcripts found (looked in ~/.claude/projects)", file=sys.stderr)
         return 1
+    if args.agent_cmd == "bound" and not args.export:
+        return _agent_bound(files, args)
     reports = [audit_session(parse(f)) for f in files]
     reports = [r for r in reports if r["api_calls"]]
     m = merge(reports)
     if args.export:
-        print(json.dumps(export(m), indent=2))
+        from .agent import bound
+
+        bounds = [r for r in (bound.analyze(f) for f in files) if r["api_calls"]]
+        print(json.dumps(export(m, bound.export(bounds) if bounds else None), indent=2))
         return 0
     if args.json:
         print(json.dumps({"summary": m, "sessions": reports}, indent=2, default=list))
@@ -293,6 +341,122 @@ def _agent(args) -> int:
     lang = "ko" if os.environ.get("LANG", "").startswith("ko") else "en"
     for tip in tips(m):
         print(f"- {tip[lang]}")
+    return 0
+
+
+def _agent_bound(files: list[str], args) -> int:
+    from .agent import bound
+
+    reports = [r for r in (bound.analyze(f, min_shared=args.min_shared, calibrated=not args.raw) for f in files)
+               if r["api_calls"]]
+    if not reports:
+        print("no API calls found in the transcripts", file=sys.stderr)
+        return 1
+    m = bound.merge(reports)
+    if args.json:
+        print(json.dumps(m, indent=2))
+        return 0
+    measured = m["measured_input"]
+    print(f"sessions {m['sessions']}  ·  API calls {m['api_calls']:,}  ·  input processed {measured:,} tokens")
+    print(f"pinned (fixed base + context the transcript does not show): {100 * m['pinned_input'] / measured:.1f}%")
+    names = {"P=inf": "drop after last use, never re-fetch", "P=0": "oracle, free re-fetch"}
+    print(f"\n{'policy':<40}{'bound input':>16}{'avoidable':>11}")
+    for label, p in sorted(m["policies"].items(), key=lambda kv: -kv[1]["bound_input"]):
+        name = names[label] if label in names else f"oracle, re-fetch costs {int(label[2:]):,} tokens"
+        print(f"{name:<40}{p['bound_input']:>16,}{p['avoidable_pct']:>10.1f}%")
+    print(f"\n{'segment kind':<18}{'share of resident':>18}{'dead after last use':>21}{'unneeded':>10}")
+    for name, k in m["by_kind"].items():
+        print(f"{name:<18}{k['share_of_resident_pct']:>17.1f}%{k['dead_after_last_use_pct']:>20.1f}%{k['unneeded_pct']:>9.1f}%")
+    if m["written_tokens"]:
+        best = m["policies"].get("P=0", {}).get("bound_input", measured)
+        print(f"\ninput per token written to disk: {measured / m['written_tokens']:,.0f} (oracle: {best / m['written_tokens']:,.0f})")
+    print("References are detected lexically; see research/belady-bound.md for what that means for these numbers.")
+    return 0
+
+
+def _survey(args) -> int:
+    from .survey import dataset, report
+
+    if args.survey_cmd == "report":
+        with open(args.dataset, encoding="utf-8") as f:
+            ds = json.load(f)
+        with open(args.out, "w", encoding="utf-8") as f:
+            f.write(report.render(ds))
+        print(f"wrote {args.out} (dataset sha256 {dataset.digest(ds)[:16]}…)")
+        return 0
+    from datetime import datetime, timezone
+
+    from .agent import find_transcripts
+    from .survey.measure import with_subagents
+
+    files = find_transcripts(args.paths or None)
+    sessions = []
+    for i, path in enumerate(files, 1):
+        m = with_subagents(path, include_series=True)
+        if not m["api_calls"]:
+            continue
+        models = m.get("models") or {}
+        sessions.append({"id": f"S{i:02d}", "type": "", "model": max(models, key=models.get) if models else "",
+                         "origin": "", "span_hours": m["span_hours"], "session_list": None, "measurement": m,
+                         "source": "local", "partial": False, "base_override": None})
+    if not sessions:
+        print("no Claude Code transcripts with API calls found", file=sys.stderr)
+        return 1
+    stamps = datetime.now(timezone.utc).date().isoformat()
+    ds = dataset.build({"label": args.label, "who": args.label, "scope": "Claude Code (local transcripts)",
+                        "period": f"measured {stamps}", "sources": "provider-recorded usage in local transcripts",
+                        "dataset_path": args.out, "notes": []}, sessions)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(ds, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"measured {len(sessions)} sessions -> {args.out} (numbers only; no text, paths or ids)")
+    return 0
+
+
+def _backtest(args) -> int:
+    from .backtest import label, run
+
+    if args.backtest_cmd == "label":
+        if args.sheet:
+            n = label.write_sheet(args.paths, args.n, args.sheet, args.key, args.source)
+            print(f"wrote {n} items to {args.sheet} (contains text: keep it local) and the key to {args.key}")
+            return 0
+        print(json.dumps(label.interactive(args.paths, args.n, args.labels, args.source), indent=2))
+        return 0
+    if args.backtest_cmd == "answer":
+        print(json.dumps(label.apply_answers(args.key, args.answers, args.labels), indent=2))
+        return 0
+    if args.backtest_cmd == "validation":
+        with open(args.labels, encoding="utf-8") as f:
+            print(json.dumps(label.summarize(json.load(f)), indent=2))
+        return 0
+    report, manifest = run.run(args.paths, args.source, args.contributor)
+    report = run.nan_to_none(report)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=1)
+    with open(args.manifest, "w", encoding="utf-8") as f:
+        f.write("\n".join(manifest) + "\n")
+    s = report["sessions"]
+    print(f"{report['protocol']} · sessions kept {s['kept']} (dev {s['dev']}, test {s['test']}), excluded short {s['excluded_short']}"
+          " · one contributor")
+    if not report["aggregate"]:
+        return 1
+
+    def fmt(x):
+        return f"{x['median']}% [{x['ci95'][0]}, {x['ci95'][1]}] n={x['n']}" if x["n"] else "-"
+    rows = [("all sessions", report["aggregate"]["all_sessions"]), ("test split", report["aggregate"]["test_split"])]
+    rows += [(f"source: {k}", v) for k, v in report["aggregate"]["by_source"].items()]
+    rows += [(f"length: {k} calls", v) for k, v in report["aggregate"]["by_length"].items()]
+    print(f"\n{'stratum':<26}{'forget (P=inf)':<30}{'page (P=0)':<30}{'best online (test N)'}")
+    for name, b in rows:
+        from .backtest import MAX_MISS_RATE
+
+        ok = [f for f in ("window", "recency", "pointer") if (b[f"online_{f}"]["miss_rate"]["median"] or 0) <= MAX_MISS_RATE]
+        best = max(ok, key=lambda f: b[f"online_{f}"]["saved_pct"]["median"] or -1) if ok else None
+        flag = "  (n < 10: not a finding)" if b["insufficient"] else ""
+        online = (f"{best}-{b[f'online_{best}']['n']}: {b[f'online_{best}']['saved_pct']['median']}%, "
+                  f"miss {b[f'online_{best}']['miss_rate']['median']}%") if best else f"none within {MAX_MISS_RATE}% misses"
+        print(f"{name:<26}{fmt(b['oracle_Pinf']):<30}{fmt(b['oracle_P0']):<30}{online}{flag}")
+    print(f"\nreport: {args.out} (publishable) · manifest: {args.manifest} (private; its digest is in the report)")
     return 0
 
 
