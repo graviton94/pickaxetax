@@ -56,6 +56,29 @@ and from them a corrected estimate with a bootstrap CI over the whole population
 A detector with too few positives on either side for a stable estimate is reported as such, not
 as zero.
 
+## Secondary analysis, fixed before any label (added 2026-10-06)
+
+Phase 2 found that the reuse link these detectors rest on measures topic more than need: calls
+before a piece of context existed share its distinctive words as often as calls after it
+(`research/phase2/E5-vocabulary-placebo.md`, `A5-compaction-natural-experiment.md`). The primary
+analysis above stays as sealed. Two secondary analyses are added now, before any human label exists,
+so that the labels can say which reuse definition tracks need:
+
+1. **W5 under the time-mirror test.** The same W5 detector and threshold (≥ 10% of the
+   instruction's input), with reuse links kept only where a segment's later references beat its
+   own time-mirrored placebo by two standard deviations (`pickaxetax.agent.bound`, method tag
+   `lexical-v1+mirror-2sigma`). Its machine labels for the main packet are made from the same code
+   and sealed here (SHA-256) before labels are exchanged; if they cannot be sealed in time, the
+   secondary analysis is dropped rather than run after the labels are seen.
+2. **Which definition the labels side with.** On the instructions where the two W5 detectors
+   disagree, the share that the consensus label marks as W5. The disagreement set and the test (an
+   exact binomial test of that share against 50%) are fixed now; no threshold is tuned on the labels.
+
+Neither secondary analysis changes what is published as waste: W5 numbers are published only from
+the primary detector, corrected by its measured precision and recall (codebook §5.5). The secondary
+result is reported next to it, as evidence on the reuse definition that phase 2's forgetting and
+paging ranges depend on (5.6% to 12–45% forgetting).
+
 ---
 
 ## 한국어 요약
@@ -64,3 +87,7 @@ as zero.
 판정을 본 뒤에 규칙을 바꾸면 새 버전이고, 새 표본으로 다시 확인합니다. 본 판정 꾸러미에 대한 기계 판정 파일은 판정이
 끝날 때까지 판정자에게 보이지 않게 봉인했고, 그 SHA-256을 위 표에 남겼습니다. 판정이 끝나면 합의 판정과 비교해
 탐지기의 정밀도와 재현율을 재고, 그것으로 보정한 추정치를 신뢰구간과 함께 냅니다.
+
+보조 분석(판정 전, 2026-10-06 추가): 2단계에서 재사용 연결이 "필요"보다 "주제"를 잰다는 것이 드러났으므로, W5를 시간
+대칭 위약 검정(`lexical-v1+mirror-2sigma`)으로 한 번 더 판정해 봉인하고, 두 탐지기가 갈리는 지시에서 합의 판정이 어느
+쪽 편인지를 정확 이항검정으로 봅니다. 낭비로 내는 숫자는 여전히 1차 탐지기에서만 나옵니다.
