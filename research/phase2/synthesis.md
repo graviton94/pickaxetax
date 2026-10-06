@@ -28,8 +28,9 @@ Everything measured in phase 2 is a statement about one of the two factors.
     (cycle A2).
   - Large tool results are not the problem: cost is spread over thousands of mid-size pieces
     (cycle A).
-  - About 30% of the growth is invisible in the records: mostly the model's own thinking, a constant
-    per-call overhead, and images (cycle C2).
+  - About 30% of the growth is invisible in the records: about 40% of it the model's own thinking
+    (it enters the next call about one for one), 45–50% a constant per-call overhead, about 13%
+    images (cycles C2, C9).
 
 **The ceiling sets the average.** A long session's context runs a sawtooth between about 64k and
 783k, whatever goes into it. The top quarter of every cycle takes 35% of all main-session input
@@ -46,8 +47,9 @@ Everything measured in phase 2 is a statement about one of the two factors.
 ## 2. In money and in time
 
 **Money** (list-price ratios, output at 5×; cycle C5):
-- Cache reads are 71–74% of all spending, 1-hour cache writes 16%, and output an estimated 9–12%
-  (event logs record only placeholders). Uncached input is about nothing.
+- Cache reads are 71–74% of all spending, 1-hour cache writes 16%, and output about 9% (estimated
+  two independent ways, cycles C5 and C9; event logs record only placeholders). Uncached input is
+  about nothing.
 - **About half of all money (52–54%) re-reads context carried from instructions already finished**,
   62–64% with its re-writes after the cache expired.
 - The 1-hour cache lifetime fitted this person's rhythm: all-5-minute caching would have cost 17%
