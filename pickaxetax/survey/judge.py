@@ -91,6 +91,13 @@ def _result_text(content) -> str:
     return json.dumps(content, ensure_ascii=False, sort_keys=True)
 
 
+def _result_hash(content) -> str:
+    """Identity of a tool result for W1. The whole content counts, images included: a screenshot
+    re-read after the screen changed has the same (empty) text but is not the same result."""
+    raw = content if isinstance(content, str) else json.dumps(content, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(raw.encode("utf-8", "replace")).hexdigest()
+
+
 def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int | None = None,
                 per_instruction: bool = False) -> dict:
     """per_instruction: also return, for each instruction in order, the T1 categories that
@@ -142,7 +149,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                 text = _result_text(b.get("content"))
                 tok = estimate_tokens(text)
                 use = uses.get(b.get("tool_use_id"))
-                h = hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()
+                h = _result_hash(b.get("content"))
                 prev = last_result.get(use) if use else None
                 if use:
                     last_result[use] = (h, epoch)

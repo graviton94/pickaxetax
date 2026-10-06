@@ -92,7 +92,7 @@ Savings in % of each base. "All-in" = all input-side money (main and sub-agents)
 
 **Ordering.** Ranked by money, the order of the four levers is the same as by input tokens: ceiling 200k > restart above 200k > ceiling 390k > floor. This holds under every variant above: scaled or unscaled, R = 0 or D2, low or high output, with or without the summary output.
 - The gap between ceiling 200k and restart narrows from 10.5 points to about 7 points (5–6 after summary output).
-- The one change in standing is the floor. In tokens it is about 0 (0.0008%; 2.6% counting the steps spent on duplicates and errors). In money it is about 8%, the size of the token savings of the small levers in synthesis §2 (loops 1.4%, tool-result cap 4.4%, dropping never-used content 5.6%), which were not priced here.
+- The one change in standing is the floor. In tokens it is about 0 (0.0008%; 2.6% counting the steps spent on duplicates and errors; 1.45% after cycle B7's correction). In money it is about 8%, the size of the token savings of the small levers in synthesis §2 (loops 1.4%, tool-result cap 4.4%, dropping never-used content 5.6%), which were not priced here.
 
 ## 4. Sanity checks
 - **Shares.** Every price-share row sums to 100.00, per session and pooled.

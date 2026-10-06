@@ -35,8 +35,8 @@ label, and are kept away from the labelers until every labels file is in. Their 
 | File | SHA-256 |
 |---|---|
 | packet | `8b430b57962582568fdbe1b3c11f50d2583b56c2e2e06e9350f8dd2cac69ea26` (the packet's own digest) |
-| T1 (W1, W2, W6), main | `dab850164fd2cf935c710dac1274029d047890c6d8d073ff2dba46e365608ae8` |
-| T1, practice | `a0bdffbea8dce7714666e0693b181c016fda0dab9712409c628765bdadfe2a05` |
+| T1 (W1, W2, W6), main | `0770ec1e49063bc3448ebf8a62155a557ea86c480c15f74a72124632f115195b` (re-sealed 2026-10-06 after cycle B7; was `dab85016…`) |
+| T1, practice | `cffc00e4ce8bd24fb3cabe35487e4bd6a1307526f83e45d582293c772981e52b` (re-sealed after cycle B7; was `a0bdffbe…`) |
 | T2 (W4, W5, W8), main | `9a38967b65a774647579de616ad7f55fbe3787599dbe0b321d857b8ad716939b` (re-sealed 2026-10-06, see below; was `977ed590…`) |
 | T2, practice | `6b74e9162297954232ebc9d21e37c8cfb40b8e0fd91a4383a83b1cb544e7c0eb` |
 
@@ -49,12 +49,19 @@ fixed the shared instruction rule in the bound, the attribution of outputs to th
 a parent-output check in W8 and the de-duplication of tool results in the judge, before any label
 existed. All four sealed files came out byte-identical to the hashes above.
 
-**Correction (2026-10-06, cycle E7, still before any label).** That statement was wrong for one
+**Correction (2026-10-06, cycle D4, still before any label).** That statement was wrong for one
 file. The re-make ran three minutes before the last E2 fix (the attribution of a call's final answer
 to its own instruction) was committed. Re-made from the committed code, three files are
 byte-identical, but the T2 main file differs in one label: one S01 instruction's W5 changes from
 "no" to "yes". Its hash above is the corrected one; the earlier file is kept privately for
 comparison. No labeler had seen any machine label, and no human label existed.
+
+**Second correction (2026-10-06, cycle B7, still before any label).** The mechanical judge compared
+tool results by their text only, so a screenshot re-read after the screen changed counted as an
+identical result (W1). With images compared by their data (`mechanical-tier-v1.md`, amended), 27
+main-packet items and 2 practice items change W1 from "yes" to "no"; nothing else changes. Both T1
+files are re-sealed above; the earlier files are kept privately for comparison. The T2 and secondary
+files are unchanged.
 
 ## What the labels then give
 

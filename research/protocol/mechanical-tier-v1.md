@@ -13,7 +13,7 @@ sources and is left out of the floor.
 
 | Category | Rule | Tokens counted |
 |---|---|---|
-| **W1 Duplication** | A tool call with the same tool name and the same input (canonical JSON) as an earlier call in the same context (the main session, or one sub-agent run), whose result text is byte-identical to that earlier call's result, with no compaction in between | The repeated result's tokens, where it arrives |
+| **W1 Duplication** | A tool call with the same tool name and the same input (canonical JSON) as an earlier call in the same context (the main session, or one sub-agent run), whose result content (text, and images by their data) is byte-identical to that earlier call's result, with no compaction in between. *Amended 2026-10-06 (phase 2 cycle B7), before any label: the first version compared text only, so a screenshot re-read after the screen changed counted as identical (216 of 266 W1 cases); W1 tokens and the floor were unchanged, the steps measure fell from 2.6% to 1.45% of input* | The repeated result's tokens, where it arrives |
 | **W2 Failure** | A tool result marked as an error | The error result's tokens |
 | **W6 Cache churn** | On the main session only: call *i* had to write to the cache part of the context that call *i−1* already held. Missed = min(cache write of *i*, context of *i−1* − cache read of *i*), counted when it exceeds 2% of the previous context. Skipped when the context shrank (compaction or a cleared session) | The missed tokens (see below: a cost, not removable tokens) |
 

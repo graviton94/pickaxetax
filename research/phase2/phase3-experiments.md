@@ -39,13 +39,21 @@ The levers a user can pull today, as a short project instruction file (for examp
 ## E2 — Restart rule, controlled (needs a task set and a harness)
 
 - **Tasks:** 20–40 multi-step coding tasks with automated checks (a public benchmark or a frozen
-  set from the data owner's repositories), each long enough to pass 200k tokens of context.
+  set from the data owner's repositories), each long enough to pass 200k tokens of context. A
+  candidate set is in `research/phase3/e2-taskset-v0.md`: 29 tasks from this repository's history,
+  validated fail-to-pass, in 4 chains of 7 instructions (cycle D6).
+- **Power and cost** (`research/phase3/e2-power-v0.md`, cycle D7, simulation only): arms (a) and (b),
+  forked at the first boundary above 200k, arm (c) dropped. Use a 15-point non-inferiority margin,
+  with looks at 3 and 6 replicates. Cost is at most 1.3–1.7B input tokens. This design detects a
+  20-point loss in pass rate 84–92% of the time, a 10-point loss 37–49% and a 5-point loss 16–19%.
+  The "few points" phase 2 expects would need about 30–50 replicates or a much larger task set. On
+  these short chains the saving is about 43% of input but only about 28% of price.
 - **Arms:** (a) one session throughout; (b) restart at an instruction boundary above 200k with a
   summary the agent writes; (c) the same with a 2k-token summary.
 - **Measures:** input processed, cost, checks passed, steps; paired by task.
 - **Pre-registered expectation from phase 2:** (b) saves about 55% of input if the summary suffices,
-  52–55% with the re-reads seen after real compactions (cycle A5), 43% if re-reads were ten times
-  that; 52–53% with a median real cold start (20–30k tokens of orientation, cycle B5). The experiment measures what the logs cannot: whether checks pass as often with about 150
+  52–55% with the re-reads seen after real compactions (cycle A5), 43% at the worst plausible re-read
+  rate (4–19× the observed); 52–53% with a median real cold start (20–30k tokens of orientation, cycle B5). The experiment measures what the logs cannot: whether checks pass as often with about 150
   restarts as with 34 compactions.
 
 ## E3 — Pointer for authored content (needs a harness change or a convention)
@@ -64,7 +72,7 @@ The levers a user can pull today, as a short project instruction file (for examp
 
 - **Arms:** compaction at about 780k (today) against about 390k and about 200k (the model's
   price-weighted optimum is 110–160k, cycles B4, E6).
-- **Expectation:** about 39–43% less input at 390k and about 67% at 200k, after the observed re-reads
+- **Expectation:** about 39–44% less input at 390k and about 67% at 200k, after the observed re-reads
   (cycles D2, B3, B4); the experiment measures the one unknown, the quality cost of more frequent
   summaries (R in C\* = P + √(2g(P + R))),
   if the more frequent summaries lose nothing needed.

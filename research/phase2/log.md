@@ -222,7 +222,8 @@ W2 346; steps 2.6%). The oracle policies are unchanged (5.6 / 41.5 / 46.1%). The
 carried over from finished instructions is 46.5% of input (was 50.8% under the bound's own looser
 instruction rule); never used again 5.1% (was 5.4%). The restart what-ifs moved by up to 0.8 points
 (above 200k: 58.5%). **The sealed machine labels came out byte-identical**, so the rule-tier
-pre-registration stands as committed.
+pre-registration stands as committed. *(Corrected in cycle D4: the re-make ran before E2's last fix
+was committed; the T2 main file differs in one label and was re-sealed before any label existed.)*
 
 ## Cycle D3 — change over time, and the model (`D3-time-and-model.md`)
 
@@ -642,3 +643,214 @@ after a compaction, which may suppress refusals by design.
 re-reading) finds no visible cost of losing context at a compaction. All three are blunt.
 Together they say that losing context does not cause frequent, visible breakage. They cannot say
 that nothing subtle was lost. The quality question remains for an experiment with outcome checks.
+
+## Cycle C6 — does a large context cost time? (`C6-latency.md`)
+
+**Found.** The event pages carry a "requesting" status event before 99.9% of main calls, which gives
+an exact start. Latency runs from that start to the last streamed line. On the 13,886 calls
+triggered by a single tool result, latency grows by about 0.37 s per 100k tokens of context (90%
+interval 0.29–0.43), controlling for output and uncached tokens. At the 33 measured compactions,
+calls get faster in 30 of 33, which gives 0.19 s per 100k. The extra time comes before the first
+token. Context is 6–11% of the 61 h of main-session model time. A compaction itself takes a median
+130 s (89 s on the newer model, 177 s on the older).
+
+Translated with the fitted slope: a 200k ceiling makes the sessions 1.9 h slower, because its 178
+extra compactions cost more than the faster calls save. 390k is about neutral. The restart rule
+saves about 4.9 h (8%) if no summary is generated, and is about neutral if each restart generates a
+compaction-length summary.
+
+**Review.** The time of a compaction at a smaller ceiling is unknown; all observed ones were near
+783k. If summarizing less takes less time, the ceiling levers could turn into time savings (break
+even at about 92 s per compaction at 200k). Model and date coincide. Server load cannot be seen,
+but the slope is positive in every time-of-day bin.
+
+**Discussion.** The levers pay in tokens and money, not in model time, except restarts. That is
+worth saying plainly to users: a lower ceiling saves money but does not make the agent faster. A
+provider could change this, if a compaction of a smaller context is cheap to compute.
+
+## Cycle E9 — third independent code review, and the fixes
+
+A reviewer reviewed the code added since E6: the placebo option, its plumbing into the rule tier,
+`pxt survey compare`, and the two protocol documents. It checked that the default path is unchanged:
+the code before and after gives byte-identical results on 60 synthetic transcripts, for every
+report, export and CLI output. Three bugs were confirmed by failing tests (`tests/test_review_e9.py`):
+1. In the mirror test, a tool result born at call 0 (origin −1) got a negative "mirror length". It
+   skipped the fallback to the pooled rate, and it could push the pooled rate out of [0, 1] and
+   crash.
+2. `compare` reported a CI when the before median was 0 and the ratio undefined.
+3. A `floor.json` that is valid JSON but not an object crashed instead of giving an error.
+
+All three are fixed. After the fix, every sealed label file is re-made byte-identical (the primary
+four and the two secondary), and the E5 / D4 numbers are unchanged (41.3 / 51.6 / 53.3%): no
+session in the data starts with a tool result. Smaller concerns are noted in the review and left as
+they are. The 5-session warning counts sessions without instructions, and nothing checks that a
+`floor.json` matches its dataset.
+
+## Cycle C7 — was the 1-hour cache the right choice? (`C7-cache-ttl.md`)
+
+**Found.** The main sessions wrote only 1-hour cache (2× input), and sub-agents only 5-minute cache
+(1.25×). A replay with every prefix change held fixed reproduces the observed price exactly. The data
+confirms that a read refreshes the timer.
+- 97% of calls follow a gap under 5 minutes, 2.6% a gap of 5–60 minutes, and 0.4% a gap over an
+  hour. Half of the 5–60 minute gaps fall inside an agent's turn.
+- All-5-minute caching would have cost 19.8% more main input money (about 17% of all money). The
+  1-hour premium (56M units) avoided 214M units of re-writes.
+- But 93% of the premium was paid on writes followed by a gap under 5 minutes. A per-write choice
+  with foresight saves 1.6–6.7% of main input money, depending on how mixed lifetimes are billed.
+  With keep-alive requests while idle it saves about 10%.
+- Realistic rules get 4–6% of total money. An hourly keep-alive while idle (up to 8 h) is the only
+  gain that holds under both billing readings: 4.1–4.2%.
+- Sub-agents were right on 5 minutes; 1 hour would cost them 14.6% more.
+
+**Review.** The mixed-lifetime billing ("entry" vs "segment" reading) cannot be checked here: no
+call in the data mixes the two, and the agent's statements about the provider's documentation and
+price list were not re-checked (no network). The memo marks them as assumptions. The read price of
+0.1 is the project's ratio; a lower read price would strengthen every direction.
+
+**Discussion.** The cache lifetime is a harness lever of the same size as the floor (about 4–8% of
+money). It needs no change in behaviour and is an order of magnitude smaller than moving the
+ceiling. Most of the W6 cost (re-writes after breaks over an hour, the floor's 8.92%) is also
+addressed by an hourly keep-alive, or by restarting on return (A6).
+
+## Cycle D6 — a task set for phase 3's controlled restart experiment (`research/phase3/e2-taskset-v0.md`)
+
+The design is SWE-bench style, built on this repository's own history. Of 104 commits scanned, 31
+change both code and tests. 30 of those have tests that fail with the commit's code reverted and
+pass at the commit, twice, with no flakes. One (the package rename) is excluded. That leaves **29
+tasks with 134 fail-to-pass tests**, grouped into **4 chains of 7 consecutive instructions**. The
+chain boundaries are checked too: the fail-to-pass sets hold when an agent continues from the
+previous reference solution. The estimated context growth is 31–99k tokens per instruction, so
+every chain passes 200k after instruction 3 or 4, as E2's restart arm needs. The set also lists
+what a harness needs, and estimates one replicate of all three arms at 335–630M input tokens.
+
+**Review.** Four chains make the pairing thin. The repository is public, so the model may have
+seen it. All tasks come from one project, and four commit messages are a subject line only, so the
+design shows the tests as the specification. Running it costs API usage and is the data owner's
+decision. Nothing was run.
+
+## Cycle C8 — how much do the cost numbers depend on the price ratios? (`C8-price-sensitivity.md`)
+
+**Found.** Every cost headline was recomputed over 48 settings: cache read 0.05–0.15, 1-hour write
+1.5–2.0, output 3–5. At the default all reproduce exactly.
+- **Holds everywhere.** The order of the levers holds in 48 of 48 settings: ceiling 200k 42–58% of
+  total money, restart above 200k 37–49%, ceiling 390k 29–38%, then the floor and the cache-lifetime
+  levers. The 1-hour cache beats all-5-minute at every point (all-5-minute costs 12–40% more).
+- **Partly holds.** "Half of all money re-reads finished work" is 41–63% for the reads alone, and at
+  least half in 35 of 48 settings. It falls below half when a read costs less than about 0.054–0.086
+  of an input token. With the re-writes after expiry it is 56–69% everywhere.
+- **Moves most.** The floor ranges 4.7–15.4% of input-side money, because its re-write part is
+  priced at the write premium over a read. The output share ranges 3.9–19%.
+
+**Review.** The grid is a sensitivity range. No current price list was checked, and one ratio set
+is applied to calls from several models.
+
+**Discussion.** The ordering and the direction of every lever are price-robust. Public statements
+should quote "half of all money" with its condition, or quote the robust form: "56–69% counting the
+re-writes". The floor's 8.92% should keep its price basis attached. Note 2 states 8.92% with
+"비용으로 보면", which is the default-ratio figure; that is for the data owner's wording.
+
+## Cycle E10 — second consistency audit
+
+An auditor checked everything changed since E7: synthesis v2 and its Korean version, the new
+memos, the protocols, the phase 3 task set, the opportunity page. Most matched, including all 281
+what-if values (against `whatif.run`) and every cell of the task-set table (against its JSON). It
+listed 24 discrepancies, mostly wording.
+
+**Fixed.**
+- Two E7 fixes had reached the synthesis but not the phase 3 plan: the 390k range and the "ten
+  times" wording.
+- validity.md counted two reviews instead of three.
+- One AUC range was attributed to lexical reuse and the cross-session corrections together, where
+  0.57–0.61 is lexical reuse alone and 0.55–0.60 the corrections.
+- In the levers table, the break-only restart and the 390k row were on a different price basis
+  from their neighbours.
+- The restart rule's time saving now carries its condition (no summary generated).
+- The resampling claim is limited to the orderings E4 actually tested.
+- The Korean synthesis gave the 12–45% forgetting range for the time correction alone, and its
+  table is now labelled a summary.
+- The rule-tier correction was attributed to cycle E7 instead of D4, and the E2 log entry now notes
+  that correction.
+- Smaller fixes in the E8, C7 and task-set memos.
+
+## Cycle D7 — how many runs E2 needs (`research/phase3/e2-power-v0.md`)
+
+This is a simulation only, with fixed seeds and the standard library, from the public task set. The
+token model rebuilds D6's per-chain figures exactly. Only 15 of the 28 instructions come after a
+restart, so only those can show a quality difference.
+- **Tokens.** A ±5-point CI on the saving needs 6–8 replicates if a chain run varies by 20%, and
+  28–44 if it varies by 50%. Run-to-run variation is assumed, since no run exists.
+- **Quality.** At a 75% baseline pass rate, the loss estimate has an SD of about 15/√R points. 80%
+  power needs about 4 replicates for a 20-point loss, 13 for 10 points and 45 for 5 points. With 4
+  chains no test can reach two-sided 5% with fewer than 3 replicates.
+- **Recommendation.** Run arms (a) and (b) forked at the first boundary above 200k (exact, and 16%
+  cheaper). Drop arm (c). Use a 15-point non-inferiority margin with looks at 3 and 6 replicates,
+  at a cost of at most 1.3–1.7B input tokens.
+
+**Review.** The quality model is assumed: random effects for instructions and chains, with the
+effect only after restarts. Its conclusion is robust to the heterogeneity assumed. The scripts and
+tables are in `research/phase3/power/` and reproduce.
+
+**Discussion.** This is a limit to state up front. The experiment phase 2 calls for can rule out a
+large quality loss from restarting, but not a small one. A small one is what the behavioural
+evidence (A5, B5, D5, A6) suggests. Resolving it needs a larger task set (a public benchmark) or
+many more runs. Phase 3 should say so before running anything.
+
+## Cycle A7 — a need model fitted on behaviour (`A7-behaviour-model.md`)
+
+This cycle is exploratory: the variants were chosen after E8.
+- **Prediction.** A logistic model trained on the file reads after the 34 compactions predicts
+  which files are re-read far better than lexical reuse. Its out-of-session AUC is 0.87 / 0.89,
+  against 0.57 / 0.61. It is well calibrated, and almost all of it comes from the file's read
+  history: prior reads, and whether a newer copy was already read.
+- **Habit.** The same model predicts re-reads just as well mid-cycle, where the content is still in
+  context (AUC 0.86–0.87, similar rates). A compaction adds only about 7–10 points of re-read
+  probability. Re-reading is mostly habit.
+- **Forgetting share.** Lexical links were thinned to match the behavioural re-read rate and the
+  bound recomputed with the repository's code. Forgetting comes to 7.1% / 7.7% (session bootstrap
+  about 5.4–10.9%), with paging unchanged at 41.7%. The credible variants give 6.3–10.5%.
+
+**Review.** The result depends on counting habitual re-reads as need. If only the re-reads a
+compaction caused count, forgetting rises to 13–32%. The data cannot separate the two, because need
+met by the summary is unobserved. The model is fitted on file reads after a drop and applied to
+every kind of segment.
+
+**Discussion.** The forgetting share now has a behaviour-calibrated centre (about 7–8%) next to
+lexical-v1's 5.6%. "Carrying is the larger lever" holds under every reading except the one where
+re-reading counts only when a compaction caused it. Even then paging stays the larger part
+(41.7%). A side finding matters for the restart lever: most re-reading is habit. So the re-reads
+charged to a restart (A5, B5) partly happen anyway, and the true charge is lower.
+
+## Cycle B7 — reading what is already in the context (`B7-redundant-reads.md`)
+
+**Found.** The question was how much reading returns content still present, unchanged, in the
+current context. That is a broader duplicate than W1's exact rule.
+- **Tokens.** Such content totals 379k tokens (0.0055% of input), about 56× W1 but negligible.
+- **Steps.** 105 calls whose results were all at least 95% already in context re-read 0.59% of
+  input. At a 50% threshold it is 472 calls and 2.85% of input.
+- **Not repeat calls.** Only 9.7% of main-session reads were at least half resident. 80% of the
+  duplicate tokens come from shell reads and other commands, not repeats of the same call.
+- **Sub-agents.** Only 2.7% of a sub-agent's reading was already in its parent's context, against
+  B5's 70–76% by path. The same path is mostly not the same content.
+- **Timing.** Duplicates are spread out: median 16 calls after the resident copy, 58% within the
+  same instruction.
+- **A rule for discussion (W1b).** 95% of the lines are already in the same context since the last
+  compaction, matched by 3-line runs, with re-reads of own edits labelled as possible verification.
+
+**Review — a bug in the published floor.** Replicating the judge's W1 exactly showed that 216 of its
+266 cases are re-reads of a screenshot path whose image had changed. The judge hashed result text
+only, and an image has none; pixel checks confirm only 4 of 174 images were the same.
+- **Fixed.** `judge._result_hash` now includes images, with a regression test, and the
+  mechanical-tier protocol is amended.
+- **Regenerated.** `floor-t1.json` and `.md` were regenerated.
+- **Unchanged.** W1 tokens (3,414) and the floor (0.0008% of tokens, 8.92% of cost) do not change.
+- **Changed.** The steps spent only on duplicates or errors fall from 478 calls and 2.6% of input to
+  291 calls and **1.45%**. W1 steps go from 223 to 36, so "193 W1 steps re-read an unchanged file"
+  no longer holds.
+- **Re-sealed.** Both T1 seals were re-made before any label existed: 27 main and 2 practice items
+  change W1 from yes to no.
+- **Propagated.** The note 2 draft (text and slide 2), the launch facts, the review kit, the
+  synthesis and validity now carry 1.5% / 1.45%.
+
+**Discussion.** The draft's 2.6% came from a measurement error. The correction makes the floor's
+step cost smaller still and leaves its thesis untouched. The cost of redundant reading is in the
+steps (0.6–2.9%), not the tokens. It is a small lever next to carrying.
