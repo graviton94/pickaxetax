@@ -45,7 +45,7 @@ The levers a user can pull today, as a short project instruction file (for examp
 - **Measures:** input processed, cost, checks passed, steps; paired by task.
 - **Pre-registered expectation from phase 2:** (b) saves about 55% of input if the summary suffices,
   52–55% with the re-reads seen after real compactions (cycle A5), 43% if re-reads were ten times
-  that. The experiment measures what the logs cannot: whether checks pass as often with about 150
+  that; 52–53% with a median real cold start (20–30k tokens of orientation, cycle B5). The experiment measures what the logs cannot: whether checks pass as often with about 150
   restarts as with 34 compactions.
 
 ## E3 — Pointer for authored content (needs a harness change or a convention)

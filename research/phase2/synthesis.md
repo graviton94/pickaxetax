@@ -53,13 +53,13 @@ Share of main-session input that would not have been processed, with what each l
 
 | Lever | Saving | Assumes | Foresight | Who can pull it | Cycle |
 |---|---:|---|---|---|---|
-| Drop only content never used again | 5.6% (3.5–24.7%) | lexical reuse detection | yes | — | bound |
-| Fetch content again only when needed (oracle, 1k per fetch) | 41.5% (35–54%; 16–28% raw) | lexical detection, perfect foresight | yes | — (upper bound) | bound |
+| Drop only content never used again | 5.6% lexical-v1; 12–45% when reuse must beat a vocabulary or time placebo | what counts as reuse | yes | — | bound, E3, E5 |
+| Fetch content again only when needed (oracle, 1k per fetch) | 41.5% (35–56% across detectors and placebos; 16–28% raw) | perfect foresight | yes | — (upper bound) | bound, E3, E5 |
 | Simple recency policy, miss rate < 5% | about 3% | none beyond the replay | no | harness | backtest |
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | cut part re-read on reuse | no | harness | A |
 | Remove every retry and polling loop | about 1.4% (0.3–2.1%) | loops were avoidable | no | agent | B2 |
 | Carry a pointer instead of what the agent wrote | about 20% if compactions stayed where they were; **about 0 (−4%) alone** when compaction fires at the ceiling; negative in cost (re-fetched content is written at 2×) | the agent re-reads when it needs it | no | harness / agent convention | A2, B3 |
-| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; 52–55% (47–50% of cost) with the re-reads observed after real compactions; 43% (31%) if they were ten times higher | that each restart loses nothing the re-reads do not restore | no | the user, today | B, B3, A4, A5 |
+| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; 52–55% (47–50% of cost) with the re-reads observed after real compactions; 43% (31%) if they were ten times higher; 52–53% (47–48%) with a median real cold start charged to every restart, 41% at the 90th percentile | that each restart loses nothing the re-reads do not restore | no | the user, today | B, B3, A4, A5, B5 |
 | New session every 3 / 10 instructions | 55.1% / 23.0% | same | no | the user, today | B |
 | Compact at half the usual ceiling (about 390k instead of 780k) | 39–43% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3 |
 | **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |
@@ -91,11 +91,15 @@ at n = 10 (cycle D3).
 
 ## 4. What follows
 
-1. **Carrying is the big lever; forgetting is smaller and less certain.** Content is mostly used again
-   later, but between uses it is re-read on every call. The paging opportunity is robust to how
-   reuse is detected (35–54% across six detectors, cycle E3); how little forgetting alone saves is
-   not (3–19% across lexical detectors), which the blind labels have to settle. Simple "recently
-   used" rules either miss needed content or save little.
+1. **The total opportunity is robust; how it splits is not.** With perfect foresight about 41–56%
+   of input need not have been processed, whatever counts as reuse (six detectors, cycle E3; four
+   placebo corrections, cycle E5). How much of that is content never needed again (forgetting) and
+   how much content needed later but carried in between (paging) depends on the detector. By
+   lexical-v1, forgetting is 5.6% and paging adds 36 points. When reuse must beat the session's own
+   vocabulary, forgetting is 12–45%. Lexical reuse turns out to be symmetric in time: calls before a
+   segment existed share its words as often as calls after it, so it measures topic, not need. The
+   blind labels have to settle the split. Simple "recently used" rules either miss needed content or
+   save little.
 2. **The levers that need no foresight move the boundary**: start a new session, compact earlier,
    or delegate to a sub-agent with its own small context. Trimming what goes in helps only once the
    boundary has moved; under today's ceiling it mostly postpones the next compaction. The largest

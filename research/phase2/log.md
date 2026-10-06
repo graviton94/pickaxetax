@@ -462,3 +462,51 @@ rows are unchanged, including 55.2%. The ceiling savings are about 1 point highe
 price-weighted (was 120–170k). These are updated in `opportunity-v1`, B4 (as a correction note),
 the synthesis and the phase 3 plan. Cycles E4 and C5 used the old ceiling values. Their conclusions
 (intervals, orderings, the money ranking) do not depend on a 1-point shift, so they were not rerun.
+
+## Cycle B5 — what a cold start costs (`B5-cold-start.md`)
+
+**Found.** Beyond a warm instruction start, a new session spends about 20–27k tokens and 3–9 extra
+read or search calls getting going, almost all in its first 10 calls. A sub-agent spends 21–28k, a
+compaction 6–17k. The 90th percentile is 45–110k tokens and 13–20 calls. The cold start is largely
+re-obtaining: 45% of the files a new session reads were used in an earlier session of the same
+project, and 70–76% of a sub-agent's reads were already used by its parent. It does not delay the
+first edit (median 12 calls against 17 at a warm start): the cost is reading before it. With a median
+cold start charged to every restart, the restart-above-200k rule saves 51.9–53.0% (46.7–48.0% of
+cost) instead of 55.2%. It falls to the 390k-ceiling lever only if every restart costs about 100k
+fresh tokens, which is 3–4× the median cold start.
+
+**Review.** The confound (a first instruction opens new work) is handled by three comparisons:
+long warm instructions, compactions and sub-agents. The session-start figure is the upper estimate
+for a restart with a summary, the compaction figure the lower one. There are ten starts, nine in
+one project. The 390k comparator (42.8%) predates the E6 fix (now about 43%); the break-even
+conclusion does not change.
+
+**Discussion.** Together with A5, the restart lever's two hidden costs are now measured from
+behaviour: re-reading after losing context (A5) and getting going (B5). Each costs a few points,
+not tens. What remains is quality, which only an experiment can measure.
+
+## Cycle E5 — the oracle bound against a vocabulary placebo (`E5-vocabulary-placebo.md`)
+
+**Found.** The method was fixed before any bound was run, and the baseline reproduces exactly
+(5.6 / 41.5 / 46.1). Two ways of making reuse beat a placebo were tried. One was a user-vocabulary
+filter (a word counts only if rare in the other nine sessions). The other was a placebo correction:
+the same session's calls before the segment existed (time mirror), or calls from other sessions.
+Under these, forgetting alone (P = ∞) rises from 5.6% to 12–45% of input, and paging (P = 1000)
+from 41.5% to 44–56%, against 57.3% if nothing were ever reused. The diagnostic behind it: calls
+before a segment exists share its words at the same rate as calls after it (14.6% against 15.3%
+within 10 calls; 5.0% against 5.3% at 100–1000). Under the time-mirror placebo, 50–68% of the
+segments lexical-v1 counts as reused fail, across every kind of segment.
+
+**Review.** Neither placebo is the truth. The time mirror over-corrects where a segment descends
+from what came just before it: a tool result reads the file the agent just wrote. The other-session
+placebo under-corrects, because the session's own topic is left in. So the two bracket the answer:
+forgetting 12–13% under the mild corrections, 33–41% under the mirror. This replaces E3's 3–19%
+lexical range. E5 extends A5's finding from 34 compaction windows to every segment of all ten
+sessions.
+
+**Discussion.** The thesis is unaffected, and its total grows: 41–56% need not have been processed
+with foresight. What changes is the claim that "carrying is the big lever, forgetting the smaller
+one". It holds only under the mild corrections, and the synthesis now presents the split as
+depending on the detector. The blind labels (W5 "dead context") are where it gets settled. They
+should be read against both brackets. The note 2 draft quotes 4~25% and 35~54% from the earlier
+ranges; this is for the data owner to decide.
