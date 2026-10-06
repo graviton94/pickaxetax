@@ -19,7 +19,7 @@ The project is published on LinkedIn as **research notes, one at a time**. There
 
 | # | Note | Status | Posted |
 |---|---|---|---|
-| 1 | [곡괭이세](01-the-pickaxe-tax.md) | draft, being refined | — |
+| 1 | [21세기 골드러시의 영수증](01-the-pickaxe-tax.md) | draft v4, being refined | — |
 
 ## How a note is made
 

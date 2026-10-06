@@ -1,0 +1,15 @@
+/*
+Pretendard Variable, Copyright (c) 2021 Kil Hyung-jin, with Reserved Font Name Pretendard.
+https://github.com/orioncactus/pretendard. Licensed under the SIL Open Font License 1.1 (LICENSE.txt).
+
+One file on purpose, not the unicode-range subsets: subsets are fetched according to
+the characters on screen, which would tell the server which character ranges a pasted
+conversation contains. A single file is fetched the same way whatever the text is.
+*/
+@font-face {
+  font-family: "Pretendard Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 45 920;
+  src: url(./PretendardVariable.woff2) format("woff2-variations"), url(./PretendardVariable.woff2) format("woff2");
+}
