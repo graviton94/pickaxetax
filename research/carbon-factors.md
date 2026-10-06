@@ -75,4 +75,4 @@ line is our own measurement; it is not the waste rate of the world's compute.
 | Data-centre electricity | 415 TWh (2024) → about 945 TWh (2030), "slightly more than Japan's total electricity consumption today" | [IEA, Energy and AI (2025)](https://www.iea.org/reports/energy-and-ai/executive-summary) |
 | Its CO₂ | about 180 Mt today → a peak of about 320 Mt in 2030 (Base Case) ≈ what 53 billion urban trees absorb in a year at EPA's 6 kg each (metaphor) | IEA, same report; EPA (above) |
 | Generative-AI e-waste | 1.2–5.0 Mt accumulated over 2020–2030 | [Wang et al. 2024, Nature Computational Science](https://www.nature.com/articles/s43588-024-00712-6) |
-| Leftovers of finished instructions (ours; not yet judged as waste, see `research/protocol/waste-codebook-v0.md`) | 73.6% of context re-read on each call was carried over from finished instructions; output 0.19–0.43% of input | `research/survey/user01/` |
+| Leftovers of finished instructions (ours; not yet judged as waste, see `research/protocol/waste-codebook-v1.md`) | 73.6% of context re-read on each call was carried over from finished instructions; output 0.19–0.43% of input | `research/survey/user01/` |

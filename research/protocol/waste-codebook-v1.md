@@ -1,8 +1,9 @@
-# Waste codebook v0 — what counts as waste, and how it is decided
+# Waste codebook v1 — what counts as waste, and how it is decided
 
-Status: **draft for review. Not applied to any data yet.** It is frozen by a commit before
-the first labeling run, and that commit is its timestamp. Changes after that are new
-versions (v1, v2 …) with a changelog, and every result names the version it used.
+Status: **frozen, 2026-10-06.** v1 is v0 with the two open questions decided (see the
+changelog at the end). It was committed before any data was judged with it, and that commit
+is its timestamp. Changes after this are new versions (v2 …) with a changelog, and every
+result names the version it used.
 
 Why this exists: the first survey measured *volume* (how much was read, written, carried
 over). Volume is not waste. 73.6% of each call's context was carried over from finished
@@ -20,6 +21,7 @@ names its counterfactual.
 - **Operating overhead:** the fixed base every call needs (system prompt, tool
   definitions). It is reported as overhead, because removing it would stop the agent from working.
 - **Exploration that informed the result:** reading a file and then acting on what was read.
+  Exploration beyond that is W8 (over-exploration) and does count.
 - **Verification:** tests and checks, even when they pass.
 - **The user's own thinking time.** Only tokens are counted.
 
@@ -48,10 +50,13 @@ this list wins, so nothing is counted twice.
 | W5 | **Stale context** | Context carried into a call from a finished instruction that is never used again later in the session | A fresh context holding only what is used later | T2 | Use detector (`lexical-v1`, `research/protocol/backtest-v1.md`), validated by blind labels. Upper bound: all carried context; lower bound: carried and never used |
 | W6 | **Cache churn** | Cache writes beyond the first for the same prefix: caused by resuming a session, switching models, or the cache expiring | One cache write per prefix | T1 | `cache_creation` tokens on a prefix already written in the same session |
 | W7 | **Unrequested work** | Work the person did not ask for and did not use (e.g. ten drafts produced when one was asked for) | Only the requested work | T3 | Hand labels on instruction/response pairs |
+| W8 | **Over-exploration** | Reads and searches by an agent or sub-agent whose results did not inform what was delivered: files opened and never acted on, searches whose hits were never used, a sub-agent reading 30 files to return a summary built from three | Only the exploration the result drew on | T3 (T2 proxy under validation) | Hand labels; proxy: tool results never referenced in any later output of that agent or its parent |
 
 ## 4. Units and counting
 
 - Usage is de-duplicated per message id (one response is often logged as several lines).
+- W8 takes the tokens of the exploring call's tool result where it arrives; carrying that
+  result into later calls is W5. The two never take the same tokens.
 - Input is split per call into overhead / carried / current (the survey's decomposition).
   Each category takes its tokens from the call it happened in.
 - Two views of every number: **raw tokens**, and **price-weighted** (cache reads at 0.1×,
@@ -88,10 +93,21 @@ not as zero.
 - "Needed" is judged against what was delivered, not against what would have been ideal.
   The codebook measures avoidable cost under the outcome that actually happened.
 
-## Open questions for review
+## Decisions on v0's open questions (2026-10-06)
 
-- Should W5 count context that was used only by being *ignored correctly* (constraints the
-  agent obeyed without quoting)? v0 says no; the use detector cannot see it, so W5's lower
-  bound may overstate waste. The blind labels will show by how much.
-- Where does a sub-agent's exploration belong when its summary was read but its details
-  were not? v0 counts it as used (exploration that informed the result).
+1. **Context that was obeyed but never quoted** (a constraint like "don't touch the tests"
+   that the agent followed without repeating it). The use detector still counts only reuse
+   it can see. In the blind labels, a constraint the agent demonstrably followed counts as
+   **used**. The detector's miss rate on such context is measured against those labels and
+   the W5 estimate is corrected by it, so the detector's blind spot widens the confidence
+   interval instead of inflating waste.
+2. **A sub-agent's exploration when only its summary was used.** Exploration that the
+   summary and the result drew on is not waste. Exploration beyond that is waste, as the
+   new category **W8 Over-exploration**, judged on the labeled sample (T3). A mechanical
+   proxy (tool results never referenced again by the agent or its parent) is reported only
+   after it is validated against those labels.
+
+## Changelog
+
+- **v1 (2026-10-06):** frozen. Adds W8 Over-exploration. Decides the two open questions above.
+- **v0 (2026-10-06):** first draft, seven categories, two open questions.

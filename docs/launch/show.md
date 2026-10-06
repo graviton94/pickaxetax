@@ -19,7 +19,7 @@ Before posting: the site loads, `pip install pickaxetax` gives 0.4.0 or later, a
 - 결과 (세션 10개, 2026-07-10 ~ 10-05)
   - 처리된 입력 58.7억 토큰. 세션 목록에 표시된 합계의 1.49배였습니다.
   - 지시 586번, 지시 한 번에 평균 약 1,000만 토큰
-  - 출력은 입력의 0.2~0.4%
+  - 출력은 입력의 0.19~0.43% (출력이 정확히 기록된 세션 3개 기준)
   - 매 호출이 들고 다닌 컨텍스트의 73.6%가 이미 끝난 지시들이 남긴 내용
 - 직접 재 볼 수 있습니다: `pip install pickaxetax` → `pxt survey measure --out my.json` → `pxt survey report my.json --out my.html`
   - 데이터셋에는 숫자만 들어갑니다(텍스트·경로·ID 없음). 같은 데이터셋이면 같은 레포트가 바이트 단위까지 똑같이 나옵니다.
@@ -42,7 +42,7 @@ Before posting: the site loads, `pip install pickaxetax` gives 0.4.0 or later, a
 >
 > - 5.87B input tokens processed, 1.49× what the session list showed
 > - 586 instructions, ~10M input tokens each on average
-> - output was 0.2–0.4% of input
+> - output was 0.19–0.43% of input (the 3 sessions whose output was recorded exactly)
 > - 73.6% of the context carried on each call was left over from instructions that were already finished. The cost grows with steps × carried context, and compaction only kicks in near a ~780K ceiling, so long sessions run nearly full
 >
 > `pxt survey measure` / `pxt survey report` produce the same report from your own transcripts. The dataset is numbers only (no text, paths or ids), and the report is byte-for-byte reproducible from it. There's also a browser analyzer for chat transcripts whose CSP is `connect-src 'none'`, so the page can't send your conversation anywhere.
@@ -63,7 +63,7 @@ Post on a weekday, 8–10 a.m. US Eastern. Stay in the thread for the first 3 ho
 >
 > - 5.87B input tokens, 1.49× what the session list displayed
 > - 586 instructions, ~10M input tokens per instruction on average
-> - output was 0.2–0.4% of input
+> - output was 0.19–0.43% of input (the 3 sessions whose output was recorded exactly)
 > - 5 long-running sessions were 93% of all input
 > - 73.6% of the context on every call was left over from earlier, finished instructions
 >

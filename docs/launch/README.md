@@ -17,7 +17,7 @@ The project is published as **LinkedIn research notes, one at a time**, written 
 
 Sequence:
 
-1. **LinkedIn, note 1:** why the research exists, and the published criteria for what counts as waste ([linkedin-series/](linkedin-series/README.md), `research/protocol/waste-codebook-v0.md`). The site link goes in the first comment.
+1. **LinkedIn, note 1:** why the research exists, and the published criteria for what counts as waste ([linkedin-series/](linkedin-series/README.md), `research/protocol/waste-codebook-v1.md`). The site link goes in the first comment.
 2. **LinkedIn, note 2:** the first judgment of the survey data under those criteria, once the blind labels pass (§5 of the codebook). The receipt image belongs here.
 3. **Then the developer communities, one per day:** GeekNews, Hacker News (weekday morning, US Eastern), r/ClaudeAI ([show.md](show.md)). The drafts are updated with note 2's numbers before posting.
 

@@ -1,0 +1,1 @@
+{'FONT': '/home/user/ANTITOKENMAXING/site/fonts/pretendard/PretendardVariable.woff2', 'L2X': '123', 'F1': '117.9', 'CX': '119.9', 'CW': '686.9', 'K1': '808.8', 'G25': '440', 'B1': '688.0', 'T1': '702', 'B2': '356.2', 'T2': '370', 'B3': '468.2', 'T3': '482'}
