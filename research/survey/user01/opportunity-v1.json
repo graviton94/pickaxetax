@@ -1441,5 +1441,90 @@
     "cap_400000_summary_10000": 45.5
    }
   }
+ },
+ "backtest_exploratory": {
+  "note": "Outside the pre-registered protocol: online policies over a wider N grid, penalty 1,000, stub 20. See backtest-v1.json for the protocol run.",
+  "grid": {
+   "recency-1": {
+    "median_saved_pct": 33.2,
+    "median_miss_rate": 75.1,
+    "pooled_saved_pct": 33.7
+   },
+   "recency-2": {
+    "median_saved_pct": 29.9,
+    "median_miss_rate": 59.4,
+    "pooled_saved_pct": 29.8
+   },
+   "recency-4": {
+    "median_saved_pct": 24.9,
+    "median_miss_rate": 44.4,
+    "pooled_saved_pct": 24.2
+   },
+   "recency-8": {
+    "median_saved_pct": 17.6,
+    "median_miss_rate": 30.3,
+    "pooled_saved_pct": 17.5
+   },
+   "recency-16": {
+    "median_saved_pct": 11.3,
+    "median_miss_rate": 16.7,
+    "pooled_saved_pct": 11.3
+   },
+   "recency-32": {
+    "median_saved_pct": 6.4,
+    "median_miss_rate": 7.2,
+    "pooled_saved_pct": 6.5
+   },
+   "recency-64": {
+    "median_saved_pct": 2.9,
+    "median_miss_rate": 2.5,
+    "pooled_saved_pct": 3.4
+   },
+   "recency-128": {
+    "median_saved_pct": 0.7,
+    "median_miss_rate": 0.5,
+    "pooled_saved_pct": 1.5
+   },
+   "pointer-1": {
+    "median_saved_pct": 30.8,
+    "median_miss_rate": 75.1,
+    "pooled_saved_pct": 31.7
+   },
+   "pointer-2": {
+    "median_saved_pct": 27.6,
+    "median_miss_rate": 59.4,
+    "pooled_saved_pct": 27.9
+   },
+   "pointer-4": {
+    "median_saved_pct": 23.0,
+    "median_miss_rate": 44.4,
+    "pooled_saved_pct": 22.5
+   },
+   "pointer-8": {
+    "median_saved_pct": 16.4,
+    "median_miss_rate": 30.3,
+    "pooled_saved_pct": 16.0
+   },
+   "pointer-16": {
+    "median_saved_pct": 10.0,
+    "median_miss_rate": 16.7,
+    "pooled_saved_pct": 10.0
+   },
+   "pointer-32": {
+    "median_saved_pct": 5.4,
+    "median_miss_rate": 7.2,
+    "pooled_saved_pct": 5.6
+   },
+   "pointer-64": {
+    "median_saved_pct": 2.4,
+    "median_miss_rate": 2.5,
+    "pooled_saved_pct": 2.8
+   },
+   "pointer-128": {
+    "median_saved_pct": 0.6,
+    "median_miss_rate": 0.5,
+    "pooled_saved_pct": 1.2
+   }
+  }
  }
 }

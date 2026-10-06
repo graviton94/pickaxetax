@@ -104,9 +104,10 @@ T = {
   kg="B. 넘어온 내용은 다시 쓰였나 <span>· 오라클 최소치, 주 세션 {m:.1f}억 토큰</span>",
   oth=["필요한 것만 들고 갔다면", "덜 읽었을 몫", "탐지 기준 9가지"],
   orows=["다시는 안 쓰인 것만 버리기", "필요할 때 다시 불러오기 (1천 토큰)", "불러오기가 공짜라면"],
+  simple="참고: 과거만 보는 단순 규칙, 놓침 {m:.1f}%", simple_r="최근 {n}번 호출",
   note_c="끝까지 다시 쓰이지 않은 내용은 적었습니다. 대부분은 언젠가 다시 쓰였지만, 그때까지 매 호출마다 다시 읽혔습니다. 미래를 아는 오라클의 값이라 실현 가능한 정책의 결과가 아니라 기회의 크기이고, 재사용은 글자 겹침으로 추정했습니다. 보정 없이 가장 보수적으로 잡으면 필요할 때 불러오기는 {lo:.0f}~{hi:.0f}%입니다.",
   nxt="<b>다음</b>연습 20개 → 본 판정 200개, 두 사람이 서로의 판정을 모른 채 → 갈래별 일치도 κ ≥ 0.70일 때만 결과를 냅니다.",
-  src4="출처: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1, 기본 기준 min_shared 1, common_frac 0.02, 보정)",
+  src4="출처: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1, 기본 기준 min_shared 1, common_frac 0.02, 보정) · 단순 규칙: backtest-v1, opportunity-v1.json",
 ),
 "en": dict(
   head="#AntiTokenMaxing · Research note #2",
@@ -143,9 +144,10 @@ T = {
   kg="B. Was the carried-over content used again? <span>· oracle bound, main sessions, {m:.2f} bn tokens</span>",
   oth=["Carrying only what is needed", "Less input", "9 detection settings"],
   orows=["Drop only what is never used again", "Fetch again when needed (1,000 tokens)", "Fetching is free"],
+  simple="For reference: a simple rule using only the past, {m:.1f}% missed", simple_r="last {n} calls",
   note_c="Little was never used again. Most of it was used at some point, but until then it was re-read on every call. These are an oracle's numbers: the size of the opportunity, not the result of a policy one could run, and reuse is estimated from overlapping words. Without calibration, the most conservative range for fetching on demand is {lo:.0f}–{hi:.0f}%.",
   nxt="<b>Next</b>20 practice items → 200 main items, two people labeling without seeing each other's labels → a category is reported only if κ ≥ 0.70.",
-  src4="Sources: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1; default min_shared 1, common_frac 0.02, calibrated)",
+  src4="Sources: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1; default min_shared 1, common_frac 0.02, calibrated) · simple rule: backtest-v1, opportunity-v1.json",
 ),
 }
 
@@ -193,6 +195,10 @@ for lang, t in T.items():
         f'<tr><td>{lab}</td><td style="width:38%"><div class="obar{"" if p == "P=1000" else " dim"}" style="width:{OP[p]["avoidable_pct"] / 60 * 100:.1f}%"></div></td>'
         f'<td class="r"><b>{OP[p]["avoidable_pct"]:.1f}%</b></td><td class="r">{orng(p)[0]:.1f}{"~" if lang == "ko" else "–"}{orng(p)[1]:.1f}%</td></tr>'
         for lab, p in zip(t["orows"], pols))
+    sg = O["backtest_exploratory"]["grid"]["recency-64"]
+    orows += (f'<tr><td>{t["simple"].format(m=sg["median_miss_rate"])}</td><td style="width:38%"><div class="obar dim" '
+              f'style="width:{sg["median_saved_pct"] / 60 * 100:.1f}%"></div></td><td class="r"><b>{sg["median_saved_pct"]:.1f}%</b></td>'
+              f'<td class="r">{t["simple_r"].format(n=64)}</td></tr>')
     omain = O["merged"]["measured_input"] / (1e8 if lang == "ko" else 1e9)
     otable = f'<table class="n o"><thead><tr><th>{t["oth"][0]}</th><th></th><th class="r">{t["oth"][1]}</th><th class="r">{t["oth"][2]}</th></tr></thead><tbody>{orows}</tbody></table>'
 
