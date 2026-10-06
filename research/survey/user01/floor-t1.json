@@ -6,7 +6,7 @@
  "sessions": {
   "S01": {
    "instructions": 19,
-   "calls": 410,
+   "calls": 408,
    "input_processed": 169926752,
    "input_parts": {
     "input": 898,
@@ -125,6 +125,67 @@
    "price_total_units": 70389990.1,
    "floor_pct_of_input": 0.0004,
    "floor_pct_price_weighted": 6.22
+  },
+  "S03": {
+   "instructions": 299,
+   "calls": 5280,
+   "input_processed": 2104918495,
+   "input_parts": {
+    "input": 10979,
+    "cache_read": 2079976812,
+    "cache_write": 24930704
+   },
+   "main": {
+    "calls": 4820,
+    "input": 2055390268
+   },
+   "subagents": {
+    "calls": 460,
+    "input": 49528227
+   },
+   "W1": {
+    "tokens": 1373,
+    "count": 77
+   },
+   "W2": {
+    "tokens": 18879,
+    "count": 75
+   },
+   "W6": {
+    "tokens": 10709971,
+    "count": 25,
+    "by_cause": {
+     "model_switch": {
+      "tokens": 0,
+      "count": 0
+     },
+     "gap_under_5m": {
+      "tokens": 22873,
+      "count": 2
+     },
+     "gap_5m_to_1h": {
+      "tokens": 0,
+      "count": 0
+     },
+     "gap_over_1h": {
+      "tokens": 10687098,
+      "count": 23
+     },
+     "unknown": {
+      "tokens": 0,
+      "count": 0
+     }
+    }
+   },
+   "carried_by_later_calls": {
+    "W1": 179470,
+    "W2": 2957186
+   },
+   "removable_tokens": 20252,
+   "floor_price_units": 12341781.649999999,
+   "price_total_units": 239172040.20000002,
+   "floor_pct_of_input": 0.001,
+   "floor_pct_price_weighted": 5.16
   },
   "S04": {
    "instructions": 10,
@@ -555,48 +616,48 @@
   }
  },
  "total": {
-  "input_processed": 4735055773,
-  "removable_tokens": 35598,
-  "floor_price_units": 32808866.9,
-  "price_total_units": 541204646.65,
-  "calls": 13265,
-  "subagent_input": 211035106,
+  "input_processed": 6839974268,
+  "removable_tokens": 55850,
+  "floor_price_units": 45150648.55,
+  "price_total_units": 780376686.85,
+  "calls": 18543,
+  "subagent_input": 260563333,
   "carried_by_later_calls": {
-   "W1": 229713,
-   "W2": 6393929
+   "W1": 409183,
+   "W2": 9351115
   },
   "input_parts": {
-   "input": 39965,
-   "cache_read": 4676178329,
-   "cache_write": 58837479
+   "input": 50944,
+   "cache_read": 6756155141,
+   "cache_write": 83768183
   },
   "W1": {
-   "tokens": 2037,
-   "count": 188
+   "tokens": 3410,
+   "count": 265
   },
   "W2": {
-   "tokens": 33561,
-   "count": 272
+   "tokens": 52440,
+   "count": 347
   },
   "W6": {
-   "tokens": 28490756,
-   "count": 65,
+   "tokens": 39200727,
+   "count": 90,
    "by_cause": {
     "model_switch": {
      "tokens": 0,
      "count": 0
     },
     "gap_under_5m": {
-     "tokens": 3152237,
-     "count": 10
+     "tokens": 3175110,
+     "count": 12
     },
     "gap_5m_to_1h": {
      "tokens": 5121698,
      "count": 14
     },
     "gap_over_1h": {
-     "tokens": 20216821,
-     "count": 41
+     "tokens": 30903919,
+     "count": 64
     },
     "unknown": {
      "tokens": 0,
@@ -605,7 +666,7 @@
    }
   },
   "floor_pct_of_input": 0.0008,
-  "floor_pct_price_weighted": 6.06
+  "floor_pct_price_weighted": 5.79
  },
  "not_in_floor": {
   "W3": "rule tier, pending validation",

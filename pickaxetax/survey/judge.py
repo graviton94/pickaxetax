@@ -193,7 +193,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     floor_price = removable * PRICE["cache_write"] + w6["tokens"] * (PRICE["cache_write"] - PRICE["cache_read"])
     return {
         "instructions": min(instructions, limit_instructions) if limit_instructions is not None else instructions,
-        "calls": len(seen_msg),
+        "calls": by_ctx["main"]["calls"] + by_ctx["side"]["calls"],  # calls that processed input
         "input_processed": processed,
         "input_parts": totals,
         "main": by_ctx["main"], "subagents": by_ctx["side"],
