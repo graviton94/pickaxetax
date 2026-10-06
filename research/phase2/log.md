@@ -873,3 +873,19 @@ beats the break-only restart, the break-only restart beats the keep-alive, and i
 **Review.** The break-only restart and the keep-alive describe the large sessions. Their
 per-session medians are 5.2% and 1.1%, and the keep-alive loses money in 5 of 10 sessions. The
 synthesis now says so.
+
+## Cycle C9 — checking the thinking share with time (`C9-thinking-check.md`)
+
+**Found.** S01 has real output counts and a thinking-duration field. There, thinking duration and
+thinking-signature length measure the same thing (Spearman +0.97), and either predicts the
+invisible output (R² 0.80 / 0.78; a joint fit reaches 0.97). In the event sessions the next call's
+invisible growth rises about one token per thinking token of the previous call (slope 1.05), which
+confirms C2's mechanism. With thinking estimated from time instead of signature length, the
+invisible third splits into about 39% thinking, 48% constant per-call overhead and 13% images,
+against C2's 49 / 38 / 13. Output comes to 8.3% of main-session money (8.0–9.0%), about 9% of all
+money. That is the bottom of C5's 9–12%; C5's high scenario is not supported.
+
+**Review.** The tokens-per-second rate is calibrated on S01 and scaled for the other models by
+their visible streaming speed. Slopes of 1.1–1.5 there suggest their thinking is understated by
+about 25%, which would move the split back toward C2's. The synthesis now gives "about 40%
+thinking" and "output about 9%".
