@@ -101,10 +101,13 @@ Share of main-session input that would not have been processed, and what each le
   and about none if each restart generates a compaction-length summary.
 - **Resampling the ten sessions** (cycle E4) moves the ceiling and paging rows by about ±1–2 points
   and the restart rows by 3–5. The 90% intervals are: restart above 200k 49–60%, ceiling 200k 65–68%,
-  oracle 40–43%. Every ordering E4 tested holds in at least 97% of resamples (rows added later, from
-  cycles A6, C and C7, were not resampled), with two exceptions:
+  oracle 40–43%. Every ordering tested holds in at least 97% of resamples (cycles E4, E11), with two exceptions:
   restart above 200k and a new session every 3 instructions are tied, and "compaction adds under 5
   points on top of restart" holds in 89%.
+  The rows added later (E11) are as stable: restart with its observed charges 47–56% of input, the
+  break-only restart 11–20%, the hourly keep-alive 2.9–4.9% of money. The last two describe the large
+  sessions, not a typical one: their per-session medians are 5% and 1%, and the keep-alive loses
+  money in 5 of the 10 sessions.
 
 ## 4. In units of work
 

@@ -854,3 +854,22 @@ only, and an image has none; pixel checks confirm only 4 of 174 images were the 
 **Discussion.** The draft's 2.6% came from a measurement error. The correction makes the floor's
 step cost smaller still and leaves its thesis untouched. The cost of redundant reading is in the
 steps (0.6–2.9%), not the tokens. It is a small lever next to carrying.
+
+## Cycle E11 — resampling the rows added after E4 (`E11-later-rows.md`)
+
+E4's method (2,000-rep session bootstrap with the same draws, and leave-one-out) was applied to the
+lever rows added later. Every pooled value reproduces to within 0.1 point. The 90% intervals:
+- restart above 200k with the observed charges: 47.0–56.2% of input;
+- break-only restart: 10.9–20.1% of input;
+- hourly keep-alive: 2.9–4.9% of total money;
+- per-write cache-lifetime oracle: 5.5–6.6%;
+- re-reading carried context: 50.5–55.9% of total money (above half in 96.8% of reps);
+- in total money, ceiling 200k 50.0–53.9%, restart above 200k 41.0–46.7%, ceiling 390k 33.1–35.6%.
+
+All three orderings tested hold in every rep and every leave-one-out sample: the charged restart
+beats the break-only restart, the break-only restart beats the keep-alive, and in total money the
+200k ceiling beats the restart.
+
+**Review.** The break-only restart and the keep-alive describe the large sessions. Their
+per-session medians are 5.2% and 1.1%, and the keep-alive loses money in 5 of 10 sessions. The
+synthesis now says so.
