@@ -52,6 +52,11 @@ Everything measured in phase 2 is a statement about one of the two factors.
   62–64% with its re-writes after the cache expired.
 - The 1-hour cache lifetime fitted this person's rhythm: all-5-minute caching would have cost 17%
   more (cycle C7).
+- These numbers rest on fixed price ratios (cache read 0.1, writes 1.25 / 2.0, output 5). Across
+  48 alternative settings (cycle C8) the order of the levers and the 1-hour choice never change. The
+  "half of all money" reading holds only if a cache read costs at least about 0.06–0.09 of an input
+  token; counting the re-writes, it is 56–69% in every setting. The floor's cost share moves most
+  (4.7–15.4%).
 
 **Time** (cycle C6):
 - Model latency grows with context only slowly: about 0.2–0.4 s per 100k tokens, before the first

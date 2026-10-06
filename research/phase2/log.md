@@ -726,3 +726,24 @@ what a harness needs, and estimates one replicate of all three arms at 335–630
 seen it. All tasks come from one project, and four commit messages are a subject line only, so the
 design shows the tests as the specification. Running it costs API usage and is the data owner's
 decision. Nothing was run.
+
+## Cycle C8 — how much do the cost numbers depend on the price ratios? (`C8-price-sensitivity.md`)
+
+**Found.** Every cost headline was recomputed over 48 settings: cache read 0.05–0.15, 1-hour write
+1.5–2.0, output 3–5. At the default all reproduce exactly.
+- **Holds everywhere.** The order of the levers holds in 48 of 48 settings: ceiling 200k 42–58% of
+  total money, restart above 200k 37–49%, ceiling 390k 29–38%, then the floor and the cache-lifetime
+  levers. The 1-hour cache beats all-5-minute at every point (all-5-minute costs 12–40% more).
+- **Partly holds.** "Half of all money re-reads finished work" is 41–63% for the reads alone, and at
+  least half in 35 of 48 settings. It falls below half when a read costs less than about 0.054–0.086
+  of an input token. With the re-writes after expiry it is 56–69% everywhere.
+- **Moves most.** The floor ranges 4.7–15.4% of input-side money, because its re-write part is
+  priced at the write premium over a read. The output share ranges 3.9–19%.
+
+**Review.** The grid is a sensitivity range. No current price list was checked, and one ratio set
+is applied to calls from several models.
+
+**Discussion.** The ordering and the direction of every lever are price-robust. Public statements
+should quote "half of all money" with its condition, or quote the robust form: "56–69% counting the
+re-writes". The floor's 8.92% should keep its price basis attached. Note 2 states 8.92% with
+"비용으로 보면", which is the default-ratio figure; that is for the data owner's wording.
