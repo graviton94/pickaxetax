@@ -225,6 +225,15 @@ def combine(per_session: dict) -> dict:
     cats["W6"]["by_cause"] = {k: {x: sum(s["W6"]["by_cause"][k][x] for s in per_session.values()) for x in ("tokens", "count")}
                               for k in next(iter(per_session.values()))["W6"]["by_cause"]} if per_session else {}
     parts = {k: sum(s["input_parts"][k] for s in per_session.values()) for k in PRICE}
+    # sensitivity of the cost view to which W6 re-writes count (descriptive; v1 counts all of them)
+    if cats["W6"].get("by_cause") and tot["price_total_units"]:
+        base = tot["removable_tokens"] * PRICE["cache_write"]
+        prem = PRICE["cache_write"] - PRICE["cache_read"]
+        bc = cats["W6"]["by_cause"]
+        views = {"all_w6 (v1)": list(bc), "without_gap_over_1h": [k for k in bc if k != "gap_over_1h"],
+                 "only_gap_under_5m": ["gap_under_5m"]}
+        tot["sensitivity_pct_price_weighted"] = {
+            v: round(100 * (base + prem * sum(bc[k]["tokens"] for k in ks)) / tot["price_total_units"], 2) for v, ks in views.items()}
     return {"schema": SCHEMA, "codebook": CODEBOOK, "tier": "T1 mechanical (floor)",
             "sessions": per_session, "total": {**tot, "input_parts": parts, **cats,
             "floor_pct_of_input": round(100 * tot["removable_tokens"] / tot["input_processed"], 4) if tot["input_processed"] else 0,

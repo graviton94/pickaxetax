@@ -48,6 +48,11 @@ is waste only in the codebook's sense (the tokens could have been kept by a long
 cache, a smaller context, or a summary); whether that should count the same as a re-write a
 minute later is an open question for the joint review, and every result shows the split.
 
+The cost view is also reported under two alternative counts, as a sensitivity analysis added
+after the first results were seen: without re-writes after an idle gap of over an hour, and
+with re-writes inside five minutes only. The v1 count (all re-writes) stays the primary
+result; the alternatives never replace it.
+
 ## Carry of W1 and W2, descriptive
 
 A W1 or W2 result stays in the context and is processed again by every later main-chain call

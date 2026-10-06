@@ -113,3 +113,13 @@ def test_carry_until_compaction(tmp_path):
     r = run(t, tmp_path)
     assert r["carried_by_later_calls"]["W2"] == r["W2"]["tokens"] * 2
     assert r["carried_by_later_calls"]["W1"] == 0
+
+
+def test_sensitivity_views(tmp_path):
+    t = T()
+    t.call(10_000)
+    t.call(0, write=10_100)
+    t.call(0, write=10_200)
+    stamp(t, "2026-01-01T00:00:00Z", "2026-01-01T00:00:30Z", "2026-01-01T02:00:30Z")
+    s = judge.combine({"a": run(t, tmp_path)})["total"]["sensitivity_pct_price_weighted"]
+    assert s["all_w6 (v1)"] > s["without_gap_over_1h"] == s["only_gap_under_5m"] > 0

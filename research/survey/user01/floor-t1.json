@@ -626,6 +626,11 @@
    "W1": 409183,
    "W2": 9351115
   },
+  "sensitivity_pct_price_weighted": {
+   "all_w6 (v1)": 5.79,
+   "without_gap_over_1h": 1.23,
+   "only_gap_under_5m": 0.48
+  },
   "input_parts": {
    "input": 50944,
    "cache_read": 6756155141,
