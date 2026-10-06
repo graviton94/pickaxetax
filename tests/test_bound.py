@@ -95,3 +95,22 @@ def test_cli_bound(tmp_path, capsys):
     assert main(["agent", "bound", path, "--json"]) == 0
     data = json.loads(capsys.readouterr().out)
     assert data["sessions"] == 1 and "config_loader" not in json.dumps(data)  # aggregates only
+
+
+def test_carried_from_finished_instructions(tmp_path):
+    t = T()
+    t.raw({"type": "user", "message": {"role": "user", "content": "fix the loader"}})
+    t.tool("r1", "Read", {"file_path": "/p/config_loader.py"}, ctx_read=1000).result("r1", "def parse_settings_block(): pass " * 40)
+    t.call(1400, blocks=[{"type": "text", "text": "parse_settings_block fixed."}])     # used within instruction 1
+    t.raw({"type": "user", "message": {"role": "user", "content": "now write the release notes"}})
+    t.call(1450, blocks=[{"type": "text", "text": "Release notes drafted."}])
+    t.call(1500, blocks=[{"type": "text", "text": "Done."}])
+    path = t.write(tmp_path / "c.jsonl")
+    lines = [json.loads(l) for l in open(path) if l.startswith("{\"")]
+    tr = bound.read_trace_lines(lines)
+    assert tr.instruction_starts == [0, 2]
+    r = analyze(lines, calibrated=False)
+    c = r["carried_from_finished_instructions"]
+    # the file read in instruction 1 rides through both calls of instruction 2 without being used
+    assert c["resident"]["tokens"] > 0 and c["dead"]["tokens"] == c["idle"]["tokens"] > 0
+    assert analyze(path, calibrated=False)["carried_from_finished_instructions"] == c
