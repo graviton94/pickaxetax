@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+- **Labeling:** `pxt survey sample` draws a blind-labeling packet from your own transcripts (stratified, seeded, optional redaction); `site/label.html` lets anyone label it in the browser with no account and nothing uploaded; `pxt survey agreement` computes Cohen's kappa per category from two labels files. Procedure: `research/protocol/labeling.md`.
+- **Research:** waste codebook v1 (eight categories, frozen before any judgment).
+
 ## 0.4.0 — 2026-10-06
 - **Site:** #AntiTokenMaxing. The bill is now "the receipt of the 21st-century gold rush". "The weight of a line" turns re-read tokens into energy, CO₂ and trees with every factor sourced (`research/carbon-factors.md`, `pxt`'s `pickaxetax.survey.carbon` and `site/carbon.js`, parity-tested), labelled as estimate and metaphor. "The cost" shows the world's receipt (Big Tech capex, data-centre power and CO₂ from the IEA, generative-AI e-waste) next to the measured digital waste, with sources and a scope caveat. The personal result gains a carbon estimate. Dark cinematic sections, scroll reveals off under reduced motion; the strict CSP is unchanged.
 - **Site:** landing page. A chat window types "Hello" ("안녕하세요"), sends it, and the reply shows what that one line costs, using only measured numbers (427,524 tokens re-read per call in a long session; 5.87 billion tokens and 73.6% carried-over context in the first bill). Then: Did you know? (six measured facts), the analyzer, the first bill with the commands to get your own, and About us. The strict CSP is unchanged: no inline scripts, no external fonts or requests. The first bill is served at `report/user01.html`.

@@ -130,6 +130,18 @@ def main(argv: list[str] | None = None) -> int:
     sr = svsub.add_parser("report", help="render a dataset as a self-contained HTML report")
     sr.add_argument("dataset")
     sr.add_argument("--out", default="survey-report.html")
+    ss = svsub.add_parser("sample", help="draw a blind-labeling packet from your own transcripts (keep it private)")
+    ss.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    ss.add_argument("--pages", action="append", default=[], metavar="LABEL=LISTFILE",
+                    help="a session saved as event-API pages: a file listing the page files, one per line")
+    ss.add_argument("--n", type=int, default=200, help="main sample size (default 200)")
+    ss.add_argument("--calibration", type=int, default=20, help="practice items, drawn first (default 20)")
+    ss.add_argument("--seed", type=int, default=20261006)
+    ss.add_argument("--redact", help="a file of regular expressions, one per line; matches become [가림]")
+    ss.add_argument("--out", default="label-packet.json")
+    sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
+    sa.add_argument("labels", nargs=2)
+    sa.add_argument("--json", action="store_true")
 
     co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
     cosub = co.add_subparsers(dest="contrib_cmd", required=True)
@@ -377,6 +389,8 @@ def _agent_bound(files: list[str], args) -> int:
 def _survey(args) -> int:
     from .survey import dataset, report
 
+    if args.survey_cmd in ("sample", "agreement"):
+        return _survey_labeling(args)
     if args.survey_cmd == "report":
         with open(args.dataset, encoding="utf-8") as f:
             ds = json.load(f)
@@ -409,6 +423,57 @@ def _survey(args) -> int:
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(ds, f, ensure_ascii=False, separators=(",", ":"))
     print(f"measured {len(sessions)} sessions -> {args.out} (numbers only; no text, paths or ids)")
+    return 0
+
+
+def _survey_labeling(args) -> int:
+    from .survey import labeling
+
+    if args.survey_cmd == "agreement":
+        files = []
+        for path in args.labels:
+            with open(path, encoding="utf-8") as f:
+                lab = json.load(f)
+            errs = labeling.validate_labels(lab)
+            if errs:
+                print(f"{path}: not a valid labels file ({', '.join(errs[:5])})", file=sys.stderr)
+                return 1
+            files.append(lab)
+        try:
+            r = labeling.agreement(*files)
+        except ValueError as e:
+            print(str(e), file=sys.stderr)
+            return 1
+        print(json.dumps(r, ensure_ascii=False, indent=1) if args.json else labeling.render_agreement(r))
+        return 0
+    from .agent import find_transcripts
+
+    sessions = {}
+    for i, path in enumerate(find_transcripts(args.paths or None) if (args.paths or not args.pages) else [], 1):
+        items = labeling.session_instructions(path)
+        if items:
+            sessions[f"S{i:02d}"] = items
+    for spec in args.pages:
+        label, _, listfile = spec.partition("=")
+        with open(listfile, encoding="utf-8") as f:
+            pages = [l.strip() for l in f if l.strip()]
+        items = labeling.session_instructions(pages)
+        if items:
+            sessions[label] = items
+    if not sessions:
+        print("no transcripts with instructions found", file=sys.stderr)
+        return 1
+    patterns = []
+    if args.redact:
+        with open(args.redact, encoding="utf-8") as f:
+            patterns = [l.rstrip("\n") for l in f if l.strip() and not l.startswith("#")]
+    packet = labeling.build_packet(sessions, n=args.n, calibration=args.calibration, seed=args.seed, redact=patterns)
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(packet, f, ensure_ascii=False, indent=1)
+    print(f"wrote {args.out}: {len(packet['calibration'])} practice + {len(packet['items'])} items from "
+          f"{packet['population']['instructions']} instructions in {len(sessions)} sessions (sha256 {packet['sha256'][:12]}…)")
+    print("It holds excerpts of your conversations. Read it, redact what must not be shared, and hand it to labelers "
+          "directly. Do not commit or upload it.")
     return 0
 
 

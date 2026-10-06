@@ -103,6 +103,30 @@ for (const [file, expectTurns] of [["chatgpt.html", 6], ["claude.html", 4], ["ge
   await page.close();
 }
 
+// 4. labeling page: load a packet, label, export; nothing leaves the tab
+{
+  const lctx = await browser.newContext({ acceptDownloads: true });
+  const page = await lctx.newPage();
+  page.on("pageerror", (e) => errors.push(`label: ${e.message}`));
+  await page.goto(SITE + "label.html");
+  await page.waitForLoadState("networkidle");
+  const requests = [];
+  page.on("request", (r) => requests.push(r.url()));
+  const item = (id) => ({ id, session: "S01", index: 0, instruction: "secret instruction text", steps: [{ tool: "Read", target: "a.py", result_chars: 10, error: false }], final: "done", stats: { calls: 1, input: 10, output: 1, errors: 0, subagents: 0 } });
+  const packet = { schema: "pickaxetax.labelpacket.v1", codebook: "v1", seed: 1, population: { sessions: 1, instructions: 3 }, calibration: [item("c1")], items: [item("m1"), item("m2")], sha256: "f".repeat(64) };
+  await page.setInputFiles("#packet", { name: "packet.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(packet)) });
+  await page.fill("#coder", "A");
+  await page.click("#start");
+  for (const c of ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"]) await page.check(`#${c}-no`);
+  await page.check("#outcome-met");
+  const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#export")]);
+  const out = JSON.parse(fs.readFileSync(await dl.path(), "utf8"));
+  check(out.schema === "pickaxetax.labels.v1" && out.labels.c1 && out.labels.c1.W1 === "no", "labeling page exports the labels file");
+  check(!JSON.stringify(out).includes("secret instruction"), "labels file holds no conversation text");
+  check(requests.length === 0, `labeling made ${requests.length} network requests`);
+  await lctx.close();
+}
+
 check(errors.length === 0, `no page errors ${errors.length ? JSON.stringify(errors) : ""}`);
 await browser.close();
 site.close();
