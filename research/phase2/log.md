@@ -889,3 +889,31 @@ money. That is the bottom of C5's 9–12%; C5's high scenario is not supported.
 their visible streaming speed. Slopes of 1.1–1.5 there suggest their thinking is understated by
 about 25%, which would move the split back toward C2's. The synthesis now gives "about 40%
 thinking" and "output about 9%".
+
+## Cycle D8 — judging the human categories mechanically (`research/protocol/mechanical-validation-v1.md`)
+
+The blind labeling's practice round failed. Labelers found the categories hard to tell apart, the
+items long and many, and the intent unknown. For six of the eight categories the screen held no
+evidence. The data owner chose to judge every category mechanically, checked by behaviour, and to
+check only W7 and the outcome personally on 30 short items.
+- **New tier.** `rules.detect_t3` adds W3 (unquoted sub-agent results, errored delegations, polling
+  with identical results) and proxies for W7 and the outcome, read from the next instruction:
+  undo/correction/unrequested/acceptance phrases, undo actions, new topic, interrupts.
+  `tests/test_rules_t3.py` covers it, and rule tier v0 is unchanged; all six earlier seals re-make
+  byte-identical.
+- **Rates over the ten sessions:**
+  - W3 0.1%;
+  - W7 yes / no / unsure 1.5 / 14.9 / 83.6%;
+  - outcome met / not met / unknown 73.1 / 11.4 / 15.5%. 407 of the 499 "met" calls come from the
+    new-topic rule.
+- **The owner's packet.** 30 items, selected by length only, digest `3cc9a24c…`. The t3 labels for
+  it are sealed (`1889437c…`) before the owner labels.
+- **Pre-registered decision rules.** The outcome proxy is used only if it decides at least 70% of
+  the items and agrees with the owner on at least 80% of those; W7 likewise with 50% / 80%. Phase 2
+  expects the W7 proxy to fail. W7 would then be published as the owner's 30-item rate with an
+  interval.
+
+**Review.** The proxies are weak where they matter. "Moved on to a new topic" is not "satisfied";
+phrase matching ignores context (pasted logs, up-front "하지 말고" constraints); undo actions were
+never seen. That is why the owner's check exists. The new-topic rule decides most outcomes, and the
+check tests it directly.

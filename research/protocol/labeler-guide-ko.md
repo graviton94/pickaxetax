@@ -1,5 +1,7 @@
 # 판정자 안내 (한 장)
 
+> **2026-10-06:** 블라인드 판정은 연습 단계 뒤 중단했습니다(판정자가 화면만으로 판단할 수 없었음). 지금의 방법은 `research/protocol/mechanical-validation-v1.md`입니다. 판정 페이지는 데이터 주인의 30개 확인에 그대로 씁니다. / Blind labeling was withdrawn after the practice round; see `mechanical-validation-v1.md`.
+
 AI 에이전트와의 대화 기록에서 낭비가 있었는지, 지시 하나씩 판정해 주시는 일입니다. 계정이 필요 없고, 받은 파일은
 브라우저 탭 밖으로 나가지 않습니다(이 페이지는 어떤 서버로도 데이터를 보내지 않게 막혀 있습니다).
 

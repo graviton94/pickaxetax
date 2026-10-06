@@ -248,6 +248,8 @@ def validate_labels(lab: dict) -> list[str]:
 
 MACHINE_CATEGORIES = ("W1", "W2", "W6")  # the mechanical tier (T1) of codebook v1
 RULE_CATEGORIES = ("W4", "W5", "W8")  # rule-tier candidates (research/protocol/rule-tier-v0.md)
+T3_CATEGORIES = ("W3", "W7", "outcome")  # third machine tier (rules.detect_t3): W3, and W7 / outcome proxies
+T3_OUTCOME = {"met": "met", "not_met": "not_met", "unknown": "unsure"}  # detector value -> labels-file outcome
 
 
 def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", coder: str | None = None,
@@ -260,11 +262,13 @@ def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", co
     labeler ever sees it. lines_by_session: {label: transcript lines cut at the same snapshot
     as the packet}."""
     from .judge import judge_lines
-    from .rules import detect
+    from .rules import detect, detect_t3
 
     cats_of = MACHINE_CATEGORIES if tier == "t1" else RULE_CATEGORIES
     if placebo and tier != "t2":
         raise ValueError("a placebo applies to the rule tier (t2) only")
+    if tier == "t3":
+        return _machine_labels_t3(packet, lines_by_session, phase, coder or "machine-t3", detect_t3)
     coder = coder or (f"machine-{tier}" if not placebo else f"machine-{tier}-{placebo}")
     maps = {}
     for label, lines in lines_by_session.items():
@@ -284,6 +288,27 @@ def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", co
     return {"schema": LABELS_SCHEMA, "codebook": packet.get("codebook"), "packet": packet["sha256"], "phase": phase,
             "coder": coder, "machine": {"tier": tier.upper(), "categories": list(cats_of), **({"placebo": placebo} if placebo else {})},
             "labels": labels}
+
+
+def _machine_labels_t3(packet, lines_by_session, phase, coder, detect_t3) -> dict:
+    """Tier t3: W3 (yes/no), W7 (yes/no/unsure) and the outcome (met/not_met/unsure) per item."""
+    maps = {}
+    for label, lines in lines_by_session.items():
+        lines = list(lines)
+        instr = instructions(lines)
+        flags = detect_t3(lines)["flags"]
+        if len(flags) != len(instr):
+            raise ValueError(f"{label}: {len(instr)} instructions but the judge saw {len(flags)}")
+        maps[label] = [flags[i] for i, it in enumerate(instr) if it["stats"]["calls"]]
+    labels = {}
+    for item in packet["items" if phase == "main" else "calibration"]:
+        f = maps.get(item["session"])
+        if f is None or item["index"] >= len(f):
+            raise ValueError(f"no transcript for item {item['id']} ({item['session']} #{item['index']})")
+        f = f[item["index"]]
+        labels[item["id"]] = {"W3": f["W3"], "W7": f["W7"], "outcome": T3_OUTCOME[f["outcome"]]}
+    return {"schema": LABELS_SCHEMA, "codebook": packet.get("codebook"), "packet": packet["sha256"], "phase": phase,
+            "coder": coder, "machine": {"tier": "T3", "categories": list(T3_CATEGORIES)}, "labels": labels}
 
 
 def cohen_kappa(a: list, b: list) -> float | None:
