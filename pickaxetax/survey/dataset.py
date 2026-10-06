@@ -62,7 +62,7 @@ def derive(dataset: dict) -> dict:
     per_dec = {}
     for s in ss:
         ser = s["measurement"].get("series")
-        if not ser:
+        if not ser or not ser.get("context"):
             continue
         base = s.get("base_override") or ser["context"][0]
         d = decompose(ser["context"], ser["instruction_starts"], base)

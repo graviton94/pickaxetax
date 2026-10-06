@@ -1,5 +1,25 @@
 > Working memo from cycle B4 of `research/phase2/log.md`, written by an analysis agent and reviewed there. Numbers only; computed from the public `dataset-v2.json` alone. The sweep and the model are reproduced by `pxt survey whatif`.
 
+> **Correction (cycle E6, independent review).** The replay below compacts to the call-0 context + 22k
+> (about 72k). D2's 22k sits on top of the ~42k cached prefix, so the observed post-compaction size is
+> 64k. With 42k + 22k the replay at today's 783k reproduces measured input within 0.1% (−1.5% before;
+> the explanation under the table was wrong). Rerun on the same grid, the numbers become:
+>
+> | C | compactions | R=0 | R=D2 | R=5x | R=10x |
+> |---|---:|---|---|---|---|
+> | 100k | 847 | 78.4 / 66.8 | 77.3 / 64.4 | 73.0 / 54.7 | 67.7 / 42.6 |
+> | 150k | 339 | 72.7 / 65.2 | 72.3 / 64.2 | 70.6 / 60.3 | 68.5 / 55.5 |
+> | 200k | 211 | 66.8 / 60.6 | 66.5 / 60.0 | 65.4 / 57.6 | 64.1 / 54.6 |
+> | 300k | 117 | 54.6 / 50.2 | 54.5 / 49.9 | 53.9 / 48.5 | 53.1 / 46.9 |
+> | 400k | 81 | 43.3 / 40.1 | 43.2 / 39.9 | 42.8 / 39.0 | 42.3 / 37.8 |
+> | 600k | 48 | 19.5 / 18.2 | 19.5 / 18.1 | 19.2 / 17.5 | 18.9 / 16.8 |
+> | 783k | 16 | −0.1 / −0.1 | −0.1 / −0.1 | −0.2 / −0.3 | −0.3 / −0.5 |
+>
+> Optimum (P = 64k, g = 1,787 per call): analytic C\* 79k / 87k / 105k / 120k for R = 0 / D2 / 5x / 10x;
+> replay optimum 80k (79.6%) / 90k (77.7%) / 110k (73.2%) / 120k (69.6%); price-weighted optimum
+> 110k (67.1%) / 120k (65.5%) / 140k (60.5%) / 160k (55.9%). Every finding below holds with these
+> values (the optimum about 10k lower, savings about 1 point higher); the tables below are the original run.
+
 # B4 - If the ceiling sets the average context, where should it be?
 
 Data: only the public per-call context series (research/survey/user01/dataset-v2.json, 10 sessions, 16,181 calls, 6.58B input) plus the published D2 and B3 memos. No private lines loaded; aggregates only.

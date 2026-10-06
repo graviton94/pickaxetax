@@ -436,3 +436,29 @@ synthesis is replaced.
 does: whether about 150 restarts lose what 34 compactions apparently did not. Logs cannot answer
 that; E2 in `phase3-experiments.md` can. The finding also qualifies every reuse-based number in
 phase 2 (the oracle bound, W5, W8): at the loosest setting they are upper bounds on need.
+
+## Cycle E6 — second independent code review, and the fixes
+
+**Found.** A reviewer with no part in the code reviewed everything changed since cycle E2. That was
+only `whatif.py`, plus B4's analysis script. Five bugs were confirmed, each by a test that failed:
+1. A restart replay that had skipped a real compaction could grow past the ceiling (up to 837k).
+2. The ceiling replay compacted to the first call's context + 22k (72k) instead of the observed 64k
+   (a 42k cached prefix + 22k). This is why the replay at today's 783k was 1.5% off.
+3. The model's growth was divided by steps, not calls.
+4. A ceiling below the post-compaction size charged a compaction on every call.
+5. An empty series crashed `run()`.
+
+**Fixed** (`tests/test_review_e6.py`). The restart replay now compacts, as the harness would, at the
+session's ceiling, to its observed post-compaction size. The ceiling sweep compacts to 42k + 22k, and
+at 783k it now reproduces measured input within 0.1%. A compaction that would not shrink the
+context does not happen. Empty series are skipped. For bug 1 the reviewer's toy test asked that a
+restart rule never be worse than none, which no replay can guarantee once a real compaction it
+skipped is gone. The test now checks the stated principle: the replayed context never exceeds the
+session's ceiling.
+
+**Changed numbers.** "New session every 10 instructions" went from 22.3% to 23.0%; the other restart
+rows are unchanged, including 55.2%. The ceiling savings are about 1 point higher (200k: 65.7 →
+66.8%; 150k: 71.6 → 72.7%). The optimum is about 10k lower: 79k / 87k raw (R = 0 / D2) and 110–160k
+price-weighted (was 120–170k). These are updated in `opportunity-v1`, B4 (as a correction note),
+the synthesis and the phase 3 plan. Cycles E4 and C5 used the old ceiling values. Their conclusions
+(intervals, orderings, the money ranking) do not depend on a 1-point shift, so they were not rerun.
