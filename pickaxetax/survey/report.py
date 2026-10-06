@@ -336,7 +336,9 @@ def render(ds: dict, sawtooth_session: str | None = None) -> str:
              '<div class="legend"><span><i style="background:var(--s3)"></i>고정분</span><span><i style="background:var(--s1)"></i>이전 지시에서 넘어온 것</span>'
              '<span><i style="background:var(--s2)"></i>이번 지시에서 생긴 것</span></div>'
              f'<div class="figbox">{chart_decomposition(dv, order)}</div>'
-             '<p class="small">호출별 기록이 있는 세션만 분해했습니다. 부분 측정 세션은 받은 구간의 첫 호출이 세션 중간이어서, 고정분을 새 세션의 일반적인 첫 호출 크기(5만)로 두었습니다.</p></section>')
+             '<p class="small">호출별 기록이 있는 세션만 분해했습니다.'
+             + (' 부분 측정 세션은 받은 구간의 첫 호출이 세션 중간이어서, 고정분을 새 세션의 일반적인 첫 호출 크기(5만)로 두었습니다.' if dv["partial"] else '')
+             + '</p></section>')
     # finding 2
     h.append('<section class="fig"><h2>세션은 늘 천장 근처에서 돕니다</h2>'
              f'<p class="lead">{esc(saw_id)}의 호출 {len(saw):,}번의 컨텍스트 크기입니다. 컨텍스트는 약 78만 토큰에 닿을 때만 압축되고, 다시 차오르기를 반복합니다. '
@@ -391,8 +393,8 @@ def render(ds: dict, sawtooth_session: str | None = None) -> str:
              '<li>원천은 제공사가 API 호출마다 기록한 사용량(입력, 캐시 읽기, 캐시 쓰기)입니다. 추정이나 판정은 쓰지 않았습니다.</li>'
              '<li>"지시"는 사용자가 직접 입력한 메시지입니다. 도구 결과, 시스템 알림, 압축 요약은 세지 않았습니다.</li>'
              '<li>이벤트 기록의 출력 토큰은 응답이 시작될 때의 값이라 쓰지 않았습니다. 출력 비율은 세션 안 기록이 있는 세션에서만 계산했습니다.</li>'
-             f'<li>부분 측정 세션({esc(partial)})은 받은 구간만 들어 있어서 합계는 하한입니다.</li>'
-             '<li>표본은 한 사람입니다. 이 사람의 사용 방식을 기술할 뿐, 사람들 일반에 대한 주장이 아닙니다.</li>'
+             + (f'<li>부분 측정 세션({esc(partial)})은 받은 구간만 들어 있어서 합계는 하한입니다.</li>' if dv["partial"] else '')
+             + '<li>표본은 한 사람입니다. 이 사람의 사용 방식을 기술할 뿐, 사람들 일반에 대한 주장이 아닙니다.</li>'
              '<li>컨텍스트 분해는 구조를 보여 줄 뿐, 넘어온 내용이 필요했는지는 판단하지 않습니다.</li>'
              + "".join(f'<li>{esc(n)}</li>' for n in sub.get("notes", [])) + '</ul></section>')
     h.append('<section class="fig"><h2>재현</h2><p>같은 데이터셋이면 같은 레포트가 나옵니다(시계나 난수를 쓰지 않습니다).</p>'

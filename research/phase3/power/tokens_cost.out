@@ -1,0 +1,60 @@
+## Token model (D6, reproduced exactly)
+
+| chain | post-restart instructions | restarts b/c | a (M) | b (M) | c (M) | pre-boundary P (M) | saving b | saving c | price/input a | price/input b |
+|---|---|---|---|---|---|---|---|---|---|---|
+| A | 4-7 (4) | 2/2 | 40.9 | 21.5 | 20.7 | 8.1 | 47.4% | 49.4% | 0.138 | 0.185 |
+| B | 4-7 (4) | 1/1 | 38.4 | 22.2 | 21.4 | 9.4 | 42.1% | 44.2% | 0.136 | 0.168 |
+| C | 5-7 (3) | 1/1 | 33.7 | 22.4 | 21.8 | 11.1 | 33.6% | 35.4% | 0.142 | 0.169 |
+| D | 4-7 (4) | 2/2 | 45.6 | 23.7 | 22.9 | 10.3 | 48.0% | 49.8% | 0.134 | 0.178 |
+
+Totals: a 158.5M, b 89.8M, c 86.8M; saving b 43.4%, c 45.3%; post-restart instructions per replicate: 15 of 28.
+With the summary-request call charged: b 91.1M, c 88.1M (saving b 42.5%, c 44.4%).
+Price units (input side B4 rule + output at 5): a 21.7M, b 15.7M, c 15.1M; price saving b 27.7%, c 30.6%.
+Variant, 5-minute cache writes at 1.25: a 20.5M, b 14.3M, c 13.7M; price saving b 30.2%, c 33.1%.
+Output share of arm a's price: 12.9%.
+Input-side price only: a 18.9M (0.119/token), b 12.6M, c 12.2M. Phase 2 (C3): 0.92M/7.5M = 0.123/token.
+
+## Cost of one replicate (4 chains) by design
+
+Shared pre-boundary input P = 39.0M tokens (25% of arm a). High scenario = model x 1.32 (arm a at the phase 2 rate of 7.5M per instruction, same saving).
+
+| design | input tokens, model | input tokens, high | price units, model | price units, high |
+|---|---|---|---|---|
+| 3 arms, independent runs (a+b+c) | 335M | 444M | 52.5M | 69.5M |
+| 2 arms, independent runs (a+b) | 248M | 329M | 37.4M | 49.6M |
+| 3 arms, forked at the boundary (a + b-branch + c-branch) | 257M | 341M | 39.1M | 51.8M |
+| 2 arms, forked at the boundary (a + b-branch) | 209M | 277M | 30.7M | 40.7M |
+
+## Total cost by number of replicates (input tokens, model / high; price units model / high)
+
+| R | 3 arms, independent runs (a+b+c) | 2 arms, independent runs (a+b) | 3 arms, forked at the boundary (a + b-branch + c-branch) | 2 arms, forked at the boundary (a + b-branch) |
+|---|---|---|---|---|
+| 1 | 0.34–0.44B tok; 52–70M u | 0.25–0.33B tok; 37–50M u | 0.26–0.34B tok; 39–52M u | 0.21–0.28B tok; 31–41M u |
+| 2 | 0.67–0.89B tok; 105–139M u | 0.50–0.66B tok; 75–99M u | 0.51–0.68B tok; 78–104M u | 0.42–0.55B tok; 61–81M u |
+| 3 | 1.01–1.33B tok; 157–209M u | 0.74–0.99B tok; 112–149M u | 0.77–1.02B tok; 117–155M u | 0.63–0.83B tok; 92–122M u |
+| 4 | 1.34–1.78B tok; 210–278M u | 0.99–1.32B tok; 150–198M u | 1.03–1.36B tok; 157–207M u | 0.84–1.11B tok; 123–163M u |
+| 5 | 1.68–2.22B tok; 262–348M u | 1.24–1.64B tok; 187–248M u | 1.29–1.70B tok; 196–259M u | 1.05–1.39B tok; 154–204M u |
+| 6 | 2.01–2.66B tok; 315–417M u | 1.49–1.97B tok; 225–297M u | 1.54–2.04B tok; 235–311M u | 1.26–1.66B tok; 184–244M u |
+| 8 | 2.68–3.55B tok; 420–556M u | 1.99–2.63B tok; 299–397M u | 2.06–2.72B tok; 313–415M u | 1.67–2.22B tok; 246–326M u |
+| 10 | 3.35–4.44B tok; 525–695M u | 2.48–3.29B tok; 374–496M u | 2.57–3.41B tok; 391–518M u | 2.09–2.77B tok; 307–407M u |
+
+## Precision of the input saving (b vs a), 90% interval half-width in points
+
+ideal = delta method with the CV known; sim = 5-95% spread of the pooled estimate (simulated); practical = mean half-width of a chain-stratified t interval on log ratios (simulated).
+
+
+### design: indep
+
+| CV | R=1 | R=2 | R=3 | R=4 | R=5 | R=6 | R=7 | R=8 | R=9 | R=10 | R for ±5 (ideal) | R for ±5 (practical) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0.2 | 13.2 / 13.6 / 19.5 | 9.3 / 9.5 / 11.4 | 7.6 / 7.6 / 8.4 | 6.6 / 6.7 / 7.0 | 5.9 / 6.0 / 6.2 | 5.4 / 5.2 / 5.6 | 5.0 / 5.1 / 5.1 | 4.7 / 4.8 / 4.8 | 4.4 / 4.4 / 4.5 | 4.2 / 4.1 / 4.2 | 7 | 8 |
+| 0.35 | 23.1 / 24.1 / 34.0 | 16.4 / 16.3 / 20.2 | 13.4 / 13.1 / 14.5 | 11.6 / 11.6 / 12.1 | 10.3 / 10.5 / 10.7 | 9.4 / 9.6 / 9.6 | 8.7 / 8.8 / 8.8 | 8.2 / 8.2 / 8.2 | 7.7 / 7.8 / 7.7 | 7.3 / 7.3 / 7.3 | 22 | 21 |
+| 0.5 | 33.0 / 33.9 / 50.0 | 23.4 / 24.0 / 29.1 | 19.1 / 19.1 / 20.7 | 16.5 / 16.9 / 17.1 | 14.8 / 14.6 / 14.9 | 13.5 / 13.7 / 13.5 | 12.5 / 12.5 / 12.3 | 11.7 / 11.6 / 11.6 | 11.0 / 11.4 / 10.8 | 10.4 / 10.3 / 10.2 | 44 | 40 |
+
+### design: fork
+
+| CV | R=1 | R=2 | R=3 | R=4 | R=5 | R=6 | R=7 | R=8 | R=9 | R=10 | R for ±5 (ideal) | R for ±5 (practical) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0.2 | 11.3 / 11.1 / 16.8 | 8.0 / 8.2 / 9.6 | 6.5 / 6.5 / 7.1 | 5.7 / 5.8 / 5.9 | 5.1 / 5.0 / 5.2 | 4.6 / 4.6 / 4.7 | 4.3 / 4.2 / 4.4 | 4.0 / 4.0 / 4.1 | 3.8 / 3.8 / 3.8 | 3.6 / 3.6 / 3.6 | 6 | 6 |
+| 0.35 | 19.8 / 19.8 / 27.5 | 14.0 / 13.8 / 16.9 | 11.4 / 11.5 / 12.1 | 9.9 / 9.7 / 10.2 | 8.9 / 8.9 / 9.0 | 8.1 / 8.1 / 8.0 | 7.5 / 7.3 / 7.4 | 7.0 / 6.9 / 6.9 | 6.6 / 6.6 / 6.5 | 6.3 / 6.4 / 6.2 | 16 | 15 |
+| 0.5 | 28.3 / 28.0 / 39.8 | 20.0 / 20.2 / 23.7 | 16.4 / 16.2 / 16.9 | 14.2 / 14.3 / 14.1 | 12.7 / 12.9 / 12.4 | 11.6 / 11.3 / 11.1 | 10.7 / 10.6 / 10.2 | 10.0 / 10.0 / 9.5 | 9.4 / 9.6 / 9.0 | 9.0 / 8.9 / 8.5 | 33 | 28 |

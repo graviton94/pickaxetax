@@ -1,0 +1,81 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face { font-family: P; src: url(../../../../site/fonts/pretendard/PretendardVariable.woff2) format("woff2"); font-weight: 45 920; }
+:root { --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --rule: #dedcd6; --fixed: #2a78d6; --carried: #eb6834; --current: #1baf7a; --tint: #f3f2ee; }
+* { box-sizing: border-box; margin: 0; }
+body { font-family: P, sans-serif; background: #ccc; -webkit-font-smoothing: antialiased; word-break: keep-all; }
+.slide { width: 1080px; height: 1350px; background: var(--surface); color: var(--ink); padding: 64px 72px 56px; display: flex; flex-direction: column; gap: 28px; break-after: page; overflow: hidden; }
+.top { display: flex; justify-content: space-between; font-size: 20px; color: var(--ink2); font-weight: 600; letter-spacing: .02em; border-bottom: 2px solid var(--ink); padding-bottom: 16px; }
+.cap { font-size: 22px; font-weight: 700; color: var(--ink2); letter-spacing: .02em; }
+h1 { font-size: 72px; line-height: 1.16; font-weight: 800; letter-spacing: -.035em; }
+h2 { font-size: 40px; line-height: 1.25; font-weight: 800; letter-spacing: -.02em; margin-top: 6px; }
+.lead { font-size: 28px; line-height: 1.6; color: #2b2a28; }
+.src { margin-top: auto; font-size: 17px; line-height: 1.55; color: var(--ink2); border-top: 1px solid var(--rule); padding-top: 14px; }
+.panel { display: grid; gap: 14px; }
+.panel .k { font-size: 21px; font-weight: 700; }
+.panel .k span { color: var(--ink2); font-weight: 500; }
+.big { font-size: 96px; font-weight: 850; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.big small { font-size: 34px; font-weight: 700; margin-left: 8px; letter-spacing: -.01em; }
+.note { font-size: 20px; line-height: 1.55; color: #2b2a28; background: var(--tint); padding: 14px 18px; border-radius: 6px; }
+svg text { font-family: P, sans-serif; }
+table { border-collapse: collapse; width: 100%; font-size: 19px; line-height: 1.45; }
+th { text-align: left; font-size: 16px; color: var(--ink2); font-weight: 700; padding: 0 10px 10px; border-bottom: 2px solid var(--ink); }
+td { padding: 11px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td.c { font-weight: 800; white-space: nowrap; }
+td.t { white-space: nowrap; font-weight: 600; }
+.notw { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 19px; line-height: 1.5; }
+.flow { display: grid; gap: 16px; }
+.box { border: 2px solid var(--ink); border-radius: 8px; padding: 16px 20px; font-size: 22px; line-height: 1.5; }
+.box b { display: block; font-size: 24px; margin-bottom: 4px; }
+.box.soft { border-color: var(--rule); background: var(--tint); }
+.lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.lane { border: 1.5px solid var(--rule); border-radius: 8px; padding: 18px 16px; display: grid; gap: 12px; align-content: start; font-size: 19px; line-height: 1.5; }
+.lane h3 { font-size: 24px; font-weight: 800; }
+.lane .w { font-weight: 700; }
+.lane .out { border-top: 1px dashed var(--ink2); padding-top: 12px; font-weight: 800; }
+.arrow { text-align: center; font-size: 30px; color: var(--ink2); line-height: 1; }
+.toc { display: grid; gap: 12px; font-size: 24px; line-height: 1.5; color: #2b2a28; }
+.toc b { display: inline-block; width: 92px; color: var(--ink2); font-weight: 700; }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.pair .cell { border: 2px solid var(--ink); border-radius: 8px; padding: 20px 22px; display: grid; gap: 10px; align-content: start; }
+.pair .cell.hot { border-color: var(--carried); }
+.pair .cell .lbl { font-size: 22px; font-weight: 800; }
+.pair .cell .sub { font-size: 18px; line-height: 1.5; color: var(--ink2); }
+.big.hot { color: var(--carried); }
+table.n td.r, table.n th.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.main td { font-weight: 800; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 20px; font-weight: 700; }
+.legend i { display: inline-block; width: 18px; height: 18px; border-radius: 3px; margin-right: 8px; vertical-align: -2px; }
+.toc b { width: 120px; }
+.obar { height: 22px; background: var(--carried); border-radius: 3px; }
+.obar.dim { background: #a9a7a1; }
+table.o td { vertical-align: middle; }
+.sub2 { font-size: 17px; line-height: 1.5; color: var(--ink2); }
+</style>
+<section class="slide" id="s1"><div class="top"><span>#AntiTokenMaxing · 연구 노트 #2</span><span>1 / 4</span></div>
+  <div style="margin-top:110px; display:grid; gap:34px"><p class="cap">21세기 골드러시의 영수증 · 첫 판정</p><h1>버리는 문제가 아니라,<br>들고 다니는 문제</h1><p class="lead">판정 기준 v1에서 기록만으로 정할 수 있는 세 갈래(W1·W2·W6)를 세션 10개에 적용하고,<br>이미 끝난 지시에서 넘어온 맥락이 다시 쓰였는지 추적했습니다.</p></div>
+  <div class="toc" style="margin-top:90px"><div><b>그림 1</b>측정 범위 정정과 기계 판정 하한</div><div><b>그림 2</b>재작성은 언제 생겼나, 그리고 범위</div><div><b>그림 3</b>넘어온 76%는 다시 쓰였나</div></div>
+  <p class="src">판정 기준 v1 (2026-10-06 고정) · 기계 판정 규칙 research/protocol/mechanical-tier-v1.md · 조사 대상: 연구자 본인의 Claude Code 세션 10개, 2026-07-10 ~ 10-05 · github.com/graviton94/pickaxetax</p></section>
+<section class="slide" id="s2"><div class="top"><span>#AntiTokenMaxing · 연구 노트 #2</span><span>2 / 4</span></div>
+  <div><p class="cap">그림 1</p><h2>토큰으로는 거의 0, 비용으로는 8.92%</h2></div>
+  <div class="panel"><p class="k">A. 측정 범위 정정 <span>· 처리한 입력, 하위 에이전트 포함</span></p><svg width="936" height="122" viewBox="0 0 936 122" role="img" aria-label="58.7억 → 68.4억"><g font-size="19" fill="#0b0b0b"><text x="0" y="39.0" font-weight="700">1편 (S09 일부만)</text><rect x="250" y="16" width="460.1" height="32" rx="3" fill="#52514e"/><text x="722.1" y="39.0" font-weight="800">58.7억</text><text x="0" y="95.0" font-weight="700">판 2 (10개 모두 완전)</text><rect x="250" y="72" width="536.0" height="32" rx="3" fill="#0b0b0b"/><text x="798.0" y="95.0" font-weight="800">68.4억</text></g></svg><p class="sub2">늘어난 9.7억 토큰은 1편 때 받지 못했던 S09의 앞부분(8월 12~15일)과 그 하위 에이전트, 그리고 S01의 하위 에이전트(44만 토큰)입니다. 10개 세션 모두 세션 첫 이벤트부터 끝까지 받았습니다.</p></div>
+  <div class="panel"><p class="k">B. 기계 판정 하한 <span>· 세 갈래 합</span></p><div class="pair">
+    <div class="cell"><span class="lbl">지울 수 있던 토큰</span><span class="big">0.0008<small>%</small></span><span class="sub">중복(W1)과 오류(W2) 결과 ÷ 처리한 입력 전체. W6 토큰은 어차피 처리됐을 토큰이라 넣지 않습니다.</span></div>
+    <div class="cell hot"><span class="lbl">지울 수 있던 비용</span><span class="big hot">8.92<small>%</small></span><span class="sub">W1·W2는 캐시 쓰기 값으로, W6은 쓰기와 읽기의 값 차이(1시간 캐시 2 − 0.1)로 매겨 입력 쪽 비용 전체와 비교.</span></div></div>
+    <p class="sub2">참고 (하한 밖): 중복이나 오류만 받고 끝난 걸음 291번이 처리한 입력은 1.5%입니다. 한 걸음마다 맥락 전체를 다시 읽기 때문입니다. 오류에는 실패한 테스트 같은 검증이 섞여 있어 사람 판정으로 가립니다.</p></div>
+  <div class="panel"><p class="k">C. 갈래별 <span>· 건수와 토큰</span></p><table class="n"><thead><tr><th>갈래</th><th class="r">건</th><th class="r">토큰</th><th>어디에 들어가나</th></tr></thead><tbody><tr><td class="c">W1 중복</td><td class="r">50</td><td class="r">3,414</td><td>토큰·비용</td></tr><tr><td class="c">W2 오류</td><td class="r">346</td><td class="r">52,436</td><td>토큰·비용</td></tr><tr><td class="c">W6 캐시 재작성</td><td class="r">90</td><td class="r">39,200,727</td><td>비용만</td></tr></tbody></table></div>
+  <p class="src">출처: research/survey/user01/floor-t1.json · dataset-v2.json (S09 완전 측정, 판 1은 그대로 보존). 가격 비율은 제공사 정가(비캐시 1, 캐시 읽기 0.1, 캐시 쓰기 5분짜리 1.25·1시간짜리 2). 주 세션은 거의 모두 1시간짜리 캐시를 썼습니다.</p></section>
+<section class="slide" id="s3"><div class="top"><span>#AntiTokenMaxing · 연구 노트 #2</span><span>3 / 4</span></div>
+  <div><p class="cap">그림 2</p><h2>재작성의 79%는 1시간 넘게 쉬었다 돌아온 직후</h2></div>
+  <div class="panel"><p class="k">A. W6가 생긴 때 <span>· 직전 호출과의 간격, 토큰 기준</span></p><svg width="936" height="60" viewBox="0 0 936 60" role="img" aria-label="W6"><rect x="0.0" y="0" width="72.8" height="60" fill="#2a78d6"/><rect x="75.8" y="0" width="119.3" height="60" fill="#a9a7a1"/><rect x="198.1" y="0" width="734.9" height="60" fill="#eb6834"/></svg><div class="legend"><span><i style="background:#2a78d6"></i>5분 안 8%</span><span><i style="background:#a9a7a1"></i>5분~1시간 13%</span><span><i style="background:#eb6834"></i>1시간 넘게 79%</span></div><p class="sub2">주 세션은 1시간짜리 캐시를 썼습니다. 1시간 안의 재작성은 캐시가 살아 있어야 했는데도 생긴 것입니다. 모델을 바꾼 직후에 생긴 재작성은 없었습니다.</p></div>
+  <div class="panel"><p class="k">B. 어떤 재작성을 세느냐에 따른 범위 <span>· 지울 수 있던 비용</span></p><table class="n"><tbody><tr class="main"><td>재작성 모두 (v1 규칙, 본 결과)</td><td class="r">8.92%</td></tr><tr class=""><td>1시간 넘게 쉰 뒤의 재작성 제외</td><td class="r">1.90%</td></tr><tr class=""><td>5분 안의 재작성만</td><td class="r">0.73%</td></tr></tbody></table></div>
+  <p class="note">쉰 것이 낭비는 아닙니다. 돌아올 때마다 맥락 전체(평균 44만 토큰)를 처음부터 다시 처리하게 만드는 구조가 비효율적이고, 한 세션을 며칠씩 이어 쓰는 사용 방식이 그 비용을 키웁니다.</p>
+  <div class="panel"><p class="k">C. 세션별 지울 수 있던 비용 <span>· v1 규칙</span></p><svg width="936" height="310" viewBox="0 0 936 310" role="img" aria-label="by session"><g font-size="19" fill="#0b0b0b"><text x="0" y="32.0" font-weight="700">S01</text><rect x="70" y="16" width="6.5" height="18" rx="3" fill="#eb6834"/><text x="88.5" y="32.0" font-weight="800">0.18%</text><text x="0" y="62.0" font-weight="700">S02</text><rect x="70" y="46" width="344.0" height="18" rx="3" fill="#eb6834"/><text x="426.0" y="62.0" font-weight="800">9.60%</text><text x="0" y="92.0" font-weight="700">S03</text><rect x="70" y="76" width="286.0" height="18" rx="3" fill="#eb6834"/><text x="368.0" y="92.0" font-weight="800">7.98%</text><text x="0" y="122.0" font-weight="700">S04</text><rect x="70" y="106" width="716.0" height="18" rx="3" fill="#eb6834"/><text x="798.0" y="122.0" font-weight="800">19.98%</text><text x="0" y="152.0" font-weight="700">S05</text><rect x="70" y="136" width="373.4" height="18" rx="3" fill="#eb6834"/><text x="455.4" y="152.0" font-weight="800">10.42%</text><text x="0" y="182.0" font-weight="700">S06</text><rect x="70" y="166" width="446.2" height="18" rx="3" fill="#eb6834"/><text x="528.2" y="182.0" font-weight="800">12.45%</text><text x="0" y="212.0" font-weight="700">S07</text><rect x="70" y="196" width="2.0" height="18" rx="3" fill="#eb6834"/><text x="84.0" y="212.0" font-weight="800">0.00%</text><text x="0" y="242.0" font-weight="700">S08</text><rect x="70" y="226" width="606.7" height="18" rx="3" fill="#eb6834"/><text x="688.7" y="242.0" font-weight="800">16.93%</text><text x="0" y="272.0" font-weight="700">S09</text><rect x="70" y="256" width="341.2" height="18" rx="3" fill="#eb6834"/><text x="423.2" y="272.0" font-weight="800">9.52%</text><text x="0" y="302.0" font-weight="700">S10</text><rect x="70" y="286" width="301.4" height="18" rx="3" fill="#eb6834"/><text x="383.4" y="302.0" font-weight="800">8.41%</text></g></svg></div>
+  <p class="src">본 결과는 미리 정한 v1 규칙입니다. 나머지 두 기준은 결과를 본 뒤에 더한 민감도 분석이며 본 결과를 대신하지 않습니다.</p></section>
+<section class="slide" id="s4"><div class="top"><span>#AntiTokenMaxing · 연구 노트 #2</span><span>4 / 4</span></div>
+  <div><p class="cap">그림 3</p><h2>버릴 것은 적고, 들고 다닌 것은 많다</h2></div>
+  <div class="panel"><p class="k">A. 매 호출 입력의 구성 <span>· 판 2, 세션 10개 전체 호출 합</span></p><svg width="936" height="60" viewBox="0 0 936 60" role="img" aria-label="decomposition"><rect x="0.0" y="0" width="113.7" height="60" fill="#2a78d6"/><rect x="116.7" y="0" width="708.9" height="60" fill="#eb6834"/><rect x="828.6" y="0" width="104.4" height="60" fill="#1baf7a"/></svg><div class="legend"><span><i style="background:#2a78d6"></i>고정 12.5%</span><span><i style="background:#eb6834"></i>이전 지시에서 넘어온 몫 76.1%</span><span><i style="background:#1baf7a"></i>지금 지시 11.5%</span></div><p class="sub2">1편의 73.6%는 시계열이 있던 세션 8개 기준이고, 판 2는 10개 모두입니다.</p></div>
+  <div class="panel"><p class="k">B. 넘어온 내용은 다시 쓰였나 <span>· 오라클 최소치, 주 세션 65.8억 토큰</span></p><table class="n o"><thead><tr><th>필요한 것만 들고 갔다면</th><th></th><th class="r">덜 읽었을 몫</th><th class="r">탐지 기준 9가지</th></tr></thead><tbody><tr><td>다시는 안 쓰인 것만 버리기</td><td style="width:38%"><div class="obar dim" style="width:9.3%"></div></td><td class="r"><b>5.6%</b></td><td class="r">3.5~24.7%</td></tr><tr><td>필요할 때 다시 불러오기 (1천 토큰)</td><td style="width:38%"><div class="obar" style="width:69.2%"></div></td><td class="r"><b>41.5%</b></td><td class="r">35.2~53.9%</td></tr><tr><td>불러오기가 공짜라면</td><td style="width:38%"><div class="obar dim" style="width:76.8%"></div></td><td class="r"><b>46.1%</b></td><td class="r">41.8~54.7%</td></tr><tr><td>참고: 과거만 보는 단순 규칙, 놓침 2.5%</td><td style="width:38%"><div class="obar dim" style="width:4.8%"></div></td><td class="r"><b>2.9%</b></td><td class="r">최근 64번 호출</td></tr></tbody></table><p class="note">끝까지 다시 쓰이지 않은 내용은 적었습니다. 대부분은 언젠가 다시 쓰였지만, 그때까지 매 호출마다 다시 읽혔습니다. 미래를 아는 오라클의 값이라 실현 가능한 정책의 결과가 아니라 기회의 크기이고, 재사용은 글자 겹침으로 추정했습니다. 보정 없이 가장 보수적으로 잡으면 필요할 때 불러오기는 16~28%입니다.</p></div>
+  <div class="box"><b>다음</b>연습 20개 → 본 판정 200개, 두 사람이 서로의 판정을 모른 채 → 갈래별 일치도 κ ≥ 0.70일 때만 결과를 냅니다.</div>
+  <p class="src">출처: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1, 기본 기준 min_shared 1, common_frac 0.02, 보정) · 단순 규칙: backtest-v1, opportunity-v1.json</p></section>

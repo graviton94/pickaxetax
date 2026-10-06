@@ -41,6 +41,14 @@ agreement from the two labels files.
    rule-tier detector (W2 retries, W3, W4 file lifecycle, W5 use detector), which correct the
    machine estimates over the whole population. Categories below the κ bar are reported as
    "not measured".
+8. **Check the mechanical tier against people.** `pxt survey machine packet.json [transcripts]
+   --out labels-machine.json` writes the T1 judge's decisions (W1, W2, W6) on the same items as a
+   labels file. It is made only after every labels file is in, and never shown to labelers.
+   `pxt survey agreement consensus.json labels-machine.json` then reports how often the code and
+   the people agree. Disagreements are published with the T1 result: where people saw waste the
+   code did not count, the floor is confirmed as a floor; where the code counted waste people
+   did not see, the rule is reviewed (a change is a new version). The same with `--tier t2` for the rule-tier
+   candidates (`rule-tier-v0.md`), whose labels are sealed and hashed before labeling starts.
 
 ## What gets published
 
@@ -61,3 +69,4 @@ what was hidden.
 - **라벨러**는 공개 사이트의 판정 페이지(`label.html`)에서 꾸러미를 불러와 혼자 판정하고, 판정 파일을 돌려줍니다. 계정이 필요 없고, 꾸러미는 그 탭 밖으로 나가지 않습니다.
 - 연습 20개 → 해석 맞추기(정의는 못 바꿈, 바꾸면 v2) → 본 판정 200개(데이터 주인이 먼저 제출) → `pxt survey agreement`로 일치도 계산(κ ≥ 0.70인 갈래만 사용) → 엇갈린 항목 합의 → 합의 판정으로 표본 비율과 판정기 정확도를 계산합니다.
 - 공개하는 것: 기준 버전, 꾸러미 해시, 시드, 판정 파일(번호와 선택만), 일치도와 엇갈린 항목. 공개하지 않는 것: 꾸러미와 대화 원문.
+- 판정자에게 건넬 한 장: [`labeler-guide-ko.md`](labeler-guide-ko.md). 기계 판정 규칙을 검토할 사람에게는 [`review-kit-ko.md`](review-kit-ko.md).

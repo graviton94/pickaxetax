@@ -14,3 +14,39 @@ ran the research are measured with the same tools.
 | 2026-10-06 | 145 extra API calls to verify S10's page boundaries after the fact (verification, not waste by the codebook's definition; listed for completeness) | Not waste (verification) | 144 calls |
 | 2026-10-06 | Research note 1 drafts v3 → v4 → v5 → v6: v4 read the 73.6% carried-over share as waste before any criteria existed; v5 overstated the output ratio as covering all sessions. Both were rewritten | W4 Discarded output | pending |
 | 2026-10-06 | Download of the full event text of S04, S06, S07, S08 for the labeling pilot (56 pages), by two sub-agents | Not waste (measurement); counted as research cost | 177,872 sub-agent tokens |
+| 2026-10-06 | The first version of the T1 judge treated all sub-agents of a session as one context, so a file read by two different sub-agents counted as a duplicate (S02: 8,210 W1 tokens instead of 211). Fixed before any result was published | Not waste (a measurement error, corrected) | — |
+| 2026-10-06 | S02's 115 event pages failed to parse on a raw control character in a tool result. The parser was fixed; the pages did not need to be fetched again | Not waste | — |
+| 2026-10-06 | The cost view priced every cache write at the 5-minute price (1.25×). The main sessions wrote 1-hour cache (2×). Removable cost was understated: 5.79% → 8.92%. Found by an audit before publication | Not waste (a measurement error, corrected) | — |
+| 2026-10-06 | The task-scoped what-if dropped the growth after a real compaction inside an instruction, about 4 points too optimistic. Found by a review of the replay; fixed before publication | Not waste (a measurement error, corrected) | — |
+| 2026-10-06 | The mechanical judge compared tool results by text only, so a screenshot re-read after the screen changed counted as a duplicate (W1): 216 of 266 W1 cases. Found by cycle B7 (redundant reads) and fixed; W1 tokens and the floor (8.92%) are unchanged, the steps spent only on duplicates or errors fell from 2.6% to 1.45% of input. The T1 machine labels were re-sealed before any label existed | Not waste (a measurement error, corrected) | — |
+| 2026-10-06 | Second independent review (cycle E6) of the what-if replays: restart replays could grow past the harness ceiling once a real compaction no longer applied, and the ceiling sweep compacted to the first call's context + 22k instead of the observed 64k. "Every 10 instructions" 22.3% → 23.0%; ceiling savings about 1 point higher, optimum about 10k lower. Fixed with regression tests | Not waste (a measurement error, corrected) | — |
+
+## Research cost to date
+
+The research runs in one Claude Code cloud session (S01 in the survey, measured only up to
+its 400-call snapshot). Provider-recorded usage of that session as of 2026-10-06 14:00 UTC,
+sub-agents included:
+
+| Input processed | Cache reads | Cache writes | Uncached | Output | API-price equivalent |
+|---:|---:|---:|---:|---:|---:|
+| 584,981,506 | 578,380,118 | 6,336,669 | 264,719 | 1,716,724 | about $180.57 |
+
+### Interim T1 of this session (2026-10-06, local transcript with its sub-agent files)
+
+Measured with `pxt survey judge` on the whole session so far (not only the 400-call snapshot).
+
+| | Main session | Sub-agents | Total |
+|---|---:|---:|---:|
+| API calls | 1,014 | 2,747 | 3,761 |
+| Input processed | 423,766,657 | 340,654,835 | 764,421,492 |
+
+- Floor (codebook v1, T1): removable tokens 0.0015% (W1 1,220, W2 10,485); removable cost 3.09%,
+  almost all W6 (2,277,149 tokens in 7 re-writes, 5 of them after an idle gap of over an hour).
+  Without those: 0.04%.
+- **45% of this session's input went to sub-agents**, nearly all of them downloading event pages
+  for the survey (about 1,000 pages for S02, S03, S05, S09, S10 and the labeling texts). Each page
+  passes through an agent's context, so a page is paid for again on every later call of that
+  agent. Measuring a large session from inside the session itself is far cheaper; this is listed
+  as a research cost, and the cheaper method is the one to use from now on.
+
+The full codebook will be applied to this session once the research phase it covers ends.
