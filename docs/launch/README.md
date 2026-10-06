@@ -36,6 +36,9 @@ Sequence:
 | Naive dead-context test: 1% dead; refined: 54% never echoed (upper bound) | `research/hypotheses.md` H1, H1′ |
 | Task-scoped sessions with a short summary: 66–70% less input | `research/hypotheses.md` H2 |
 | Survey user01 (report): ≥ 5,871,292,005 input tokens over 10 sessions (1.49× the session-list total); 586 instructions, ~1,000만/instruction; top 5 sessions 93.3%; top 10% of 255 instructions use 45.6%; carried-over context 73.6%; largest instruction 219,620,777; output < 1% of input (S01–S03: 0.19–0.43%) | `research/survey/user01/` |
+| Survey user01 v2: 6,839,974,268 input tokens, all 10 sessions complete (S09 was partial in v1); carried-over context 76.1% over all 10 | `research/survey/user01/dataset-v2.json`, `report-v2.html` |
+| T1 floor (codebook v1): removable tokens 0.0008% (W1 3,410 + W2 52,440); removable cost 5.79%, sensitivity 0.48–5.79%; 78.8% of W6 after an idle gap > 1 h (64 of 90 re-writes, 435,564 tokens on average) | `research/survey/user01/floor-t1.json`, `floor-t1.md` |
+| Research session: 44.6% of input (340,654,835 of 764,421,492) went to sub-agents, 98% of that to page downloads (interim, 2026-10-06) | `research/survey/self-audit-log.md` |
 | Note 1 session A (snapshot 7b91c8fa…): 400 calls, 169,482,468 input, 729,447 output (1:232); forget 11.0%, page 49.9%, unjudgeable 42.0%; same report on two runs; order holds in 18 cells | `research/results/note01-session-a.json`, `pxt agent audit` |
 | Bound session: 322 calls, 149,273,256 input tokens; forget 9.1%, page 50.1% (47.5% at 1k, 34.7% at 10k); invisible 32.4%; base 10.1%; ceiling 57.5%; persisted writes 25.1% of resident context | `research/results/belady-session-01.json`, `research/belady-bound.md` §4 |
 | Paging beats forgetting by ≥ 18 points in every calibrated sensitivity cell | same file, `sensitivity_avoidable_pct` |
