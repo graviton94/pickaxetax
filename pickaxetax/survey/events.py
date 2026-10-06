@@ -60,6 +60,40 @@ def lines_from(paths):
     return [l for _, l in sorted(events.values(), key=lambda x: x[0])]
 
 
+def _is_instruction(d):
+    """A real user message on the main chain (the rule `measure` and `judge` use)."""
+    m = d.get("message")
+    if d.get("type") != "user" or not isinstance(m, dict) or d.get("isSidechain") or d.get("isMeta") or d.get("isCompactSummary"):
+        return False
+    content = m.get("content")
+    blocks = content if isinstance(content, list) else [{"type": "text", "text": content}]
+    if any(isinstance(b, dict) and b.get("type") == "tool_result" for b in blocks):
+        return False
+    text = " ".join(str(b.get("text", "")) for b in blocks if isinstance(b, dict) and b.get("type") == "text")
+    return bool(text.strip()) and "<system-reminder>" not in text[:200] and not text.lstrip().startswith("<")
+
+
+def cut(lines, limit_calls=None, limit_instructions=None):
+    """The lines up to a snapshot: stop before the main chain's (limit_calls+1)-th API call or
+    the (limit_instructions+1)-th instruction, for a session that kept going after it was measured."""
+    out, calls, instr = [], set(), 0
+    for d in lines:
+        if limit_instructions is not None and _is_instruction(d):
+            instr += 1
+            if instr > limit_instructions:
+                break
+        m = d.get("message")
+        if limit_calls is not None and d.get("type") == "assistant" and not d.get("isSidechain") and isinstance(m, dict):
+            u = m.get("usage") if isinstance(m.get("usage"), dict) else {}
+            mid = str(m.get("id") or d.get("requestId"))
+            if mid not in calls and any(int(u.get(k) or 0) for k in ("input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")):
+                if len(calls) >= limit_calls:
+                    break
+                calls.add(mid)
+        out.append(d)
+    return out
+
+
 def _measure_lines(lines, include_series=False):
     with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False, encoding="utf-8") as f:
         for l in lines:
@@ -70,10 +104,11 @@ def _measure_lines(lines, include_series=False):
         os.unlink(f.name)
 
 
-def measure_pages(paths, include_series=False, subagents=True):
+def measure_pages(paths, include_series=False, subagents=True, limit_calls=None, limit_instructions=None):
     """Measure a session from saved events-API pages. Sub-agent (sidechain) calls are
-    measured separately under "subagents", as local transcripts are (`with_subagents`)."""
-    lines = list(lines_from(paths))
+    measured separately under "subagents", as local transcripts are (`with_subagents`).
+    limit_calls / limit_instructions cut the session at a snapshot (see `cut`)."""
+    lines = cut(lines_from(paths), limit_calls, limit_instructions)
     r = _measure_lines(lines, include_series)
     side = [{**l, "isSidechain": False} for l in lines if l.get("isSidechain")]
     if subagents and side:

@@ -42,3 +42,16 @@ def test_raw_control_characters_in_tool_output(tmp_path):
     p = tmp_path / "c.json"
     p.write_text(p.read_text().replace("AxB", "A\\\\u0001B").replace("\\\\u0001", "\x01"))
     assert events.lines_from([good])[0]["message"]["content"] == "A\x01B"
+
+
+def test_cut_at_snapshot(tmp_path):
+    data = []
+    for i in range(3):
+        data.append(ev("user", f"q{i}", f"2026-01-01T00:0{i}:00Z", {"role": "user", "content": f"task {i}"}))
+        data.append(ev("assistant", f"a{i}", f"2026-01-01T00:0{i}:01Z", call(f"m{i}", 100)))
+        data.append(ev("assistant", f"s{i}", f"2026-01-01T00:0{i}:02Z", call(f"x{i}", 10), parent="toolu_y"))
+    p = page(tmp_path, "d.json", data)
+    assert events.measure_pages([p], limit_calls=2)["api_calls"] == 2
+    r = events.measure_pages([p], limit_instructions=1)
+    assert r["api_calls"] == 1 and r["user_instructions"] == 1 and r["subagents"]["api_calls"] == 1
+    assert events.measure_pages([p])["api_calls"] == 3
