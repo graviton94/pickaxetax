@@ -154,7 +154,7 @@ def _alloc(sizes: dict, n: int) -> dict:
 
 
 def build_packet(sessions: dict, n: int = 200, calibration: int = 20, seed: int = 20261006,
-                 redact: list[str] | None = None) -> dict:
+                 redact: list[str] | None = None, exclude: set | None = None) -> dict:
     """sessions: {label: [instruction, ...]}. Stratified by session and by instruction size
     (tertiles of input within the session); calibration items are drawn first and never
     reused in the main sample."""
@@ -166,6 +166,8 @@ def build_packet(sessions: dict, n: int = 200, calibration: int = 20, seed: int 
         cuts = sorted(it["stats"]["input"] for it in items)
         t1, t2 = cuts[len(cuts) // 3], cuts[(2 * len(cuts)) // 3]
         for idx, it in enumerate(items):
+            if exclude and (label, idx) in exclude:
+                continue  # already shown to labelers in an earlier packet (e.g. a pilot)
             size = "s" if it["stats"]["input"] < t1 else "m" if it["stats"]["input"] < t2 else "l"
             pool.append((f"{label}|{size}", label, idx, it))
     rng = random.Random(seed)
@@ -192,12 +194,17 @@ def build_packet(sessions: dict, n: int = 200, calibration: int = 20, seed: int 
         return {"id": iid, "session": label, "index": idx, **it}
 
     packet = {"schema": PACKET_SCHEMA, "codebook": CODEBOOK, "seed": seed,
-              "population": {"sessions": len(sessions), "instructions": len(pool)},
+              "population": {"sessions": len(sessions), "instructions": len(pool), "excluded": len(exclude or ())},
               "calibration": [item(r) for r in cal], "items": [item(r) for r in main]}
     if redact:
         packet = apply_redaction(packet, redact)
     packet["sha256"] = packet_digest(packet)
     return packet
+
+
+def shown_items(packet: dict) -> set:
+    """(session, index) of every item a packet showed to labelers, to exclude them later."""
+    return {(x["session"], x["index"]) for x in packet.get("calibration", []) + packet.get("items", [])}
 
 
 def apply_redaction(packet: dict, patterns: list[str]) -> dict:

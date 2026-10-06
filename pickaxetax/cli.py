@@ -138,6 +138,10 @@ def main(argv: list[str] | None = None) -> int:
     ss.add_argument("--calibration", type=int, default=20, help="practice items, drawn first (default 20)")
     ss.add_argument("--seed", type=int, default=20261006)
     ss.add_argument("--redact", help="a file of regular expressions, one per line; matches become [가림]")
+    ss.add_argument("--exclude", action="append", default=[], metavar="PACKET",
+                    help="an earlier packet whose items must not be drawn again (e.g. a pilot)")
+    ss.add_argument("--limit", action="append", default=[], metavar="LABEL=N",
+                    help="keep only a session's first N instructions (cut at a measurement snapshot)")
     ss.add_argument("--out", default="label-packet.json")
     sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
     sa.add_argument("labels", nargs=2)
@@ -460,14 +464,23 @@ def _survey_labeling(args) -> int:
         items = labeling.session_instructions(pages)
         if items:
             sessions[label] = items
+    for spec in args.limit:
+        label, _, n = spec.partition("=")
+        if label in sessions:
+            sessions[label] = sessions[label][: int(n)]
     if not sessions:
         print("no transcripts with instructions found", file=sys.stderr)
         return 1
+    exclude = set()
+    for path in args.exclude:
+        with open(path, encoding="utf-8") as f:
+            exclude |= labeling.shown_items(json.load(f))
     patterns = []
     if args.redact:
         with open(args.redact, encoding="utf-8") as f:
             patterns = [l.rstrip("\n") for l in f if l.strip() and not l.startswith("#")]
-    packet = labeling.build_packet(sessions, n=args.n, calibration=args.calibration, seed=args.seed, redact=patterns)
+    packet = labeling.build_packet(sessions, n=args.n, calibration=args.calibration, seed=args.seed, redact=patterns,
+                                   exclude=exclude)
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(packet, f, ensure_ascii=False, indent=1)
     print(f"wrote {args.out}: {len(packet['calibration'])} practice + {len(packet['items'])} items from "

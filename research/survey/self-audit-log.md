@@ -13,3 +13,4 @@ ran the research are measured with the same tools.
 | 2026-10-05 | An S09 download agent was started with the wrong session id and stopped | W3 Coordination loss | pending |
 | 2026-10-06 | 145 extra API calls to verify S10's page boundaries after the fact (verification, not waste by the codebook's definition; listed for completeness) | Not waste (verification) | 144 calls |
 | 2026-10-06 | Research note 1 drafts v3 → v4 → v5 → v6: v4 read the 73.6% carried-over share as waste before any criteria existed; v5 overstated the output ratio as covering all sessions. Both were rewritten | W4 Discarded output | pending |
+| 2026-10-06 | Download of the full event text of S04, S06, S07, S08 for the labeling pilot (56 pages), by two sub-agents | Not waste (measurement); counted as research cost | 177,872 sub-agent tokens |

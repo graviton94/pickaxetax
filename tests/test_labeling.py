@@ -92,3 +92,11 @@ def test_cli_sample(tmp_path, capsys):
     p = json.loads(out.read_text())
     assert p["schema"] == labeling.PACKET_SCHEMA and len(p["items"]) == 5 and len(p["calibration"]) == 2
     assert "Do not commit" in capsys.readouterr().out
+
+
+def test_exclude_items_of_an_earlier_packet(tmp_path):
+    sessions = {"S01": labeling.session_instructions(session(tmp_path, "a.jsonl", 9))}
+    pilot = labeling.build_packet(sessions, n=3, calibration=2, seed=7)
+    later = labeling.build_packet(sessions, n=4, calibration=0, seed=8, exclude=labeling.shown_items(pilot))
+    assert not labeling.shown_items(pilot) & labeling.shown_items(later)
+    assert later["population"]["excluded"] == 5
