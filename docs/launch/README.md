@@ -9,7 +9,7 @@ Channels: **X**, **LinkedIn** and **Reddit**. The drafts are ready to post from 
 - [ ] Optional: the repository description, topics and website are set (see ADR-0007).
 
 ## Order
-The project is published as **LinkedIn research notes, one at a time**, written together as the research progresses (ADR-0009). The current state is in [linkedin-series/](linkedin-series/README.md). When the tool goes public, and when the X thread and Reddit posts follow, is decided along the way. The checklist above must be done before any post links to the site.
+The project is published as **LinkedIn research notes, one at a time**, written as the research progresses (ADR-0009). The current state is in [linkedin-series/](linkedin-series/README.md). When the tool goes public, and when the X thread and Reddit posts follow, is decided along the way. The checklist above must be done before any post links to the site.
 
 - Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
 - Reddit: one subreddit per day, never cross-posted at once, following each subreddit's self-promotion rules.
