@@ -61,3 +61,18 @@ That is a short chat prompt. The call below re-reads 427,524 tokens.
 - user01의 석 달 (58억 7천만 토큰): 333 kWh, CO₂ **148 kg**. 나무 한 그루의 **25년**. 그중 이미 끝난 지시의 컨텍스트(73.6%)가 약 109 kg, 나무 한 그루의 약 18년.
 
 "나뭇가지를 태운 만큼", "나무의 몇 시간"은 1 g의 CO₂를 떠올리게 하려는 비유입니다. 상쇄량도 아니고, 실제로 나무가 베였다는 뜻도 아닙니다.
+
+---
+
+# The world's receipt (site section "The cost")
+
+Global figures for AI and data centres as a whole, each from its source. Only the last
+line is our own measurement; it is not the waste rate of the world's compute.
+
+| Line | Figure | Source |
+|---|---|---|
+| Data-centre capex, Alphabet + Amazon + Microsoft + Meta, 2026 | more than $700B (Alphabet alone guides $195–205B); includes non-AI capex | [CNBC, 2026-07-22](https://www.cnbc.com/2026/07/22/google-earnings-q2-goog-live-updates.html); [Sherwood News](https://sherwood.news/tech/alphabet-amazon-microsoft-meta-plan-more-than-700-billion-on-capex-this-year/) |
+| Data-centre electricity | 415 TWh (2024) → about 945 TWh (2030), "slightly more than Japan's total electricity consumption today" | [IEA, Energy and AI (2025)](https://www.iea.org/reports/energy-and-ai/executive-summary) |
+| Its CO₂ | about 180 Mt today → a peak of about 320 Mt in 2030 (Base Case) ≈ what 53 billion urban trees absorb in a year at EPA's 6 kg each (metaphor) | IEA, same report; EPA (above) |
+| Generative-AI e-waste | 1.2–5.0 Mt accumulated over 2020–2030 | [Wang et al. 2024, Nature Computational Science](https://www.nature.com/articles/s43588-024-00712-6) |
+| Digital waste (ours) | 73.6% of context re-read on each call was left over from finished instructions; output 0.19–0.43% of input | `research/survey/user01/` |

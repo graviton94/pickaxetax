@@ -195,7 +195,7 @@ def chart_steps(ds: dict, order: list[str]) -> str:
 # ---------------------------------------------------------------- page
 
 CSS = """
-/* Layout: a bill (고지서) header with the amount due, then one figure per finding, then method and data. */
+/* Layout: a receipt (영수증) header with the amount due, then one figure per finding, then method and data. */
 :root {
   --bg: #f4f6f8; --surface: #ffffff; --ink: #121519; --ink-2: #464d59; --muted: #737c8a; --rule: #d9dee5;
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
@@ -308,14 +308,14 @@ def render(ds: dict, sawtooth_session: str | None = None) -> str:
     orr = dv["output_ratio_range"]
     partial = ", ".join(dv["partial"]) or "없음"
     h = []
-    h.append(f"<title>곡괭이세 고지서 {esc(sub['label'])}</title>")
+    h.append(f"<title>21세기 골드러시의 영수증 {esc(sub['label'])}</title>")
     h.append('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
              '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">')
     h.append(f"<style>{CSS}</style>")
     h.append('<div class="wrap">')
     # bill
-    h.append('<header class="bill"><div class="bill-top"><div><div class="eyebrow">Pickaxe Tax · 현상조사</div>'
-             f'<h1>곡괭이세 고지서 · {esc(sub["label"])}</h1></div><div class="small">{esc(sub["scope"])}</div></div>')
+    h.append('<header class="bill"><div class="bill-top"><div><div class="eyebrow">#AntiTokenMaxing · 현상조사</div>'
+             f'<h1>21세기 골드러시의 영수증 · {esc(sub["label"])}</h1></div><div class="small">{esc(sub["scope"])}</div></div>')
     fields = [("조사 대상", sub["who"]), ("조사 기간", sub["period"]), ("측정 원천", sub["sources"]),
               ("세션", f'{len(ds["sessions"])}개 (부분 측정: {partial})'), ("데이터셋 SHA-256", digest(ds)[:16] + "…"), ("생성 도구", f"pickaxetax {__version__} · pxt survey report")]
     h.append('<dl class="fields">' + "".join(f'<div class="field"><dt>{esc(k)}</dt><dd>{esc(v)}</dd></div>' for k, v in fields) + "</dl>")

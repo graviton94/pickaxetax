@@ -33,6 +33,7 @@ The project is published as **LinkedIn research notes, one at a time**, written 
 | Bound session: 322 calls, 149,273,256 input tokens; forget 9.1%, page 50.1% (47.5% at 1k, 34.7% at 10k); invisible 32.4%; base 10.1%; ceiling 57.5%; persisted writes 25.1% of resident context | `research/results/belady-session-01.json`, `research/belady-bound.md` §4 |
 | Paging beats forgetting by ≥ 18 points in every calibrated sensitivity cell | same file, `sensitivity_avoidable_pct` |
 | Carbon (estimate, stated as such): one call re-reading 427,524 tokens ≈ 24 Wh, 10.8 g CO₂ ≈ one tree's 16 hours ≈ burning a 6 g dry twig; user01 ≈ 333 kWh, 148 kg CO₂ ≈ one tree's 25 years (×10 without the cache discount) | `research/carbon-factors.md`, `pickaxetax/survey/carbon.py` (Jegham et al. 2025; Anthropic cache price ratio; IEA 445 g/kWh; EPA 60 kg per tree in 10 years; IPCC 0.47 carbon fraction) |
+| World's receipt: Big Tech four 2026 capex > $700B; data-centre power 415 → 945 TWh (2024 → 2030); its CO₂ 180 → 320 Mt (2030 peak); generative-AI e-waste 1.2–5.0 Mt (2020–2030) | `research/carbon-factors.md` (CNBC, Sherwood News, IEA Energy and AI, Wang et al. 2024) |
 
 ## Rules of engagement
 - Don't overclaim. "Avoidable" means *the same results with one focused chat per topic and no waste*, and the definition is in the app. Energy figures are labeled as estimates.

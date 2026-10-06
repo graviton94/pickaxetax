@@ -43,13 +43,13 @@ body { font-family: var(--text); font-size: 17px; line-height: 1.6; -webkit-font
   border-bottom: 1px solid rgb(255 255 255 / .08);
 }
 .top-bar .top { max-width: var(--wrap); padding-block: 0; height: 52px; }
-.top-bar .brand { color: var(--th-ink); font-size: 15px; }
+.top-bar .brand { color: var(--th-ink); font-size: 14px; letter-spacing: .06em; }
 .top-bar .brand span { color: var(--leaf-a); }
 .top-bar nav { gap: 22px; }
 .top-bar nav a { color: rgb(245 245 247 / .78); font-size: 13px; letter-spacing: .01em; transition: color .2s; }
 .top-bar nav a:hover, .top-bar nav a:focus-visible { color: #fff; }
 .top-bar #lang { color: var(--th-ink); border-color: rgb(255 255 255 / .22); padding: 4px 12px; font-size: 13px; border-radius: 999px; }
-@media (max-width: 760px) { .top-bar nav a { display: none; } }
+@media (max-width: 860px) { .top-bar nav a { display: none; } }
 
 /* ---------- theater ---------- */
 .theater {
@@ -160,7 +160,7 @@ body { font-family: var(--text); font-size: 17px; line-height: 1.6; -webkit-font
 .lg-key { flex-basis: 100%; font-size: 13px; opacity: .8; }
 .scene-note { font-size: 14px; color: var(--th-muted); margin: 26px 0 0; max-width: 40em; }
 .scene-punch { padding-bottom: clamp(60px, 10vh, 110px); gap: 28px; }
-.punch { font-family: var(--display); font-size: clamp(32px, 5.4vw, 64px); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; margin: 0; text-wrap: balance; }
+.punch { white-space: pre-line; font-family: var(--display); font-size: clamp(32px, 5.4vw, 64px); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; margin: 0; text-wrap: balance; }
 .scene-method { padding-block: 0 clamp(60px, 10vh, 100px); text-align: left; justify-items: stretch; }
 .method { width: 100%; max-width: 860px; margin: 0 auto; border-top: 1px solid var(--th-line); border-bottom: 1px solid var(--th-line); }
 .method summary { cursor: pointer; padding: 18px 4px; font-size: 15px; font-weight: 600; color: var(--th-ink); list-style: none; display: flex; justify-content: space-between; gap: 12px; }
@@ -172,6 +172,43 @@ body { font-family: var(--text); font-size: 17px; line-height: 1.6; -webkit-font
 .method .sources { font-size: 13px; color: var(--th-muted); padding-left: 22px; margin: 0 0 12px; display: grid; gap: 4px; }
 .method a { color: #8fd3b2; overflow-wrap: anywhere; }
 .method .full { margin: 0 0 18px; font-size: 14px; }
+
+/* ---------- the cost: the world's receipt ---------- */
+.punch-sub { margin: 0; font-size: clamp(18px, 2.4vw, 24px); color: var(--th-muted); }
+#cost { padding: 0 16px; }
+.scene-cost { padding-top: clamp(40px, 8vh, 80px); }
+.receipt {
+  --paper: #f4f3ee; --paper-ink: #111;
+  position: relative; width: 100%; max-width: 640px; margin-top: clamp(40px, 7vh, 72px);
+  background: var(--paper); color: var(--paper-ink); text-align: left;
+  padding: 26px clamp(18px, 4vw, 36px) 30px; border-radius: 4px 4px 0 0;
+  box-shadow: 0 50px 120px -40px rgb(255 120 50 / .35), 0 30px 60px -30px rgb(0 0 0 / .8);
+}
+.receipt::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -12px; height: 12px;
+  background: linear-gradient(135deg, var(--paper) 50%, transparent 50%) 0 0 / 16px 12px repeat-x,
+              linear-gradient(225deg, var(--paper) 50%, transparent 50%) 0 0 / 16px 12px repeat-x;
+}
+.rc-head { display: flex; justify-content: space-between; gap: 12px; font: 600 12px/1.4 var(--mono); letter-spacing: .08em; color: #555; padding-bottom: 14px; border-bottom: 2px dashed #bdbcb5; }
+.rc-items { list-style: none; margin: 0; padding: 0; }
+.rc-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; align-items: baseline; padding: 18px 0; border-bottom: 1px dashed #cfcec7; }
+.rc-l { display: grid; gap: 3px; min-width: 0; }
+.rc-l b { font-size: 16px; letter-spacing: -.01em; }
+.rc-l span { font-size: 13.5px; color: #5c5c5c; line-height: 1.45; }
+.rc-v { font-family: var(--num); font-weight: 800; font-size: clamp(24px, 3.6vw, 34px); letter-spacing: -.03em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rc-v sup { font-size: 11px; font-weight: 600; color: #888; margin-left: 3px; letter-spacing: 0; }
+.rc-item:last-child .rc-v { color: #d9480f; }
+@media (max-width: 520px) { .rc-item { grid-template-columns: 1fr; } .rc-v { white-space: normal; } }
+.rc-total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 20px 0 6px; border-top: 3px double #111; margin-top: -1px; }
+.rc-total span { font: 600 13px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.rc-total b { font-family: var(--display); font-size: clamp(40px, 7vw, 64px); font-weight: 800; letter-spacing: -.04em; line-height: 1; color: #d9480f; }
+.rc-stance { margin: 18px 0 16px; text-align: center; font-weight: 700; font-size: 15px; }
+.rc-barcode { height: 46px; margin: 0 auto; max-width: 280px;
+  background: repeating-linear-gradient(90deg, #111 0 2px, transparent 2px 4px, #111 4px 7px, transparent 7px 9px, #111 9px 10px, transparent 10px 13px); }
+.rc-foot { width: 100%; max-width: 860px; margin: 0 auto; border-top: 1px solid var(--th-line); padding-top: 18px; }
+.rc-notes { margin: 0 0 12px; padding-left: 20px; font-size: 13px; color: var(--th-muted); display: grid; gap: 6px; }
+.rc-notes a { color: #8fd3b2; text-decoration: none; }
+.rc-foot .caveat { font-size: 13.5px; color: #d2d2d7; margin: 0; }
 
 /* ---------- light sections ---------- */
 main { max-width: var(--wrap); }
@@ -241,4 +278,4 @@ footer { max-width: var(--wrap); }
 /* Korean: break between words, never inside one; wide tracking is for Latin caps only */
 :lang(ko) .eyebrow, :lang(ko) .intro-tag { letter-spacing: .06em; }
 :lang(ko) h1, :lang(ko) h2, :lang(ko) h3, :lang(ko) .lede, :lang(ko) .ai-body p, :lang(ko) .fact p,
-:lang(ko) .reading-label, :lang(ko) .reading-co2, :lang(ko) .scene-lede, :lang(ko) .punch, :lang(ko) .eq p, :lang(ko) .scene-note, :lang(ko) .method li, :lang(ko) .method p { word-break: keep-all; overflow-wrap: anywhere; }
+:lang(ko) .reading-label, :lang(ko) .reading-co2, :lang(ko) .scene-lede, :lang(ko) .punch, :lang(ko) .eq p, :lang(ko) .scene-note, :lang(ko) .rc-l span, :lang(ko) .rc-notes li, :lang(ko) .punch-sub, :lang(ko) .rc-foot .caveat, :lang(ko) .method li, :lang(ko) .method p { word-break: keep-all; overflow-wrap: anywhere; }

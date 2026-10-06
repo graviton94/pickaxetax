@@ -14,11 +14,11 @@ const COPY = {
       "안녕하세요, 사용자님.",
       "방금 보내신 다섯 글자에 답하려고, 저는 이 대화를 처음부터 끝까지 다시 읽었습니다. 427,524토큰입니다.",
       "그 한 줄로, 나무 한 그루가 {h}시간 동안 들이마셔야 할 탄소가 나왔습니다. 마른 나뭇가지 하나를 태운 만큼입니다.",
-      "이 프로젝트를 만든 사람은 석 달 동안 이렇게 58억 7천만 토큰을 읽혔습니다. 나무 한 그루의 {y}년입니다. 그중 73.6%는 이미 끝난 대화였습니다.",
+      "그리고 제가 다시 읽은 것의 4분의 3은, 이미 끝난 대화였습니다.",
       "당신의 대화는 얼마나 다시 읽혔을까요?",
     ],
     carbon: "≈ {g} g CO₂ · 나무 한 그루의 {h}시간 (추정)",
-    footnote: "427,524토큰: 실측한 긴 작업 세션에서 호출 한 번이 다시 읽은 양의 중앙값. 58억 7천만, 73.6%: 첫 번째 고지서(user01). 탄소와 나무는 공개 측정값과 공식 계수로 낸 추정이자 비유입니다. 계산과 출처는 아래 ‘한 줄의 무게’에 있습니다.",
+    footnote: "427,524토큰: 긴 작업 세션에서 호출 한 번이 다시 읽은 양의 중앙값. 4분의 3(73.6%): 매 호출의 컨텍스트 가운데 이미 끝난 지시가 남긴 비중. 둘 다 한 사용자의 석 달치 Claude Code 실측(영수증 No.01)입니다. 탄소와 나무는 공개 측정값과 공식 계수로 낸 추정이자 비유이며, 계산과 출처는 아래 ‘한 줄의 무게’에 있습니다.",
     cta1: "내 대화 진단하기",
     cta2: "한 줄의 무게",
     replay: "다시 보기",
@@ -34,11 +34,11 @@ const COPY = {
       "Hello.",
       "To answer those five letters, I just re-read this entire conversation from the very beginning. That was 427,524 tokens.",
       "That one line released the carbon a tree needs {h} hours to breathe in. About what burning a dry twig gives off.",
-      "The person who started this project made AI re-read 5.87 billion tokens in three months. That is {y} years of a tree’s life. 73.6% of it was conversation that was already over.",
+      "And three quarters of what I re-read was conversation that was already over.",
       "How much of your conversation gets re-read?",
     ],
     carbon: "≈ {g} g CO₂ · {h} hours of a tree (est.)",
-    footnote: "427,524 tokens: the measured median re-read per call in a long working session. 5.87 billion and 73.6%: the first bill (user01). Carbon and trees are estimates and metaphors built from published measurements and official factors; the calculation and sources are below, in “The weight of a line”.",
+    footnote: "427,524 tokens: the median re-read per call in a long working session. Three quarters (73.6%): the share of each call’s context left over from instructions already finished. Both measured from one user’s three months of Claude Code (Receipt No. 01). Carbon and trees are estimates and metaphors built from published measurements and official factors; the calculation and sources are below, in “The weight of a line”.",
     cta1: "Check my conversation",
     cta2: "The weight of a line",
     replay: "Replay",
@@ -49,8 +49,7 @@ const COPY = {
 };
 const TOKENS = 427524;
 const LINE = footprint(TOKENS);
-const USER01 = footprint(5871292005);
-const VARS = { h: String(Math.round(LINE.tree_hours)), y: String(Math.round(USER01.tree_years)), g: (Math.round(LINE.g_co2 * 10) / 10).toFixed(1) };
+const VARS = { h: String(Math.round(LINE.tree_hours)), g: (Math.round(LINE.g_co2 * 10) / 10).toFixed(1) };
 const subst = (text) => text.replace(/\{(\w)\}/g, (_, k) => VARS[k]);
 
 const $ = (id) => document.getElementById(id);
