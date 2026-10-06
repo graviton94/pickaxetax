@@ -41,8 +41,9 @@ def test_restart_rules_keep_growth_after_a_real_compaction():
     ctx, starts = [10, 20, 30, 35, 45, 50, 12, 20, 25], [0, 3, 8]
     r = whatif.restart(ctx, starts, base=10, summary=5, every=1)
     assert r["restarts"] == 2
-    # instr 2 restarts at 15 and grows +10, +5; the compaction drops it to 12; the +8 after it is kept
-    assert r["input"] == 10 + 20 + 30 + 15 + 25 + 30 + 12 + 20 + 15
+    # instr 2 restarts at 15 plus what its first call adds (+5), grows +10, +5; the compaction drops it
+    # to 12; the +8 after it is kept; instr 3 restarts at 15 plus its own +5
+    assert r["input"] == 10 + 20 + 30 + 20 + 30 + 35 + 12 + 20 + 20
     # a size trigger restarts only when the replayed context before the instruction is above it
     assert whatif.restart(ctx, starts, base=10, summary=5, threshold=40)["restarts"] == 0
     assert whatif.restart(ctx, starts, base=10, summary=5, threshold=15)["restarts"] == 2

@@ -51,7 +51,7 @@ def test_limit_instructions(tmp_path):
     t = T()
     for i in range(3):
         t.raw({"type": "user", "message": {"role": "user", "content": f"task {i}"}})
-        t.tool(f"e{i}", "Bash", {"command": "x"}).result(f"e{i}", "err", is_error=True)
+        t.tool(f"e{i}", "Bash", {"command": f"step {i}"}).result(f"e{i}", f"err {i}", is_error=True)
     assert run(t, tmp_path, limit_instructions=2)["W2"]["count"] == 2
 
 
@@ -101,7 +101,8 @@ def test_local_subagent_transcripts_are_read_and_kept_apart(tmp_path):
     r = judge.judge_source(path)
     assert r["main"]["calls"] == 1 and r["subagents"]["calls"] == 2
     assert r["W1"]["count"] == 0
-    assert judge.judge_source(path, limit_calls=1)["subagents"]["calls"] == 0  # cut at the snapshot
+    # cut at the snapshot as events.cut does: the sub-agents started by the last kept call belong to it
+    assert judge.judge_source(path, limit_calls=1)["subagents"]["calls"] == 2
 
 
 def test_carry_until_compaction(tmp_path):

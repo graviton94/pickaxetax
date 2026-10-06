@@ -14,12 +14,16 @@ new version (v1), reported as such, and checked on a fresh sample.
 | Category | Score | "yes" when |
 |---|---|---|
 | **W5 Stale context** | Tokens carried over from a finished instruction and resident after their last lexical reuse, summed over the instruction's main-session calls (`pickaxetax.agent.bound`, `lexical-v1`, calibrated, `min_shared` = 1, `common_frac` = 0.02) | the score is ≥ 10% of the instruction's main-session input |
-| **W8 Over-exploration** | Tokens of exploration results (Read, Grep, Glob, WebFetch, WebSearch, LS, NotebookRead, and shell commands that only read: `cat`, `head`, `tail`, `sed -n`, `grep`, `rg`, `find`, `ls`, `tree`, `wc`, `jq`, `git log/show/diff/status/grep/ls-files/blame`) of which fewer than two distinctive words reappear in any later output of the same context (main session, or one sub-agent run) | the score is ≥ 1,000 tokens and ≥ 50% of the instruction's exploration results |
+| **W8 Over-exploration** | Tokens of exploration results (Read, Grep, Glob, WebFetch, WebSearch, LS, NotebookRead, and shell commands that only read: `cat`, `head`, `tail`, `sed -n`, `grep`, `rg`, `find`, `ls`, `tree`, `wc`, `jq`, `git log/show/diff/status/grep/ls-files/blame`) of which fewer than two distinctive words reappear in any later output of the same context (main session, or one sub-agent run) or, for a sub-agent's result, of the main session (its parent) | the score is ≥ 1,000 tokens and ≥ 50% of the instruction's exploration results |
 | **W4 Discarded output** | Tokens of a file written whole (Write) and written whole again later in the session; counted at the instruction that wrote the first version | the score is ≥ 200 tokens |
 
 Distinctive words follow `lexical-v1`: identifiers and paths of six or more characters, Hangul
 words of three or more syllables, numbers of four or more digits, without the words that appear
-in more than 2% of a context's outputs. A word keeps trailing punctuation (`loader.` and
+in more than max(3, 2% of the context's outputs) outputs.
+
+Instructions follow the rule every survey module shares (`pickaxetax.survey.events._is_instruction`),
+and a piece of context belongs to the instruction of the call it came from: a prompt to the call that
+reads it, an output or a tool result to the call before (call *k*'s output is born at *k* + 1). A word keeps trailing punctuation (`loader.` and
 `loader` differ), as in every `lexical-v1` result so far.
 
 ## Sealed machine labels
@@ -39,6 +43,11 @@ label, and are kept away from the labelers until every labels file is in. Their 
 If the packet is re-issued (for example after the data owner's redaction review), the sealed
 files are made again from the same code and their new hashes are committed here before any
 labels are exchanged.
+
+**Re-made 2026-10-06, after the phase 2 code review** (`research/phase2/log.md`, cycle E2), which
+fixed the shared instruction rule in the bound, the attribution of outputs to their instruction,
+a parent-output check in W8 and the de-duplication of tool results in the judge, before any label
+existed. All four sealed files came out byte-identical to the hashes above.
 
 ## What the labels then give
 

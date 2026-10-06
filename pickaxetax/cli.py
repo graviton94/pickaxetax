@@ -631,7 +631,8 @@ def _survey_labeling(args) -> int:
     from .agent import find_transcripts
 
     sessions = {}
-    for i, path in enumerate(find_transcripts(args.paths or None) if (args.paths or not args.pages) else [], 1):
+    paths = _main_transcripts(find_transcripts(args.paths or None)) if (args.paths or not args.pages) else []
+    for i, path in enumerate(paths, 1):
         items = labeling.session_instructions(path)
         if items:
             sessions[f"S{i:02d}"] = items

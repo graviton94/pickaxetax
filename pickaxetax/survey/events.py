@@ -57,7 +57,16 @@ def lines_from(paths):
                             "isMeta": inner.get("isMeta") or inner.get("isSynthetic"), "isCompactSummary": inner.get("isCompactSummary"),
                             "requestId": inner.get("request_id")}
                     events[uid] = (str(line["timestamp"]), line)
-    return [l for _, l in sorted(events.values(), key=lambda x: x[0])]
+    return [l for _, l in sorted(events.values(), key=lambda x: _when(x[0]))]
+
+
+def _when(ts: str):
+    """Sort key: parsed time, so mixed precisions (…07.840077Z, …08.3Z) order correctly."""
+    from datetime import datetime
+    try:
+        return (0, datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp(), ts)
+    except ValueError:
+        return (1, 0.0, ts)
 
 
 def _is_instruction(d):

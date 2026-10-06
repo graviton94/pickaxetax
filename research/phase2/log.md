@@ -184,3 +184,42 @@ loop shares are robust to the definition (0.3–2.1%).
 Retry waste is small. The step lever is in ordinary chains: fewer, larger steps (batched reads,
 scripts that do more per call), or the same steps in a smaller context. Inline scripts tie back to
 cycle A2: they are written into the context and then carried.
+
+## Cycle D2 — what compaction costs (`D2-compaction.md`)
+
+**Found.** 34 compactions in 7 sessions, all near the same ceiling (median 783k tokens before, 64k
+after: 12× compression). The compaction call itself leaves no usage record. Within each cycle the
+last quarter's calls carry 4.3× the context of the first quarter's, and **the top quarter of every
+cycle takes 35.4% of all main-session input**. After a compaction, 66% of reads are re-reads of
+files already read — but mid-cycle the share is 74–80%: re-reading is the agent's habit, not a
+compaction effect. Compacting at half the observed ceiling would cut input by 39% and cost by 29%
+with the observed re-read burden applied (more summaries, untested quality).
+
+**Discussion.** The re-read habit is evidence for the pointer levers: content that leaves the
+context is fetched again when it is needed. It is also evidence against the "summary is enough"
+fear being the whole story: the agent re-reads anyway.
+
+## Cycle E2 — independent code review, and the fixes
+
+**Review.** A separate reviewer read the judge, rules, what-if, labeling, events and bound code and
+wrote failing tests for each suspected bug (now `tests/test_review_e2.py`):
+1. the judge's `--limit-calls` stopped at the first line of call N and lost its tool results and
+   sub-agents (events.cut keeps them);
+2. the W5 detector and the bound used a different instruction rule from everything else;
+3. a tool result logged twice counted as a repeat;
+4. `survey sample` numbered sub-agent files as sessions (labels shift against `survey machine`);
+5. an instruction's final answer was attributed to the next instruction (carried undercounted);
+6. the restart what-if dropped the new instruction's first growth (savings overstated);
+plus four doc mismatches (W1-before-W2 precedence; 1.25× vs 2× write prices; W8's parent check;
+the common-word threshold).
+
+**Develop.** All fixed; the shared instruction rule (`events._is_instruction`) is now the only one;
+`bound.origin` attributes a piece to the call it came from; event lines sort by parsed time.
+185 tests pass.
+
+**Audit of the effect.** The floor is unchanged in its headline (0.0008% tokens, 8.92% cost; W1 266,
+W2 346; steps 2.6%). The oracle policies are unchanged (5.6 / 41.5 / 46.1%). The visible context
+carried over from finished instructions is 46.5% of input (was 50.8% under the bound's own looser
+instruction rule); never used again 5.1% (was 5.4%). The restart what-ifs moved by up to 0.8 points
+(above 200k: 58.5%). **The sealed machine labels came out byte-identical**, so the rule-tier
+pre-registration stands as committed.

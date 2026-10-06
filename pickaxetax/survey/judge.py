@@ -33,7 +33,7 @@ import os
 from datetime import datetime
 
 from ..tokens import estimate_tokens
-from .events import lines_from
+from .events import _is_instruction, cut, lines_from
 
 SCHEMA = "pickaxetax.survey.judge.v1"
 CODEBOOK = "v1"
@@ -110,6 +110,9 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     bad = {}  # tool_use_id -> "W1" | "W2"
     instructions = 0
     flags = []  # per instruction: set of categories
+    seen_results = set()  # a tool_use_id answered twice in the log is one result, not a repeat
+    # cut at the snapshot exactly as the dataset and `survey machine` do (events.cut)
+    lines = cut(lines, limit_calls, limit_instructions)
     def flag(cat, at=None):
         i = (instructions if at is None else at) - 1
         if per_instruction and i >= 0:
@@ -126,18 +129,31 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
         bucket = "side" if d.get("isSidechain") else "main"
         content = m.get("content")
         if d.get("type") == "user":
-            blocks = content if isinstance(content, list) else [{"type": "text", "text": content}]
+            if _is_instruction(d):  # the rule measure, labeling, rules and the bound share
+                instructions += 1
+                flags.append(set())
+                continue
+            blocks = content if isinstance(content, list) else []
             results = [b for b in blocks if isinstance(b, dict) and b.get("type") == "tool_result"]
-            if not results and not d.get("isSidechain") and not d.get("isMeta") and not d.get("isCompactSummary"):
-                text = " ".join(str(b.get("text", "")) for b in blocks if isinstance(b, dict) and b.get("type") == "text")
-                if text.strip() and "<system-reminder>" not in text[:200] and not text.lstrip().startswith("<"):
-                    instructions += 1
-                    if limit_instructions is not None and instructions > limit_instructions:
-                        break
-                    flags.append(set())
             for b in results:
+                if b.get("tool_use_id") in seen_results:
+                    continue
+                seen_results.add(b.get("tool_use_id"))
                 text = _result_text(b.get("content"))
                 tok = estimate_tokens(text)
+                use = uses.get(b.get("tool_use_id"))
+                h = hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()
+                prev = last_result.get(use) if use else None
+                if use:
+                    last_result[use] = (h, epoch)
+                if prev and prev == (h, epoch):  # W1 before W2 (codebook precedence): an identical retry
+                    w1["tokens"] += tok
+                    w1["count"] += 1
+                    flag("W1")
+                    bad[b.get("tool_use_id")] = "W1"
+                    if bucket == "main":
+                        arrivals.append(("W1", tok, len(calls), epoch))
+                    continue
                 if b.get("is_error"):
                     w2["tokens"] += tok
                     w2["count"] += 1
@@ -145,20 +161,6 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                     bad[b.get("tool_use_id")] = "W2"
                     if bucket == "main":
                         arrivals.append(("W2", tok, len(calls), epoch))
-                    continue
-                use = uses.get(b.get("tool_use_id"))
-                if not use:
-                    continue
-                h = hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()
-                prev = last_result.get(use)
-                if prev and prev == (h, epoch):
-                    w1["tokens"] += tok
-                    w1["count"] += 1
-                    flag("W1")
-                    bad[b.get("tool_use_id")] = "W1"
-                    if bucket == "main":
-                        arrivals.append(("W1", tok, len(calls), epoch))
-                last_result[use] = (h, epoch)
         elif d.get("type") == "assistant":
             sid = str(m.get("id") or d.get("requestId"))
             st = steps.setdefault(sid, {"ctx": 0, "tools": [], "text": False})
@@ -191,8 +193,6 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             by_ctx[bucket]["input"] += inp + cr + cw
             if bucket == "main":
                 calls.append((inp + cr + cw, cr, cw, _ts(d.get("timestamp")), m.get("model"), epoch, instructions, rate))
-                if limit_calls is not None and len(calls) >= limit_calls:
-                    break
     w6 = {"tokens": 0, "count": 0, "price_units": 0.0,
           "by_cause": {k: {"tokens": 0, "count": 0, "price_units": 0.0} for k, _ in GAPS + (("unknown", None),)}}
     for (pctx, _, _, pt, pm, _, _, _), (ctx, cr, cw, t, mdl, _, at, rate) in zip(calls, calls[1:]):

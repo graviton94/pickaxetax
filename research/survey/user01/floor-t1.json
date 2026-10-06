@@ -895,12 +895,12 @@
     "input": 0
    },
    "W1": {
-    "tokens": 36,
-    "count": 48
+    "tokens": 40,
+    "count": 49
    },
    "W2": {
-    "tokens": 10299,
-    "count": 72
+    "tokens": 10295,
+    "count": 71
    },
    "W6": {
     "tokens": 6099736,
@@ -935,17 +935,17 @@
     }
    },
    "carried_by_later_calls": {
-    "W1": 16404,
-    "W2": 2146789
+    "W1": 16660,
+    "W2": 2146533
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 47,
-     "input": 23506204
+     "calls": 48,
+     "input": 24057566
     },
     "W2": {
-     "calls": 55,
-     "input": 20936622
+     "calls": 54,
+     "input": 20385260
     },
     "W1_by_tool": {
      "Read": {
@@ -953,14 +953,14 @@
       "input": 22472489
      },
      "Bash": {
-      "calls": 3,
-      "input": 1033715
+      "calls": 4,
+      "input": 1585077
      }
     },
     "W2_by_tool": {
      "Bash": {
-      "calls": 52,
-      "input": 19974367
+      "calls": 51,
+      "input": 19423005
      },
      "WebFetch": {
       "calls": 1,
@@ -992,17 +992,17 @@
   "calls": 18543,
   "subagent_input": 260563333,
   "carried_by_later_calls": {
-   "W1": 409183,
-   "W2": 9351115
+   "W1": 409439,
+   "W2": 9350859
   },
   "steps_spent_only_on": {
    "W1": {
-    "calls": 222,
-    "input": 92455835
+    "calls": 223,
+    "input": 93007197
    },
    "W2": {
-    "calls": 256,
-    "input": 84431767
+    "calls": 255,
+    "input": 83880405
    },
    "W1_by_tool": {
     "mcp": {
@@ -1014,8 +1014,8 @@
      "input": 79553746
     },
     "Bash": {
-     "calls": 15,
-     "input": 6411275
+     "calls": 16,
+     "input": 6962637
     },
     "ToolSearch": {
      "calls": 1,
@@ -1024,8 +1024,8 @@
    },
    "W2_by_tool": {
     "Bash": {
-     "calls": 239,
-     "input": 77732930
+     "calls": 238,
+     "input": 77181568
     },
     "mcp": {
      "calls": 5,
@@ -1070,12 +1070,12 @@
    "cache_write_1h": 74491609
   },
   "W1": {
-   "tokens": 3410,
-   "count": 265
+   "tokens": 3414,
+   "count": 266
   },
   "W2": {
-   "tokens": 52440,
-   "count": 347
+   "tokens": 52436,
+   "count": 346
   },
   "W6": {
    "tokens": 39200727,

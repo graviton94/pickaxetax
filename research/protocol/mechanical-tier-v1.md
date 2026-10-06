@@ -21,6 +21,15 @@ Each sub-agent run is its own context: a local transcript's sub-agent files
 (`<session>/subagents/*.jsonl`) are read with it, and event-API lines are keyed by the tool
 call that started the sub-agent (`parent_tool_use_id`).
 
+Each tool result counts once, however many times the log repeats it (keyed by its tool-use id).
+When a repeated call fails identically, it is W1 (the codebook's precedence: the earlier category
+wins), and its first failure is W2. Snapshot cuts (`--limit`, `--limit-calls`) keep everything up
+to the next main-session call, as `pickaxetax.survey.events.cut` does for the dataset: the results
+and sub-agent runs a kept call started belong to it.
+
+Prices: the codebook (§4) gives cache writes at 1.25×, which is the provider's 5-minute write price;
+1-hour writes cost 2×, and the judge prices each call's writes by the split its usage records.
+
 Token estimates for tool results use `pickaxetax.tokens.estimate_tokens`. Cache figures come
 from the provider-recorded usage of each call.
 

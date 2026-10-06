@@ -98,9 +98,13 @@ def read_trace_lines(lines, keep_text: bool = False) -> Trace:
         if n:
             t.segments.append(Segment(kind, n, birth, frozenset(TOKEN_RE.findall(text)), text=text if keep_text else ""))
 
+    from ..survey.events import _is_instruction  # the instruction rule every survey module shares
+
     for d in lines:
         if not isinstance(d, dict) or d.get("isSidechain"):
             continue
+        if _is_instruction(d) and (not t.instruction_starts or t.instruction_starts[-1] != len(t.contexts)):
+            t.instruction_starts.append(len(t.contexts))
         if d.get("type") == "system" and d.get("subtype") == "compact_boundary":
             if not t.compactions or t.compactions[-1] != len(t.contexts):
                 t.compactions.append(len(t.contexts))
@@ -151,10 +155,7 @@ def read_trace_lines(lines, keep_text: bool = False) -> Trace:
                     add("tool_result", _text(b.get("content")), birth)
                 elif b.get("type") == "text":
                     s = str(b.get("text", ""))
-                    kind = "harness" if d.get("isMeta") or "<system-reminder>" in s else "user_prompt"
-                    add(kind, s, birth)
-                    if kind == "user_prompt" and s.strip() and (not t.instruction_starts or t.instruction_starts[-1] != birth):
-                        t.instruction_starts.append(birth)
+                    add("harness" if d.get("isMeta") or "<system-reminder>" in s else "user_prompt", s, birth)
     return t
 
 
@@ -219,6 +220,12 @@ def calibrate(t: Trace, min_tokens: int = 2_000) -> float:
     return factor
 
 
+def origin(s: Segment) -> int:
+    """The call a segment came from: a prompt arrives at the call that reads it (`birth`); an
+    output or a tool result belongs to the call before (call k's output is born at k + 1)."""
+    return s.birth if s.kind in ("user_prompt", "harness", "compact_summary") else s.birth - 1
+
+
 def needed(s: Segment, penalty: float) -> float:
     """Token-calls the oracle spends on one segment for a given re-fetch cost."""
     if not s.refs:
@@ -253,7 +260,7 @@ def bound(t: Trace, penalties=DEFAULT_PENALTIES) -> dict:
     for s in t.segments:
         if s.kind == "unattributed" or s.end <= s.birth:
             continue
-        i = bisect.bisect_right(starts, s.birth)
+        i = bisect.bisect_right(starts, origin(s))
         nxt = starts[i] if i < len(starts) else s.end
         a = max(nxt, s.birth)
         if a >= s.end:

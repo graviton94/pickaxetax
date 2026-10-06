@@ -47,7 +47,7 @@ def restart(ctx: list[int], starts: list[int], base: int, summary: int, every: i
             if k == 0:
                 s = x
             elif k == a and go:
-                s = min(x, base + summary)
+                s = min(x, base + summary + max(0, x - ctx[k - 1]))  # keep what the new instruction adds
                 restarts += 1
             else:
                 d = x - ctx[k - 1]

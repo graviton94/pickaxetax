@@ -26,7 +26,10 @@ Everything measured in phase 2 is a statement about one of the two factors.
 Within the context, **the agent's own writing** (file bodies, inline scripts, edits) is the largest
 visible item: 22.9% of input, carried long after it was written and read back only about 15% of the
 time (cycle A2). Large tool results are not the problem: cost is spread over thousands of mid-size
-pieces (cycle A).
+pieces (cycle A). Compaction fires only near the ceiling (about 783k, down to about 64k): the top
+quarter of every cycle takes 35% of all main-session input (cycle D2). The agent re-reads files it
+has already read all the time (about three reads in four, compaction or not), so content dropped
+from the context does come back when needed.
 
 ## 2. The levers on one scale
 
@@ -41,8 +44,9 @@ Share of main-session input that would not have been processed, with what each l
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | cut part re-read on reuse | no | harness | A |
 | Remove every retry and polling loop | about 1.4% (0.3–2.1%) | loops were avoidable | no | agent | B2 |
 | **Carry a pointer instead of what the agent wrote** | **about 20%** (10.5% file bodies only) | the agent re-reads when it needs it | no | harness / agent convention | A2 |
-| **New session above 200k tokens at an instruction boundary** | **58.6%** | a 10k summary is enough | no | the user, today | B |
-| New session every 3 / 10 instructions | 58.6% / 31.2% | same | no | the user, today | B |
+| **New session above 200k tokens at an instruction boundary** | **58.5%** | a 10k summary is enough | no | the user, today | B |
+| New session every 3 / 10 instructions | 57.9% / 30.8% | same | no | the user, today | B |
+| Compact at half the usual ceiling (about 390k instead of 780k) | 39% of input, 29% of cost, re-reads included | the more frequent summaries lose nothing needed | no | harness | D2 |
 | Compact before leaving (breaks over 1 h) | up to 29% of cost | a 30k summary is enough | no | the user / harness | C |
 | Delegate reading to sub-agents (11–50 calls) | 1.4–5.1× cheaper than reading in the main session | the same reads were needed | no | the agent | D |
 
@@ -67,4 +71,3 @@ Share of main-session input that would not have been processed, with what each l
 - Blind labels: W4, W5, W8 detectors, and whether the "steps spent only on errors" are waste or
   verification.
 - n > 1: other people's transcripts through `pxt survey run`.
-- Compaction cost (cycle D2): pending.
