@@ -2,7 +2,8 @@
 // The packet is read from a local file and never leaves this tab (CSP connect-src 'none').
 // Labels autosave in this browser and are exported as a file holding ids and choices only.
 
-const CATS = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"];
+const ALL_CATS = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"];
+let CATS = ALL_CATS; // a packet may ask only some categories (`categories`), e.g. a data-owner check
 const CHOICES = ["yes", "no", "unsure"];
 const OUTCOMES = ["met", "partial", "not_met", "unsure"];
 
@@ -454,7 +455,7 @@ function exportLabels() {
   const labels = {};
   for (const id of state.order) if (state.labels[id]) labels[id] = state.labels[id];
   const out = { schema: "pickaxetax.labels.v1", codebook: packet.codebook, packet: packet.sha256, phase: state.phase,
-    coder: state.coder, ui_lang: lang, exported: new Date().toISOString(), items: state.order.length, labels };
+    coder: state.coder, ui_lang: lang, categories: CATS, exported: new Date().toISOString(), items: state.order.length, labels };
   const blob = new Blob([JSON.stringify(out, null, 1)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = el("a");
@@ -477,6 +478,11 @@ $("packet").addEventListener("change", async () => {
     const p = JSON.parse(await f.text());
     if (!validPacket(p)) throw new Error();
     packet = p;
+    const noCal = !p.calibration.length; // a packet with no practice round starts at the main round
+    document.querySelector('input[name="phase"][value="calibration"]').disabled = noCal;
+    if (noCal) document.querySelector('input[name="phase"][value="main"]').checked = true;
+    CATS = Array.isArray(p.categories) && p.categories.length && p.categories.every((c) => ALL_CATS.includes(c)) ? p.categories : ALL_CATS;
+    buildForm();
     $("packet-info").textContent = `codebook ${p.codebook} · ${p.calibration.length} + ${p.items.length} · ${p.sha256.slice(0, 12)}…`;
     $("start").disabled = false;
   } catch { $("setup-err").textContent = t("bad_packet"); }
