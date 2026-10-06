@@ -1,6 +1,6 @@
 # Proposal: a "survey" contribution kind (n > 1)
 
-Status: **proposal, not implemented** — a contribution schema change is the maintainer's decision
+Status: **proposal, not implemented; postponed by the data owner until after the blind labels (2026-10-06)** — a contribution schema change is the maintainer's decision
 (both validators, `pickaxetax/contrib.py` and `site/contrib.js`, must change together and stay in
 parity, and the public aggregate gains a new block).
 
