@@ -90,7 +90,10 @@ def _result_text(content) -> str:
     return json.dumps(content, ensure_ascii=False, sort_keys=True)
 
 
-def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int | None = None) -> dict:
+def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int | None = None,
+                per_instruction: bool = False) -> dict:
+    """per_instruction: also return, for each instruction in order, the T1 categories that
+    occurred while it was current (to compare with blind human labels of the same items)."""
     seen_msg = set()
     calls = []  # main-chain calls: (ctx, cache_read, cache_write, time, model)
     totals = {"input": 0, "cache_read": 0, "cache_write": 0}
@@ -102,6 +105,11 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     w2 = {"tokens": 0, "count": 0}
     arrivals = []  # (category, tokens, index of the next main call, epoch) for W1/W2 on the main chain
     instructions = 0
+    flags = []  # per instruction: set of categories
+    def flag(cat, at=None):
+        i = (instructions if at is None else at) - 1
+        if per_instruction and i >= 0:
+            flags[i].add(cat)
     for d in lines:
         if d.get("type") == "system" and d.get("subtype") == "compact_boundary":
             epoch += 1
@@ -122,12 +130,14 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                     instructions += 1
                     if limit_instructions is not None and instructions > limit_instructions:
                         break
+                    flags.append(set())
             for b in results:
                 text = _result_text(b.get("content"))
                 tok = estimate_tokens(text)
                 if b.get("is_error"):
                     w2["tokens"] += tok
                     w2["count"] += 1
+                    flag("W2")
                     if bucket == "main":
                         arrivals.append(("W2", tok, len(calls), epoch))
                     continue
@@ -139,6 +149,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                 if prev and prev == (h, epoch):
                     w1["tokens"] += tok
                     w1["count"] += 1
+                    flag("W1")
                     if bucket == "main":
                         arrivals.append(("W1", tok, len(calls), epoch))
                 last_result[use] = (h, epoch)
@@ -161,11 +172,11 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             by_ctx[bucket]["calls"] += 1
             by_ctx[bucket]["input"] += inp + cr + cw
             if bucket == "main":
-                calls.append((inp + cr + cw, cr, cw, _ts(d.get("timestamp")), m.get("model"), epoch))
+                calls.append((inp + cr + cw, cr, cw, _ts(d.get("timestamp")), m.get("model"), epoch, instructions))
                 if limit_calls is not None and len(calls) >= limit_calls:
                     break
     w6 = {"tokens": 0, "count": 0, "by_cause": {k: {"tokens": 0, "count": 0} for k, _ in GAPS + (("unknown", None),)}}
-    for (pctx, _, _, pt, pm, _), (ctx, cr, cw, t, mdl, _) in zip(calls, calls[1:]):
+    for (pctx, _, _, pt, pm, _, _), (ctx, cr, cw, t, mdl, _, at) in zip(calls, calls[1:]):
         if ctx < pctx:  # the context shrank: compaction or a cleared session, new content
             continue
         missed = min(cw, pctx - cr)
@@ -180,6 +191,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                 cause = next(k for k, lim in GAPS[1:] if t - pt < lim)
             w6["by_cause"][cause]["tokens"] += missed
             w6["by_cause"][cause]["count"] += 1
+            flag("W6", at)
     # descriptive, not in the floor: a W1/W2 result stays in the context and is processed again
     # by every later main-chain call until the next compaction (that carry is W5's to judge)
     carried = {"W1": 0, "W2": 0}
@@ -191,7 +203,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     # W6 tokens would have been read anyway, so only the write premium over a read is waste
     removable = w1["tokens"] + w2["tokens"]
     floor_price = removable * PRICE["cache_write"] + w6["tokens"] * (PRICE["cache_write"] - PRICE["cache_read"])
-    return {
+    out = {
         "instructions": min(instructions, limit_instructions) if limit_instructions is not None else instructions,
         "calls": by_ctx["main"]["calls"] + by_ctx["side"]["calls"],  # calls that processed input
         "input_processed": processed,
@@ -205,6 +217,9 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
         "floor_pct_of_input": round(100 * removable / processed, 4) if processed else 0,
         "floor_pct_price_weighted": round(100 * floor_price / price_total, 2) if price_total else 0,
     }
+    if per_instruction:
+        out["per_instruction"] = [sorted(f) for f in flags]
+    return out
 
 
 def judge_source(source, limit_instructions: int | None = None, limit_calls: int | None = None) -> dict:

@@ -152,6 +152,15 @@ def main(argv: list[str] | None = None) -> int:
     sj.add_argument("--limit-calls", action="append", default=[], metavar="LABEL=N",
                     help="stop a session after its first N main-session API calls")
     sj.add_argument("--out", help="write the numbers-only report as JSON")
+    sm2 = svsub.add_parser("machine", help="the T1 judge's labels for a packet's items (W1, W2, W6), to compare with "
+                                            "the consensus labels after human labeling is closed")
+    sm2.add_argument("packet")
+    sm2.add_argument("paths", nargs="*", help="the transcripts the packet was drawn from, in the same order")
+    sm2.add_argument("--pages", action="append", default=[], metavar="LABEL=LISTFILE")
+    sm2.add_argument("--limit", action="append", default=[], metavar="LABEL=N", help="the same instruction cut as the packet")
+    sm2.add_argument("--limit-calls", action="append", default=[], metavar="LABEL=N")
+    sm2.add_argument("--phase", choices=("main", "calibration"), default="main")
+    sm2.add_argument("--out", default="labels-machine.json")
     sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
     sa.add_argument("labels", nargs=2)
     sa.add_argument("--json", action="store_true")
@@ -406,6 +415,8 @@ def _survey(args) -> int:
         return _survey_labeling(args)
     if args.survey_cmd == "judge":
         return _survey_judge(args)
+    if args.survey_cmd == "machine":
+        return _survey_machine(args)
     if args.survey_cmd == "report":
         with open(args.dataset, encoding="utf-8") as f:
             ds = json.load(f)
@@ -482,6 +493,37 @@ def _survey_judge(args) -> int:
     if causes:
         print(f"W6 by what came before the re-write: {causes}")
     print("Floor only: the mechanical tier of codebook v1. W3, W4, W5, W7, W8 need validated rules or human judgment.")
+    return 0
+
+
+def _survey_machine(args) -> int:
+    from .agent import find_transcripts
+    from .survey import events, judge, labeling
+
+    with open(args.packet, encoding="utf-8") as f:
+        packet = json.load(f)
+    limits = {k: int(v) for k, _, v in (x.partition("=") for x in args.limit)}
+    call_limits = {k: int(v) for k, _, v in (x.partition("=") for x in args.limit_calls)}
+    sources = {}
+    paths = find_transcripts(args.paths or None) if (args.paths or not args.pages) else []
+    for i, path in enumerate([p for p in paths if os.path.basename(os.path.dirname(p)) != "subagents"], 1):
+        sources[f"S{i:02d}"] = list(judge._with_subagents(path))
+    for spec in args.pages:
+        label, _, listfile = spec.partition("=")
+        with open(listfile, encoding="utf-8") as f:
+            sources[label] = events.lines_from([l.strip() for l in f if l.strip()])
+    lines = {k: events.cut(v, call_limits.get(k), limits.get(k)) for k, v in sources.items()}
+    try:
+        lab = labeling.machine_labels(packet, lines, phase=args.phase)
+    except ValueError as e:
+        print(str(e), file=sys.stderr)
+        return 1
+    with open(args.out, "w", encoding="utf-8") as f:
+        json.dump(lab, f, ensure_ascii=False, indent=1)
+    yes = {c: sum(v[c] == "yes" for v in lab["labels"].values()) for c in labeling.MACHINE_CATEGORIES}
+    print(f"wrote {args.out}: {len(lab['labels'])} items, yes: " + ", ".join(f"{c} {n}" for c, n in yes.items()))
+    print("Keep it away from labelers until every labels file is in; then compare with "
+          "`pxt survey agreement consensus.json " + args.out + "`.")
     return 0
 
 

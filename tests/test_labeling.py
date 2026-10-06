@@ -100,3 +100,25 @@ def test_exclude_items_of_an_earlier_packet(tmp_path):
     later = labeling.build_packet(sessions, n=4, calibration=0, seed=8, exclude=labeling.shown_items(pilot))
     assert not labeling.shown_items(pilot) & labeling.shown_items(later)
     assert later["population"]["excluded"] == 5
+
+
+def test_machine_labels_follow_the_packet(tmp_path):
+    from pickaxetax.survey import judge
+    path = session(tmp_path, "a.jsonl", 6)   # instruction 2 has an error result (W2)
+    sessions = {"S01": labeling.session_instructions(path)}
+    p = labeling.build_packet(sessions, n=6, calibration=0, seed=3)
+    lines = list(judge._jsonl(path))
+    m = labeling.machine_labels(p, {"S01": lines})
+    assert labeling.validate_labels(m) == [] and set(m["labels"]) == {x["id"] for x in p["items"]}
+    by_index = {x["index"]: m["labels"][x["id"]] for x in p["items"]}
+    assert by_index[2]["W2"] == "yes" and all(v["W2"] == "no" for i, v in by_index.items() if i != 2)
+    assert "W5" not in by_index[0]
+    # it compares with human labels through the same agreement report
+    human = {**m, "coder": "A", "labels": {k: {**v, "W5": "no"} for k, v in m["labels"].items()}}
+    r = labeling.agreement(human, m)
+    assert r["categories"]["W2"]["agree_pct"] == 100.0 and r["categories"]["W5"]["n"] == 0
+    out = tmp_path / "m.json"
+    pk = tmp_path / "p.json"
+    pk.write_text(json.dumps(p))
+    assert main(["survey", "machine", str(pk), path, "--out", str(out)]) == 0
+    assert json.loads(out.read_text())["labels"] == m["labels"]

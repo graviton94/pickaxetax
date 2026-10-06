@@ -46,6 +46,17 @@ I measured this research too. Fetching the records took 45% of the research sess
 
 #AntiTokenMaxing #AI #LLM #TOKENMAXING #GREENAI
 
+## 첫 댓글 (링크)
+
+데이터와 판정 규칙, 결과 전부: https://github.com/graviton94/pickaxetax/blob/main/research/survey/user01/floor-t1.md
+판정 기준 v1: https://github.com/graviton94/pickaxetax/blob/main/research/protocol/waste-codebook-v1.md
+영수증 판 2: https://graviton94.github.io/pickaxetax/report/user01.html
+1편: https://lnkd.in/p/esfBHm8W
+
+Data, rules and results: the links above (in English and Korean).
+
+(게시 전 확인: PR #4가 main에 머지돼 첫 두 링크가 열리는지, 사이트 판 2 브랜치가 머지돼 영수증이 판 2인지.)
+
 ## 출처
 
 - 기준: `research/survey/user01/dataset-v2.json` → `report-v2.html`, 기계 판정 결과 `research/survey/user01/floor-t1.json`

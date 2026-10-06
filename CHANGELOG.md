@@ -8,6 +8,7 @@
 - Event pages: raw control characters in tool output are accepted; sub-agent usage is measured; `measure_pages` can cut a session at a snapshot (calls or instructions). Local transcripts are judged with their `subagents/` files.
 - Report: no partial-measurement sentences when no session is partial.
 - `pxt survey sample --exclude` and `--limit`; the labeling page in five languages.
+- `pxt survey machine`: the T1 judge's decisions on a packet's items as a labels file, to check the mechanical tier against the consensus labels with the same agreement report. `pxt survey judge` can return per-instruction categories.
 - **Labeling:** `pxt survey sample` draws a blind-labeling packet from your own transcripts (stratified, seeded, optional redaction); `site/label.html` lets anyone label it in the browser with no account and nothing uploaded; `pxt survey agreement` computes Cohen's kappa per category from two labels files. Procedure: `research/protocol/labeling.md`.
 - **Research:** waste codebook v1 (eight categories, frozen before any judgment).
 

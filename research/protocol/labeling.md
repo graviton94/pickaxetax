@@ -41,6 +41,13 @@ agreement from the two labels files.
    rule-tier detector (W2 retries, W3, W4 file lifecycle, W5 use detector), which correct the
    machine estimates over the whole population. Categories below the κ bar are reported as
    "not measured".
+8. **Check the mechanical tier against people.** `pxt survey machine packet.json [transcripts]
+   --out labels-machine.json` writes the T1 judge's decisions (W1, W2, W6) on the same items as a
+   labels file. It is made only after every labels file is in, and never shown to labelers.
+   `pxt survey agreement consensus.json labels-machine.json` then reports how often the code and
+   the people agree. Disagreements are published with the T1 result: where people saw waste the
+   code did not count, the floor is confirmed as a floor; where the code counted waste people
+   did not see, the rule is reviewed (a change is a new version).
 
 ## What gets published
 
