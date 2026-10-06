@@ -241,3 +241,37 @@ as a statement about the tokens. Recorded for the data owner; note 1 is posted a
 **Discussion.** Nothing here suggests the pattern is a passing phase of one model or one month; it
 also cannot show it is not. Separating model, date and task needs the same tasks on different models
 in the same weeks (an E2-style experiment).
+
+## Cycle C3 — what one unit of delivered work cost (`C3-value-per-token.md`)
+
+**Found.** Over the ten sessions: 690 commits, about 1,556 files written, 1.96 million tokens written
+to files. **One commit cost a median of 7.5 million input tokens processed** (IQR 5.3–13.1M; pooled
+9.9M); **one token written to disk, about 2,500** (pooled 3,500). Sessions of 0.6 billion input or
+more pay about 1.5× more per commit and 2.9× more per written token than small ones, while API calls
+per commit stay near 25: the difference is the weight each call carries, not the number of calls.
+Cache-weighted, a commit is about 0.9M token-equivalents. In the three sessions with real output
+counts, 9–24% of output tokens became file content.
+
+**Review.** Denominators are proxies (commits differ in size; scripts that write files are missed;
+design and research sessions deliver documents and images). Tests, PRs and artifacts are too sparse
+to use.
+
+**Discussion.** This is the receipt in units people understand. It also closes the loop with the
+mechanism: bigger sessions are less efficient per unit of work because of context weight, which is
+exactly what the restart and pointer levers attack.
+
+## Cycle E3 — how much the conclusions depend on the detector (`E3-detector-robustness.md`)
+
+**Found.** Six detector variants. The **size of the paging opportunity is robust** (fetch on demand
+35–54%, free fetching 42–55% across all variants). **"Paging beats forgetting" holds for every
+lexical variant** (31–40 points pooled, ≥ 11.6 in every session) but not for a windowed detector
+that marks large results unused when only part of them was needed (rejected for that bias).
+**"Forgetting alone is small" is the least robust**: 3.0% to 18.9% across lexical variants.
+Stripping trailing punctuation and matching basenames (V1) moves the headline by 0.2 points.
+
+**Develop (proposal).** lexical-v2 = V1 as the default, with V2 (looser, conservative) and V4
+(stricter, optimistic) as the published band; decided only after the blind labels, which measure
+recall and precision of each.
+
+**Discussion.** Note 2's "4–25%" for forgetting covers the lexical band; its wording (estimated from
+overlapping words, to be checked by blind labeling) stands.

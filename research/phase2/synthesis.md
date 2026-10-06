@@ -52,11 +52,22 @@ Share of main-session input that would not have been processed, with what each l
 
 (Savings are not additive: several levers act on the same context.)
 
-## 3. What follows
+## 3. In units of work
 
-1. **Forgetting is a small lever; carrying is the big one.** Content is mostly used again later, but
-   between uses it is re-read on every call. That is why dropping dead content saves little and why
-   simple "recently used" rules either miss needed content or save little.
+One commit cost a median of 7.5 million input tokens processed (pooled 9.9M; about 0.9M
+cache-weighted), and one token written to disk about 2,500. Large sessions pay 1.5× more per commit
+and 2.9× more per written token than small ones at the same number of calls per commit: the
+difference is context weight (cycle C3). The pattern shows no trend over the eight weeks measured
+and is the same on the two main model versions, though model, date and tooling cannot be separated
+at n = 10 (cycle D3).
+
+## 4. What follows
+
+1. **Carrying is the big lever; forgetting is smaller and less certain.** Content is mostly used again
+   later, but between uses it is re-read on every call. The paging opportunity is robust to how
+   reuse is detected (35–54% across six detectors, cycle E3); how little forgetting alone saves is
+   not (3–19% across lexical detectors), which the blind labels have to settle. Simple "recently
+   used" rules either miss needed content or save little.
 2. **The levers that need no foresight act on context size**: start smaller (restart, delegate),
    or carry pointers to what already exists elsewhere (the agent's own writes). The largest of them
    are available to a user today (restart rules) or to a harness (pointers to written content).
@@ -66,7 +77,7 @@ Share of main-session input that would not have been processed, with what each l
 4. **Two disclosures would remove the largest unknowns**: thinking tokens reported separately in
    usage, and final output tokens in event logs.
 
-## 4. Open in phase 2
+## 5. Open in phase 2
 
 - Blind labels: W4, W5, W8 detectors, and whether the "steps spent only on errors" are waste or
   verification.
