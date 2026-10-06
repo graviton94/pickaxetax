@@ -145,3 +145,24 @@ settle it. That is a concrete disclosure to ask for.
 
 **Develop (later).** Count images in the bound (as a visible segment kind) — a `lexical-v1` change,
 so a new method version; deferred until after the labels.
+
+## Cycle A2 — content that is both on disk and in the context (`A2-authored-content.md`)
+
+**Found.** What the agent itself wrote — Write/Edit inputs and content written inline through the
+shell (file bodies, inline scripts) — holds 39.7% of the visible residency, **22.9% of measured
+input**; file bodies that sit on disk alone, 11.8%. It stays carried (78% idle, 5.7% dead) and only
+about 15% of it is ever read back. Replacing each such input after its call by a 30-token stub
+(path and hash) and re-reading it on every later lexical reuse at 1,000 tokens would save about
+**20% of measured input** (10.5% for file bodies only), and the saving barely depends on the
+re-read price (break-even about 8,600 tokens a re-read).
+
+**Review.** Inline scripts are about 70% of the shell writers (analysis code, not file bodies), so the
+strict figure is the on-disk 11.8% / 10.5%. The stub model ignores that an Edit needs the exact old
+text and that the model may not know when to re-read: an upper bound. It agrees with the n = 1 bound
+(persisted writes were the largest visible item there too).
+
+**Discussion.** This is the first lever found that needs no foresight: the content already lives on
+disk, the agent knows its path, and re-reading is a normal tool call. Unlike the simple recency
+policies (about 3% at a low miss rate), a "write, then carry a pointer" convention targets exactly
+the content that is least read back. It is a harness or agent-convention change, testable in a
+controlled experiment (phase 3).
