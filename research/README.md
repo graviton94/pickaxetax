@@ -7,6 +7,9 @@ Theory and measurements behind Pickaxe Tax. The goal is to replace "AI wastes co
 | [framework.md](framework.md) | Units (compute per valuable outcome → memory residency), efficiency and waste, value measurement, the Jevons stance, propositions |
 | [belady-bound.md](belady-bound.md) | The offline-optimal context bound: model, proof, measurement and first results |
 | [hypotheses.md](hypotheses.md) | Every hypothesis with its result, failures included |
+| [protocol/waste-codebook-v1.md](protocol/waste-codebook-v1.md) | What counts as waste: eight categories, evidence tiers (mechanical / rule / judgment), blind double labeling with κ ≥ 0.70, results as ranges. Frozen 2026-10-06, not yet applied to data |
+| [protocol/labeling.md](protocol/labeling.md) | Blind labeling in practice: packet (`pxt survey sample`), the public labeling page, agreement (`pxt survey agreement`), adjudication. No account needed |
+| [survey/self-audit-log.md](survey/self-audit-log.md) | Waste incidents in the research itself, as candidates for labeling |
 | [protocol/backtest-v1.md](protocol/backtest-v1.md) | The benchmark and backtest protocol, committed (10ce4dd) before any benchmark data was collected; the commit is its timestamp, and a test keeps the code constants identical to it |
 | [protocol/data-intake.md](protocol/data-intake.md) | How to supply sessions from each product, and what happens to them |
 | [preprint/outline.md](preprint/outline.md) | Outline of the English preprint (draft for approval) |

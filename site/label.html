@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- connect-src 'none': the packet you load never leaves this tab. Labels are saved to a file you download. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <title>#AntiTokenMaxing · 판정 도구</title>
+  <link rel="stylesheet" href="fonts/pretendard/pretendard.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="label.css">
+</head>
+<body>
+  <header class="lb-top">
+    <a class="brand" href="./">#ANTI<span>TOKEN</span>MAXING</a>
+    <span class="lb-title" data-t="title">판정 도구</span>
+    <label class="lb-lang"><span aria-hidden="true">🌐</span><select id="lang" aria-label="Language / 언어"></select></label>
+  </header>
+
+  <main class="lb">
+    <section id="setup" class="card lb-setup">
+      <h1 data-t="setup_h">낭비 판정 · 블라인드 라벨링</h1>
+      <p class="muted" data-t="setup_lede"></p>
+      <ol class="lb-steps">
+        <li><label for="packet" data-t="step1"></label> <input type="file" id="packet" accept=".json,application/json"> <span id="packet-info" class="muted"></span></li>
+        <li><label for="coder" data-t="step2"></label> <input id="coder" maxlength="12" autocomplete="off" placeholder="A"></li>
+        <li><span data-t="step3"></span>
+          <label class="lb-inline"><input type="radio" name="phase" value="calibration" checked> <span data-t="phase_cal"></span></label>
+          <label class="lb-inline"><input type="radio" name="phase" value="main"> <span data-t="phase_main"></span></label></li>
+      </ol>
+      <div class="row"><button id="start" type="button" disabled data-t="start"></button><span id="setup-err" class="error" role="alert"></span></div>
+      <p class="privacy-badge" data-t="privacy"></p>
+    </section>
+
+    <section id="work" hidden>
+      <div class="lb-bar">
+        <span id="progress-text"></span>
+        <div class="lb-meter" aria-hidden="true"><i id="meter"></i></div>
+        <button id="prev" class="ghost" type="button" data-t="prev"></button>
+        <button id="next" class="ghost" type="button" data-t="next"></button>
+        <button id="next-open" class="ghost" type="button" data-t="next_open"></button>
+        <button id="export" type="button" data-t="export"></button>
+      </div>
+      <div class="lb-grid">
+        <article class="card lb-item" aria-live="polite">
+          <p class="lb-meta" id="item-meta"></p>
+          <h2 data-t="instr"></h2>
+          <pre class="lb-text" id="item-instruction"></pre>
+          <h2 data-t="steps"></h2>
+          <ol class="lb-step-list" id="item-steps"></ol>
+          <h2 data-t="final"></h2>
+          <pre class="lb-text" id="item-final"></pre>
+        </article>
+        <form class="card lb-form" id="form">
+          <h2 data-t="judge_h"></h2>
+          <p class="muted small" data-t="judge_lede"></p>
+          <div id="cats"></div>
+          <fieldset class="lb-cat">
+            <legend data-t="outcome_h"></legend>
+            <div class="lb-choices" id="outcome"></div>
+          </fieldset>
+          <label for="note" class="small muted" data-t="note"></label>
+          <textarea id="note" rows="3"></textarea>
+          <details class="lb-guide"><summary data-t="guide"></summary><div id="guide"></div></details>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="label.js"></script>
+</body>
+</html>
