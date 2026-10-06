@@ -121,7 +121,10 @@ def measure(path, subagent=False):
         "context": {"first": ctxs[0] if n else 0, "peak": max(ctxs) if n else 0,
                     "quartiles": q(ctxs), "curve_40": curve},
         "per_instruction": {"calls_quartiles": q(per_calls), "calls_max": max(per_calls) if per_calls else 0,
-                            "input_quartiles": q(per_input), "input_max": max(per_input) if per_input else 0},
+                            "input_quartiles": q(per_input), "input_max": max(per_input) if per_input else 0,
+                            "calls": per_calls, "input": per_input},  # one entry per instruction, in order
+        "input_by_context": {f"ge_{k}k_pct": round(100 * sum(c for c in ctxs if c >= k * 1000) / sum(ctxs), 1) if ctxs else 0
+                             for k in (200, 400, 600)},
         "tools": dict(tools.most_common(25)),
         "tool_calls": sum(tools.values()),
         "tool_errors": tool_errors,
