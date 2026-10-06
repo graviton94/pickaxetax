@@ -13,9 +13,13 @@ sources and is left out of the floor.
 
 | Category | Rule | Tokens counted |
 |---|---|---|
-| **W1 Duplication** | A tool call with the same tool name and the same input (canonical JSON) as an earlier call in the same context (the main session, or sub-agents), whose result text is byte-identical to that earlier call's result, with no compaction in between | The repeated result's tokens, where it arrives |
+| **W1 Duplication** | A tool call with the same tool name and the same input (canonical JSON) as an earlier call in the same context (the main session, or one sub-agent run), whose result text is byte-identical to that earlier call's result, with no compaction in between | The repeated result's tokens, where it arrives |
 | **W2 Failure** | A tool result marked as an error | The error result's tokens |
 | **W6 Cache churn** | On the main session only: call *i* had to write to the cache part of the context that call *i−1* already held. Missed = min(cache write of *i*, context of *i−1* − cache read of *i*), counted when it exceeds 2% of the previous context. Skipped when the context shrank (compaction or a cleared session) | The missed tokens |
+
+Each sub-agent run is its own context: a local transcript's sub-agent files
+(`<session>/subagents/*.jsonl`) are read with it, and event-API lines are keyed by the tool
+call that started the sub-agent (`parent_tool_use_id`).
 
 Token estimates for tool results use `pickaxetax.tokens.estimate_tokens`. Cache figures come
 from the provider-recorded usage of each call.
@@ -27,6 +31,16 @@ from the provider-recorded usage of each call.
 - **Price-weighted:** the same tokens priced as cache writes (1.25×), as a share of the
   input-side cost (uncached 1×, cache reads 0.1×, cache writes 1.25×). This is closer to the
   compute and money spent, because cache reads are cheap and cache writes are not.
+
+## W6, broken down by cause
+
+Descriptive only; the floor does not change. Each counted re-write is labelled by what came
+before it: a model switch (the cache is per model), or else the idle time since the previous
+call, against the cache lifetimes the provider offers (5 minutes by default, 1 hour as an
+option): under 5 minutes, 5 minutes to 1 hour, over 1 hour. A re-write after a long idle gap
+is waste only in the codebook's sense (the tokens could have been kept by a longer-lived
+cache, a smaller context, or a summary); whether that should count the same as a re-write a
+minute later is an open question for the joint review, and every result shows the split.
 
 ## What it does not count, by design
 

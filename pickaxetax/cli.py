@@ -448,7 +448,10 @@ def _survey_judge(args) -> int:
     limits = {k: int(v) for k, _, v in (x.partition("=") for x in args.limit)}
     call_limits = {k: int(v) for k, _, v in (x.partition("=") for x in args.limit_calls)}
     sources = {}
-    for i, path in enumerate(find_transcripts(args.paths or None) if (args.paths or not args.pages) else [], 1):
+    paths = find_transcripts(args.paths or None) if (args.paths or not args.pages) else []
+    # sub-agent transcripts are judged with their session (judge_source reads them), not as sessions
+    paths = [p for p in paths if os.path.basename(os.path.dirname(p)) != "subagents"]
+    for i, path in enumerate(paths, 1):
         sources[f"S{i:02d}"] = path
     for spec in args.pages:
         label, _, listfile = spec.partition("=")
@@ -473,6 +476,9 @@ def _survey_judge(args) -> int:
     t = rep["total"]
     print(f"{'total':8} {t['calls']:>7,} {t['input_processed']:>15,} {t['W1']['tokens']:>10,} {t['W2']['tokens']:>10,} "
           f"{t['W6']['tokens']:>12,} {t['floor_pct_of_input']:>8.3f} {t['floor_pct_price_weighted']:>8.2f}")
+    causes = ", ".join(f"{k} {v['tokens']:,}" for k, v in t["W6"]["by_cause"].items() if v["count"])
+    if causes:
+        print(f"W6 by what came before the re-write: {causes}")
     print("Floor only: the mechanical tier of codebook v1. W3, W4, W5, W7, W8 need validated rules or human judgment.")
     return 0
 

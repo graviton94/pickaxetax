@@ -52,7 +52,8 @@ def lines_from(paths):
                     inner = inner.get("internal_anthropic_catchall", inner) if isinstance(inner, dict) else {}
                     uid = inner.get("uuid") or ev[kind].get("uuid") or f"{ev.get('created_at')}-{kind}-{len(events)}"
                     line = {"type": kind, "message": inner.get("message"), "timestamp": inner.get("timestamp") or ev.get("created_at"),
-                            "isSidechain": bool(inner.get("parent_tool_use_id")), "subtype": inner.get("subtype"),
+                            "isSidechain": bool(inner.get("parent_tool_use_id")), "agentId": inner.get("parent_tool_use_id"),
+                            "subtype": inner.get("subtype"),
                             "isMeta": inner.get("isMeta") or inner.get("isSynthetic"), "isCompactSummary": inner.get("isCompactSummary"),
                             "requestId": inner.get("request_id")}
                     events[uid] = (str(line["timestamp"]), line)

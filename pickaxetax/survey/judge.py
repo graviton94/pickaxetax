@@ -19,8 +19,12 @@ only after blind validation, so it is not included here.
 
 from __future__ import annotations
 
+import glob
 import hashlib
+import heapq
 import json
+import os
+from datetime import datetime
 
 from ..tokens import estimate_tokens
 from .events import lines_from
@@ -30,6 +34,9 @@ CODEBOOK = "v1"
 # price ratios relative to uncached input, for the price-weighted view (Anthropic list prices)
 PRICE = {"input": 1.0, "cache_read": 0.1, "cache_write": 1.25}
 CHURN_TOLERANCE = 0.02  # ignore re-writes under 2% of the previous context (block alignment)
+# W6 is broken down by what preceded the re-write (descriptive only; the floor is unchanged):
+# a model switch, or the idle gap since the previous call against the cache lifetimes (5 min, 1 h)
+GAPS = (("model_switch", None), ("gap_under_5m", 300), ("gap_5m_to_1h", 3600), ("gap_over_1h", float("inf")))
 
 
 def _jsonl(path):
@@ -43,6 +50,32 @@ def _jsonl(path):
                 yield d
 
 
+def _ts(v):
+    try:
+        return datetime.fromisoformat(str(v).replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return None
+
+
+def _with_subagents(path):
+    """A local transcript plus the sub-agent transcripts Claude Code keeps beside it
+    (<session>/subagents/*.jsonl), merged in time order. Sub-agent lines are sidechain lines."""
+    files = sorted(glob.glob(os.path.join(os.path.splitext(path)[0], "subagents", "*.jsonl")))
+    if not files:
+        yield from _jsonl(path)
+        return
+
+    def keyed(lines, rank):
+        last = ""
+        for i, d in enumerate(lines):
+            last = str(d.get("timestamp") or last)  # a line without a time keeps its place
+            yield (last, rank, i, d)
+
+    streams = [keyed(_jsonl(path), 0)] + [keyed(_jsonl(f), r + 1) for r, f in enumerate(files)]
+    for *_, d in heapq.merge(*streams, key=lambda x: x[:3]):
+        yield d
+
+
 def _result_text(content) -> str:
     if isinstance(content, str):
         return content
@@ -53,7 +86,7 @@ def _result_text(content) -> str:
 
 def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int | None = None) -> dict:
     seen_msg = set()
-    calls = []  # main-chain calls: (ctx, cache_read, cache_write, uncached)
+    calls = []  # main-chain calls: (ctx, cache_read, cache_write, time, model)
     totals = {"input": 0, "cache_read": 0, "cache_write": 0}
     by_ctx = {"main": {"calls": 0, "input": 0}, "side": {"calls": 0, "input": 0}}
     uses = {}  # tool_use_id -> (context key, signature)
@@ -69,7 +102,9 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
         m = d.get("message")
         if not isinstance(m, dict):
             continue
-        ctxkey = "side" if d.get("isSidechain") else "main"
+        # each sub-agent runs in its own context; side lines without an agent id share one
+        ctxkey = ("side", str(d.get("agentId") or "")) if d.get("isSidechain") else "main"
+        bucket = "side" if d.get("isSidechain") else "main"
         content = m.get("content")
         if d.get("type") == "user":
             blocks = content if isinstance(content, list) else [{"type": "text", "text": content}]
@@ -100,7 +135,6 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             for b in content if isinstance(content, list) else []:
                 if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("id"):
                     sig = (str(b.get("name")), json.dumps(b.get("input"), ensure_ascii=False, sort_keys=True))
-                    # sub-agents run in their own contexts; key them by the sub-agent marker we have
                     uses[b["id"]] = (ctxkey, sig)
             mid = str(m.get("id") or d.get("requestId"))
             u = m.get("usage") if isinstance(m.get("usage"), dict) else None
@@ -113,20 +147,28 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             totals["input"] += inp
             totals["cache_read"] += cr
             totals["cache_write"] += cw
-            by_ctx[ctxkey]["calls"] += 1
-            by_ctx[ctxkey]["input"] += inp + cr + cw
-            if ctxkey == "main":
-                calls.append((inp + cr + cw, cr, cw))
+            by_ctx[bucket]["calls"] += 1
+            by_ctx[bucket]["input"] += inp + cr + cw
+            if bucket == "main":
+                calls.append((inp + cr + cw, cr, cw, _ts(d.get("timestamp")), m.get("model")))
                 if limit_calls is not None and len(calls) >= limit_calls:
                     break
-    w6 = {"tokens": 0, "count": 0}
-    for (pctx, _, _), (ctx, cr, cw) in zip(calls, calls[1:]):
+    w6 = {"tokens": 0, "count": 0, "by_cause": {k: {"tokens": 0, "count": 0} for k, _ in GAPS + (("unknown", None),)}}
+    for (pctx, _, _, pt, pm), (ctx, cr, cw, t, mdl) in zip(calls, calls[1:]):
         if ctx < pctx:  # the context shrank: compaction or a cleared session, new content
             continue
         missed = min(cw, pctx - cr)
         if missed > CHURN_TOLERANCE * pctx:
             w6["tokens"] += missed
             w6["count"] += 1
+            if pm and mdl and pm != mdl:
+                cause = "model_switch"
+            elif pt is None or t is None:
+                cause = "unknown"
+            else:
+                cause = next(k for k, lim in GAPS[1:] if t - pt < lim)
+            w6["by_cause"][cause]["tokens"] += missed
+            w6["by_cause"][cause]["count"] += 1
     processed = totals["input"] + totals["cache_read"] + totals["cache_write"]
     price_total = sum(totals[k] * PRICE[k] for k in PRICE)
     # W1/W2 arrive as new context (written to cache on the next call); W6 is cache writes
@@ -146,10 +188,11 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
 
 
 def judge_source(source, limit_instructions: int | None = None, limit_calls: int | None = None) -> dict:
-    """A transcript file (.jsonl) or a list of saved event-API pages for one session."""
+    """A transcript file (.jsonl, with its sub-agent transcripts when they sit beside it) or a
+    list of saved event-API pages for one session."""
     if isinstance(source, (list, tuple)):
         return judge_lines(lines_from(list(source)), limit_instructions, limit_calls)
-    return judge_lines(_jsonl(source), limit_instructions, limit_calls)
+    return judge_lines(_with_subagents(source), limit_instructions, limit_calls)
 
 
 def combine(per_session: dict) -> dict:
@@ -158,6 +201,8 @@ def combine(per_session: dict) -> dict:
     tot["subagent_input"] = sum(s["subagents"]["input"] for s in per_session.values())
     cats = {c: {"tokens": sum(s[c]["tokens"] for s in per_session.values()),
                 "count": sum(s[c]["count"] for s in per_session.values())} for c in ("W1", "W2", "W6")}
+    cats["W6"]["by_cause"] = {k: {x: sum(s["W6"]["by_cause"][k][x] for s in per_session.values()) for x in ("tokens", "count")}
+                              for k in next(iter(per_session.values()))["W6"]["by_cause"]} if per_session else {}
     parts = {k: sum(s["input_parts"][k] for s in per_session.values()) for k in PRICE}
     price_total = sum(parts[k] * PRICE[k] for k in PRICE)
     return {"schema": SCHEMA, "codebook": CODEBOOK, "tier": "T1 mechanical (floor)",
