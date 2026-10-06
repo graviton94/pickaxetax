@@ -212,9 +212,10 @@ def _mirror_test(t: Trace, used_at: dict, common: set, min_shared: int) -> dict:
         lo = max(0, o - (s.end - s.birth - 1))
         hits = Counter(k for tok in s.terms - common for k in used_at.get(tok, ()) if lo <= k < o)
         hit = sum(1 for c in hits.values() if c >= min_shared)
-        mirror.append((s, hit, o - lo))
+        avail = max(0, o - lo)  # a piece born at call 0 has origin -1: no call precedes it
+        mirror.append((s, hit, avail))
         pool[s.kind][0] += hit
-        pool[s.kind][1] += o - lo
+        pool[s.kind][1] += avail
     stats = {"reused": 0, "kept": 0, "dropped": 0, "fallback": 0}
     for s, hit, avail in mirror:
         n_obs = len(s.refs) - 1

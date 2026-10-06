@@ -666,3 +666,21 @@ but the slope is positive in every time-of-day bin.
 **Discussion.** The levers pay in tokens and money, not in model time, except restarts. That is
 worth saying plainly to users: a lower ceiling saves money but does not make the agent faster. A
 provider could change this, if a compaction of a smaller context is cheap to compute.
+
+## Cycle E9 — third independent code review, and the fixes
+
+A reviewer reviewed the code added since E6: the placebo option, its plumbing into the rule tier,
+`pxt survey compare`, and the two protocol documents. It checked that the default path is unchanged:
+the code before and after gives byte-identical results on 60 synthetic transcripts, for every
+report, export and CLI output. Three bugs were confirmed by failing tests (`tests/test_review_e9.py`):
+1. In the mirror test, a tool result born at call 0 (origin −1) got a negative "mirror length". It
+   skipped the fallback to the pooled rate, and it could push the pooled rate out of [0, 1] and
+   crash.
+2. `compare` reported a CI when the before median was 0 and the ratio undefined.
+3. A `floor.json` that is valid JSON but not an object crashed instead of giving an error.
+
+All three are fixed. After the fix, every sealed label file is re-made byte-identical (the primary
+four and the two secondary), and the E5 / D4 numbers are unchanged (41.3 / 51.6 / 53.3%): no
+session in the data starts with a tool result. Smaller concerns are noted in the review and left as
+they are. The 5-session warning counts sessions without instructions, and nothing checks that a
+`floor.json` matches its dataset.

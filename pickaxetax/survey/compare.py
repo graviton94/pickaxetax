@@ -31,6 +31,8 @@ def load(path: str) -> tuple[dict, dict | None]:
         if os.path.exists(fp):
             with open(fp, encoding="utf-8") as f:
                 floor = json.load(f)
+            if not isinstance(floor, dict):
+                raise ValueError(f"{fp}: not a floor report (expected a JSON object)")
         path = os.path.join(path, "dataset.json")
     with open(path, encoding="utf-8") as f:
         ds = json.load(f)
@@ -157,7 +159,7 @@ def compare(before: dict, after: dict, before_floor: dict | None = None, after_f
                 for k in keys:
                     x[k] = None
     b, a = sb["median_input_per_instruction"], sa["median_input_per_instruction"]
-    ci = bootstrap_ratio(instruction_inputs(before), instruction_inputs(after), reps=reps, seed=seed)
+    ci = bootstrap_ratio(instruction_inputs(before), instruction_inputs(after), reps=reps, seed=seed) if b else None
     warnings = []
     for name, s in (("before", sb), ("after", sa)):
         c = s["counts"]
