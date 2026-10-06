@@ -163,6 +163,10 @@ def main(argv: list[str] | None = None) -> int:
     sm2.add_argument("--tier", choices=("t1", "t2"), default="t1",
                      help="t1: the mechanical judge (W1, W2, W6); t2: the rule-tier candidates (W4, W5, W8)")
     sm2.add_argument("--out", default="labels-machine.json")
+    srun = svsub.add_parser("run", help="everything at once: dataset, mechanical floor, opportunity bound, what-ifs, report")
+    srun.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    srun.add_argument("--label", default="me")
+    srun.add_argument("--out-dir", default="survey-out")
     sw = svsub.add_parser("whatif", help="counterfactual context structures replayed on a dataset's per-call series")
     sw.add_argument("dataset")
     sw.add_argument("--out", help="write the numbers as JSON")
@@ -447,7 +451,9 @@ def _survey(args) -> int:
     from .agent import find_transcripts
     from .survey.measure import with_subagents
 
-    files = find_transcripts(args.paths or None)
+    files = _main_transcripts(find_transcripts(args.paths or None))
+    if args.survey_cmd == "run":
+        return _survey_run(args, files)
     sessions = []
     for i, path in enumerate(files, 1):
         m = with_subagents(path, include_series=True)
@@ -467,6 +473,63 @@ def _survey(args) -> int:
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(ds, f, ensure_ascii=False, separators=(",", ":"))
     print(f"measured {len(sessions)} sessions -> {args.out} (numbers only; no text, paths or ids)")
+    return 0
+
+
+def _main_transcripts(paths: list[str]) -> list[str]:
+    """Sub-agent transcripts (<session>/subagents/*.jsonl) are measured with their session."""
+    return [p for p in paths if os.path.basename(os.path.dirname(p)) != "subagents"]
+
+
+def _survey_run(args, files: list[str]) -> int:
+    """Everything the survey can say about one person's transcripts, in one folder (numbers only)."""
+    from datetime import datetime, timezone
+
+    from .agent import bound
+    from .survey import dataset, judge, report, whatif
+    from .survey.measure import with_subagents
+
+    os.makedirs(args.out_dir, exist_ok=True)
+    sessions, floors, bounds = [], {}, []
+    for i, path in enumerate(files, 1):
+        m = with_subagents(path, include_series=True)
+        if not m["api_calls"]:
+            continue
+        sid = f"S{i:02d}"
+        models = m.get("models") or {}
+        sessions.append({"id": sid, "type": "", "model": max(models, key=models.get) if models else "", "origin": "",
+                         "span_hours": m["span_hours"], "session_list": None, "measurement": m, "source": "local",
+                         "partial": False, "base_override": None})
+        floors[sid] = judge.judge_source(path)
+        b = bound.analyze(path)
+        if b["api_calls"]:
+            bounds.append(b)
+    if not sessions:
+        print("no Claude Code transcripts with API calls found", file=sys.stderr)
+        return 1
+    stamp = datetime.now(timezone.utc).date().isoformat()
+    ds = dataset.build({"label": args.label, "who": args.label, "scope": "Claude Code (local transcripts)",
+                        "period": f"measured {stamp}", "sources": "provider-recorded usage in local transcripts",
+                        "dataset_path": "dataset.json", "notes": []}, sessions)
+    floor = judge.combine(floors)
+    merged = bound.merge(bounds)
+    opp = {"schema": "pickaxetax.survey.opportunity.v1", "method": bound.METHOD,
+           "note": "Counterfactual opportunity, not a waste judgment; reuse detection is lexical and unvalidated.",
+           "merged": merged, "whatif": whatif.run(ds)}
+    out = {"dataset.json": ds, "floor.json": floor, "opportunity.json": opp}
+    for name, obj in out.items():
+        with open(os.path.join(args.out_dir, name), "w", encoding="utf-8") as f:
+            json.dump(obj, f, ensure_ascii=False, indent=1 if name != "dataset.json" else None)
+    with open(os.path.join(args.out_dir, "report.html"), "w", encoding="utf-8") as f:
+        f.write(report.render(ds))
+    t, p = floor["total"], merged["policies"]
+    w = opp["whatif"]["total"]["saved_pct"]
+    print(f"{len(sessions)} sessions, {dataset.derive(ds)['total_input']:,} input tokens -> {args.out_dir}/ (numbers only)")
+    print(f"  mechanical floor (codebook v1): removable tokens {t['floor_pct_of_input']:.4f}%, removable cost {t['floor_pct_price_weighted']:.2f}%")
+    print(f"  oracle bound (lexical, unvalidated): drop only what is never used again {p['P=inf']['avoidable_pct']}%, "
+          f"fetch on demand {p['P=1000']['avoidable_pct']}%")
+    print(f"  what-if (a summary is enough): new session above 200k at an instruction boundary {w['restart_above_200000_summary_10000']}%")
+    print("Not waste judgments beyond the floor. To contribute, see research/protocol/labeling.md and `pxt contribute`.")
     return 0
 
 

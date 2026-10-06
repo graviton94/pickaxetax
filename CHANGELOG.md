@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- `pxt survey run`: everything the survey can say about your own transcripts in one folder (dataset, mechanical floor, opportunity bound, what-ifs, report), numbers only. `pxt survey measure` no longer counts sub-agent transcripts as separate sessions when given a directory.
+- Judge: 1-hour cache writes priced at 2× (they were priced as 5-minute writes, 1.25×); what-if restart rules; `whatif.task_scoped` no longer drops growth after a real compaction.
 - **Judging:** `pxt survey judge` computes the mechanical waste floor of codebook v1 (W1 duplication, W2 failures, W6 cache churn) per session: removable tokens (W1 + W2) and removable cost (W6 counts only its cache-write premium over a read, since those tokens are processed either way), with main session and sub-agents shown apart, each sub-agent as its own context. W6 is broken down by what preceded it (model switch, idle gap); the carry of W1/W2 results into later calls is reported outside the floor. Rules: `research/protocol/mechanical-tier-v1.md`.
 - **Survey data v2:** `research/survey/user01/dataset-v2.json` and `report-v2.html`. S09 is measured in full (it was partial), S02 and S03 gain per-call series from event pages cut at the snapshot, S01 gains its sub-agents up to the snapshot. Input processed: 6.84 billion tokens (v1: 5.87 billion, a lower bound); carried-over share 76.1% (v1: 73.6%, over 8 of 10 sessions). `dataset.json` (v1) is unchanged, since research note 1 cites its digest.
 - **First T1 floor:** `research/survey/user01/floor-t1.md`: removable tokens 0.0008% of input, removable cost 5.79%, almost all of it cache re-writes, 79% of those after an idle gap of over an hour.

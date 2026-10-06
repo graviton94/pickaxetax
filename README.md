@@ -30,6 +30,7 @@
 ```bash
 pip install pickaxetax            # Python 3.10+; `pxt` is the short command
 
+pxt survey run --out-dir my-survey   # everything at once: dataset, waste floor, opportunity, what-ifs, report
 pxt survey measure --out my-dataset.json        # your Claude Code usage, numbers only
 pxt survey report my-dataset.json --out my-receipt.html
 pxt analyze chat.txt              # a pasted transcript or export file
@@ -110,6 +111,7 @@ Code: [Apache-2.0](https://github.com/graviton94/pickaxetax/blob/HEAD/LICENSE) �
 
 ```bash
 pip install pickaxetax
+pxt survey run --out-dir my-survey     # 한 번에: 데이터셋, 낭비 하한, 기회, what-if, 레포트 (숫자만)
 pxt survey measure --out my-dataset.json
 pxt survey report my-dataset.json --out my-receipt.html
 pxt agent audit
