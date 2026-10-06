@@ -25,7 +25,7 @@
    },
    "W1": {
     "tokens": 961,
-    "count": 13
+    "count": 9
    },
    "W2": {
     "tokens": 1875,
@@ -69,8 +69,8 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 6,
-     "input": 3594682
+     "calls": 4,
+     "input": 2870014
     },
     "W2": {
      "calls": 7,
@@ -80,10 +80,6 @@
      "mcp": {
       "calls": 4,
       "input": 2870014
-     },
-     "Read": {
-      "calls": 2,
-      "input": 724668
      }
     },
     "W2_by_tool": {
@@ -124,7 +120,7 @@
    },
    "W1": {
     "tokens": 211,
-    "count": 12
+    "count": 4
    },
    "W2": {
     "tokens": 2502,
@@ -168,18 +164,14 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 7,
-     "input": 2384135
+     "calls": 1,
+     "input": 562550
     },
     "W2": {
      "calls": 9,
      "input": 2676308
     },
     "W1_by_tool": {
-     "Read": {
-      "calls": 6,
-      "input": 1821585
-     },
      "mcp": {
       "calls": 1,
       "input": 562550
@@ -227,7 +219,7 @@
    },
    "W1": {
     "tokens": 1373,
-    "count": 77
+    "count": 17
    },
    "W2": {
     "tokens": 18879,
@@ -271,8 +263,8 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 50,
-     "input": 19584895
+     "calls": 12,
+     "input": 3807014
     },
     "W2": {
      "calls": 53,
@@ -280,8 +272,8 @@
     },
     "W1_by_tool": {
      "Read": {
-      "calls": 39,
-      "input": 15977315
+      "calls": 1,
+      "input": 199434
      },
      "Bash": {
       "calls": 2,
@@ -428,7 +420,7 @@
    },
    "W1": {
     "tokens": 31,
-    "count": 45
+    "count": 2
    },
    "W2": {
     "tokens": 5326,
@@ -472,8 +464,8 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 45,
-     "input": 20362323
+     "calls": 2,
+     "input": 742108
     },
     "W2": {
      "calls": 34,
@@ -483,10 +475,6 @@
      "Bash": {
       "calls": 2,
       "input": 742108
-     },
-     "Read": {
-      "calls": 43,
-      "input": 19620215
      }
     },
     "W2_by_tool": {
@@ -527,7 +515,7 @@
    },
    "W1": {
     "tokens": 0,
-    "count": 12
+    "count": 0
    },
    "W2": {
     "tokens": 556,
@@ -571,19 +559,14 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 10,
-     "input": 3935970
+     "calls": 0,
+     "input": 0
     },
     "W2": {
      "calls": 6,
      "input": 2448140
     },
-    "W1_by_tool": {
-     "Read": {
-      "calls": 10,
-      "input": 3935970
-     }
-    },
+    "W1_by_tool": {},
     "W2_by_tool": {
      "WebFetch": {
       "calls": 1,
@@ -793,7 +776,7 @@
    },
    "W1": {
     "tokens": 798,
-    "count": 58
+    "count": 12
    },
    "W2": {
     "tokens": 11872,
@@ -837,8 +820,8 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 57,
-     "input": 19087626
+     "calls": 11,
+     "input": 4876857
     },
     "W2": {
      "calls": 82,
@@ -850,8 +833,8 @@
       "input": 4086122
      },
      "Read": {
-      "calls": 49,
-      "input": 15001504
+      "calls": 3,
+      "input": 790735
      }
     },
     "W2_by_tool": {
@@ -896,7 +879,7 @@
    },
    "W1": {
     "tokens": 40,
-    "count": 49
+    "count": 6
    },
    "W2": {
     "tokens": 10295,
@@ -940,21 +923,21 @@
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 48,
-     "input": 24057566
+     "calls": 6,
+     "input": 2442989
     },
     "W2": {
      "calls": 54,
      "input": 20385260
     },
     "W1_by_tool": {
-     "Read": {
-      "calls": 44,
-      "input": 22472489
-     },
      "Bash": {
       "calls": 4,
       "input": 1585077
+     },
+     "Read": {
+      "calls": 2,
+      "input": 857912
      }
     },
     "W2_by_tool": {
@@ -997,8 +980,8 @@
   },
   "steps_spent_only_on": {
    "W1": {
-    "calls": 223,
-    "input": 93007197
+    "calls": 36,
+    "input": 15301532
    },
    "W2": {
     "calls": 255,
@@ -1010,8 +993,8 @@
      "input": 5827575
     },
     "Read": {
-     "calls": 193,
-     "input": 79553746
+     "calls": 6,
+     "input": 1848081
     },
     "Bash": {
      "calls": 16,
@@ -1071,7 +1054,7 @@
   },
   "W1": {
    "tokens": 3414,
-   "count": 266
+   "count": 50
   },
   "W2": {
    "tokens": 52436,

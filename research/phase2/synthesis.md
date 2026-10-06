@@ -18,7 +18,7 @@ Everything measured in phase 2 is a statement about one of the two factors.
   - The costly instructions are long, ordinary chains of reading, running and editing (median 75
     steps against 11), not retry loops. All loops together are about 2% of input, and no poll
     repeated an unchanged result (cycle B2).
-  - Steps that came back only as duplicates or errors re-read the whole context each time (2.6% of
+  - Steps that came back only as duplicates or errors re-read the whole context each time (1.45% of
     input).
 - **Context.** It stays near the ceiling (about 783k) because compaction fires only there.
   - A call after the third instruction carries about 420k tokens, about 80% of it from instructions

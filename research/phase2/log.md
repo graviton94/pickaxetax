@@ -819,3 +819,38 @@ lexical-v1's 5.6%. "Carrying is the larger lever" holds under every reading exce
 re-reading counts only when a compaction caused it. Even then paging stays the larger part
 (41.7%). A side finding matters for the restart lever: most re-reading is habit. So the re-reads
 charged to a restart (A5, B5) partly happen anyway, and the true charge is lower.
+
+## Cycle B7 — reading what is already in the context (`B7-redundant-reads.md`)
+
+**Found.** The question was how much reading returns content still present, unchanged, in the
+current context. That is a broader duplicate than W1's exact rule.
+- **Tokens.** Such content totals 379k tokens (0.0055% of input), about 56× W1 but negligible.
+- **Steps.** 105 calls whose results were all at least 95% already in context re-read 0.59% of
+  input. At a 50% threshold it is 472 calls and 2.85% of input.
+- **Not repeat calls.** Only 9.7% of main-session reads were at least half resident. 80% of the
+  duplicate tokens come from shell reads and other commands, not repeats of the same call.
+- **Sub-agents.** Only 2.7% of a sub-agent's reading was already in its parent's context, against
+  B5's 70–76% by path. The same path is mostly not the same content.
+- **Timing.** Duplicates are spread out: median 16 calls after the resident copy, 58% within the
+  same instruction.
+- **A rule for discussion (W1b).** 95% of the lines are already in the same context since the last
+  compaction, matched by 3-line runs, with re-reads of own edits labelled as possible verification.
+
+**Review — a bug in the published floor.** Replicating the judge's W1 exactly showed that 216 of its
+266 cases are re-reads of a screenshot path whose image had changed. The judge hashed result text
+only, and an image has none; pixel checks confirm only 4 of 174 images were the same.
+- **Fixed.** `judge._result_hash` now includes images, with a regression test, and the
+  mechanical-tier protocol is amended.
+- **Regenerated.** `floor-t1.json` and `.md` were regenerated.
+- **Unchanged.** W1 tokens (3,414) and the floor (0.0008% of tokens, 8.92% of cost) do not change.
+- **Changed.** The steps spent only on duplicates or errors fall from 478 calls and 2.6% of input to
+  291 calls and **1.45%**. W1 steps go from 223 to 36, so "193 W1 steps re-read an unchanged file"
+  no longer holds.
+- **Re-sealed.** Both T1 seals were re-made before any label existed: 27 main and 2 practice items
+  change W1 from yes to no.
+- **Propagated.** The note 2 draft (text and slide 2), the launch facts, the review kit, the
+  synthesis and validity now carry 1.5% / 1.45%.
+
+**Discussion.** The draft's 2.6% came from a measurement error. The correction makes the floor's
+step cost smaller still and leaves its thesis untouched. The cost of redundant reading is in the
+steps (0.6–2.9%), not the tokens. It is a small lever next to carrying.

@@ -45,7 +45,7 @@ shows what the number depends on most.
 | Headline (point value) | Sample: resampling sessions (E4) | Detector: what counts as reuse (E3, E5, E8) | Prices: 48 ratio settings (C8) | Assumption: re-reads, cold start (A5, B5, A6) | Depends most on |
 |---|---|---|---|---|---|
 | Mechanical floor, cost (8.92%) | 8.1–9.8% | — (mechanical) | 4.7–15.4% | — | prices |
-| Steps spent only on duplicates/errors (2.6% of input) | 2.0–3.4% | — | — (tokens) | — | sample |
+| Steps spent only on duplicates/errors (1.45% of input; 2.6% before cycle B7) | 2.0–3.4% (before B7) | — | — (tokens) | — | sample |
 | Oracle paging, P = 1000 (41.5%) | 40.4–43.2% | 35–56% | — (tokens) | — (foresight assumed) | detector |
 | Forgetting only, P = ∞ (5.6%) | 5.2–6.5% | 7–8% calibrated to behaviour (6–11% credible; 13–32% if only compaction-caused re-reads count as need); 3–45% across all definitions | — | — | detector |
 | Restart above 200k (55.2% of input) | 48.7–59.5% | 26.7–45.7% if lexical reuse were need (A4); behaviour says it is not | 37–49% of total money | 52–53% with observed charges; 41% at the 90th-percentile cold start | sample, then the charge |

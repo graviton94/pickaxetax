@@ -1,3 +1,4 @@
+import json
 from pickaxetax.survey import judge
 from tests.test_agent import T
 
@@ -148,3 +149,16 @@ def test_one_hour_cache_writes_are_priced_higher(tmp_path):
     r = run(t, tmp_path)
     assert r["input_parts"]["cache_write_1h"] == 10_100 and r["input_parts"]["cache_write_5m"] == 0
     assert r["W6"]["price_units"] == r["W6"]["tokens"] * (judge.PRICE["cache_write_1h"] - judge.PRICE["cache_read"])
+
+
+def test_a_changed_image_is_not_an_identical_result():
+    # the same Read of a screenshot path returns a different image: not W1 (cycle B7)
+    def img(data):
+        return [{"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": data}}]
+    t = T()
+    t.raw({"type": "user", "message": {"role": "user", "content": "check the screen"}})
+    t.tool("a", "Read", {"file_path": "/tmp/shot.png"}).result("a", img("AAAA"))
+    t.tool("b", "Read", {"file_path": "/tmp/shot.png"}).result("b", img("BBBB"))
+    t.tool("c", "Read", {"file_path": "/tmp/shot.png"}).result("c", img("BBBB"))
+    r = judge.judge_lines([json.loads(json.dumps(l)) for l in t.lines])
+    assert r["W1"]["count"] == 1  # only the unchanged third read

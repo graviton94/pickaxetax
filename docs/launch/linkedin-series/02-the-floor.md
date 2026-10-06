@@ -19,7 +19,7 @@
 
 1편에서 낭비를 여덟 갈래로 정의했습니다. 오늘은 그중 기록만으로 정할 수 있는 세 갈래를 먼저 셌습니다. 같은 결과를 다시 받은 중복, 오류, 이미 처리한 맥락을 처음부터 다시 처리한 경우입니다. 먼저 바로잡습니다. 1편의 58억 7천만 토큰은 한 세션을 일부만 받은 하한이었고, 다 받아 다시 재니 68억 4천만 토큰입니다.
 
-중복과 오류로 받은 토큰 자체는 0.001%도 안 됩니다. 하지만 그 한 걸음을 내딛느라 AI는 매번 맥락 전체를 다시 읽었고, 그렇게 쓰인 입력이 2.6%입니다. 비용으로 보면 8.92%입니다. 거의 전부가 이미 처리한 맥락(평균 44만 토큰)을 처음부터 다시 처리한 값이고, 그 79%는 제가 1시간 넘게 쉬었다 돌아온 직후였습니다. 쉰 것이 낭비가 아니라, 그렇게 만드는 구조가 비효율적입니다.
+중복과 오류로 받은 토큰 자체는 0.001%도 안 됩니다. 하지만 그 한 걸음을 내딛느라 AI는 매번 맥락 전체를 다시 읽었고, 그렇게 쓰인 입력이 1.5%입니다. 비용으로 보면 8.92%입니다. 거의 전부가 이미 처리한 맥락(평균 44만 토큰)을 처음부터 다시 처리한 값이고, 그 79%는 제가 1시간 넘게 쉬었다 돌아온 직후였습니다. 쉰 것이 낭비가 아니라, 그렇게 만드는 구조가 비효율적입니다.
 
 진짜 질문은 따로 있습니다. 매 호출 맥락의 76%는 이미 끝난 지시에서 넘어온 내용이었습니다. 그 내용이 뒤에서 다시 쓰였는지 기록을 추적했습니다. 끝까지 다시 쓰이지 않을 내용만 버렸다면 줄었을 입력은 생각보다 적었습니다(4~25%). 대부분은 언젠가 다시 쓰였지만, 그때까지 쓰이지 않은 채 매 호출마다 다시 읽혔습니다. 필요할 때 정확히 불러오는 이상적인 구조였다면 입력의 35~54%가 필요 없었습니다. 다만 과거만 보고 정하는 단순한 규칙으로는 필요한 내용을 거의 놓치지 않으면서 3% 남짓밖에 줄이지 못했습니다.
 
@@ -32,7 +32,7 @@
 
 Note 1 defined waste in eight categories. Today I counted the three that the records decide on their own: duplicates (the same result received again), errors, and context already processed but processed again from scratch. A correction first: the 5.87 billion tokens in note 1 was a lower bound, because one session had been fetched only in part. Fetched in full, it is 6.84 billion.
 
-The duplicate and error results themselves are under 0.001% of the tokens. But to take each of those steps the AI re-read its whole context, and those steps took 2.6% of the input. In cost it is 8.92%. Almost all of that is context already processed being processed again from scratch (440,000 tokens on average), and 79% of it came right after I returned from more than an hour away. The break is not the waste; the structure that makes it so expensive is inefficient.
+The duplicate and error results themselves are under 0.001% of the tokens. But to take each of those steps the AI re-read its whole context, and those steps took 1.5% of the input. In cost it is 8.92%. Almost all of that is context already processed being processed again from scratch (440,000 tokens on average), and 79% of it came right after I returned from more than an hour away. The break is not the waste; the structure that makes it so expensive is inefficient.
 
 The real question is elsewhere. 76% of each call's context was carried over from instructions already finished. I traced whether that content was used again later. Dropping only what was never used again would have saved less than I expected (4–25% of the input). Most of it was used again at some point, but until then it was re-read, unused, on every call. With an ideal structure that fetches content exactly when it is needed, 35–54% of the input would not have been needed. But simple rules that decide from the past alone, without missing needed content, cut only about 3%.
 
@@ -65,8 +65,9 @@ Data, rules and results: the links above (in English and Korean).
 - 평균 44만 토큰: W6 39,200,727 ÷ 90건 = 435,564.
 - 0.73~8.92%: 민감도. 5분 안의 재작성만 0.73%, 1시간 넘게 쉰 뒤 제외(캐시가 살아 있어야 했던 재작성만) 1.90%, 모두 8.92%(본 결과).
 - 76%: 판 2 컨텍스트 분해, 이전 지시에서 넘어온 몫 76.1% (10개 세션 모두). 1편의 73.6%는 시계열이 있던 8개 세션 기준.
-- 2.6%: 걸음 비용(하한 밖). 도구 호출이 모두 중복이었던 걸음 223번 93,007,197 + 모두 오류였던 걸음 255번 83,880,405
-  = 176,887,602 ÷ 6,839,974,268 = 2.59%. `floor-t1.md`의 "걸음 비용".
+- 1.5%: 걸음 비용(하한 밖). 도구 호출이 모두 중복이었던 걸음 36번 15,301,532 + 모두 오류였던 걸음 255번 83,880,405
+  = 99,181,937 ÷ 6,839,974,268 = 1.45%. `floor-t1.md`의 "걸음 비용". (이전 초안의 2.6%는 판정기가 화면 캡처 이미지를
+  글자만으로 비교해, 바뀐 화면을 다시 읽은 걸음까지 중복으로 센 값이었습니다. 사이클 B7에서 바로잡았습니다.)
 - 4~25%, 35~54%: 오라클 최소치(`opportunity-v1.md`), 주 세션 6,579,410,935토큰. 다시는 안 쓰인 것만 버리기(P = ∞) 5.6%,
   9가지 탐지 기준(보정) 3.5~24.7%. 필요할 때 다시 불러오기(P = 1,000) 41.5%, 같은 9가지 35.2~53.9%(보정 없이 16.2~28.1%).
   미래를 아는 오라클의 값(기회의 크기)이고, 재사용은 글자 겹침(`lexical-v1`)으로 추정해 아직 블라인드 판정으로 검증하지 않았다.
