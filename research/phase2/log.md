@@ -101,3 +101,26 @@ cost; within it: about 1.9–2.0%).
 **Discussion.** The idle problem is a context-size problem in disguise: a return is expensive
 because what is re-written is huge. The same lever as cycle B (a smaller context) explains most
 of the "compact before leaving" gain.
+
+## Cycle D — sub-agents (`D-subagents.md`)
+
+**Found.** 76 sub-agent runs (S01, S02, S03, S09). A run reads about 27k tokens (median) and
+returns about 475 to the main session, but processes about 116 times what it reads, because it
+re-reads its own growing context. Against the counterfactual "the main session had received the
+same reads", delegation was 1.4× cheaper pooled and cheaper in half of the runs; if the main
+session also had to take the sub-agent's steps itself (at main-session context size), delegation
+was 5.1× cheaper and won in every run. Runs of 11–50 calls paid off most; runs over 50 calls
+(14, all in S09) did not, and hold over half of all sub-agent input.
+
+**Review.** 34 of 76 returned results were not visible (background runs whose result arrives as a
+notification); they were imputed from the observed median; observed-only runs give 1.49×. The
+two counterfactuals bracket the truth: the first undercounts the main session's extra steps.
+
+**Discussion.** The saving comes from the size of the context each step re-reads (about 110k for a
+sub-agent call against about 490k for a main call), not from the summary. Delegation is a
+"small context" lever, the same mechanism as restarting (cycle B): what costs is steps × context.
+Long sub-agent runs re-create the problem inside the sub-agent.
+
+**Ideation.** A single model for every lever: input = Σ over calls of context. Rank the levers
+(restart, delegation, earlier compaction, trimming outputs, forgetting, paging, simple online
+policies) on that one scale, with the assumption each one rests on (wave 2 synthesis).
