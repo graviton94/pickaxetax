@@ -9,6 +9,8 @@ codebook (research/protocol/waste-codebook-v1.md).
   task_scoped  every instruction starts a fresh context: the fixed base, a summary of what came
                before, and what the instruction itself adds. (The carried-over part is replaced
                by the summary.)
+  restart      the rules a user can follow: start a new session (base + summary) every N
+               instructions, or at an instruction boundary once the context passes X tokens.
   cap          compaction at a lower ceiling: when the context would pass the cap it is
                compacted to the base plus a summary; compacting reads the context once more.
 
@@ -20,6 +22,8 @@ from __future__ import annotations
 SCHEMA = "pickaxetax.survey.whatif.v1"
 SUMMARIES = (2_000, 10_000, 30_000)
 CAPS = (100_000, 200_000, 400_000)
+EVERY = (3, 5, 10)
+THRESHOLDS = (200_000, 400_000)
 
 
 def _base(s: dict) -> int:
@@ -27,19 +31,35 @@ def _base(s: dict) -> int:
     return s.get("base_override") or ser["context"][0]
 
 
+def restart(ctx: list[int], starts: list[int], base: int, summary: int, every: int | None = None,
+            threshold: int | None = None) -> dict:
+    """Replay with restarts at instruction boundaries: every `every`-th instruction, and/or once the
+    replayed context before an instruction exceeds `threshold`. A restart sets the context to
+    base + summary; afterwards the same growth happens call by call, and an actual compaction or
+    clear still applies. The replay never exceeds what actually happened."""
+    bounds = sorted(set([0] + [x for x in starts if x < len(ctx)])) + [len(ctx)]
+    total = restarts = 0
+    s = ctx[0] if ctx else 0
+    for n, (a, b) in enumerate(zip(bounds, bounds[1:])):
+        go = n > 0 and ((every and n % every == 0) or (threshold is not None and s > threshold))
+        for k in range(a, b):
+            x = ctx[k]
+            if k == 0:
+                s = x
+            elif k == a and go:
+                s = min(x, base + summary)
+                restarts += 1
+            else:
+                d = x - ctx[k - 1]
+                s = s + d if d >= 0 else min(s, x)
+            s = min(s, x)
+            total += s
+    return {"input": total, "restarts": restarts}
+
+
 def task_scoped(ctx: list[int], starts: list[int], base: int, summary: int) -> int:
     """Input processed if each instruction after the first began from base + summary."""
-    total = 0
-    bounds = sorted(set([0] + [x for x in starts if x < len(ctx)])) + [len(ctx)]
-    for n, (a, b) in enumerate(zip(bounds, bounds[1:])):
-        start = ctx[a]
-        carry = summary if n else 0
-        for x in ctx[a:b]:
-            fixed = min(x, base)
-            carried = max(0, min(x, start) - base)
-            current = x - fixed - carried
-            total += min(x, fixed + current + carry)  # never more than what actually happened
-    return total
+    return restart(ctx, starts, base, summary, every=1)["input"]
 
 
 def cap(ctx: list[int], base: int, ceiling: int, summary: int) -> dict:
@@ -75,9 +95,15 @@ def run(dataset: dict) -> dict:
             r[f"task_scoped_summary_{m}"] = task_scoped(ctx, starts, base, m)
         for c in CAPS:
             r[f"cap_{c}_summary_10000"] = cap(ctx, base, c, 10_000)["input"]
+        for n in EVERY:
+            r[f"restart_every_{n}_summary_10000"] = restart(ctx, starts, base, 10_000, every=n)["input"]
+        for x in THRESHOLDS:
+            rr = restart(ctx, starts, base, 10_000, threshold=x)
+            r[f"restart_above_{x}_summary_10000"] = rr["input"]
+            r[f"restarts_above_{x}"] = rr["restarts"]
         out["sessions"][s["id"]] = r
         for k, v in r.items():
-            if k not in ("calls", "base"):
+            if k not in ("calls", "base") and not k.startswith("restarts_"):
                 tot[k] = tot.get(k, 0) + v
     tot["saved_pct"] = {k: round(100 * (1 - v / tot["measured"]), 1) for k, v in tot.items() if k != "measured"}
     out["total"] = tot

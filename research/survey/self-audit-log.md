@@ -16,6 +16,8 @@ ran the research are measured with the same tools.
 | 2026-10-06 | Download of the full event text of S04, S06, S07, S08 for the labeling pilot (56 pages), by two sub-agents | Not waste (measurement); counted as research cost | 177,872 sub-agent tokens |
 | 2026-10-06 | The first version of the T1 judge treated all sub-agents of a session as one context, so a file read by two different sub-agents counted as a duplicate (S02: 8,210 W1 tokens instead of 211). Fixed before any result was published | Not waste (a measurement error, corrected) | — |
 | 2026-10-06 | S02's 115 event pages failed to parse on a raw control character in a tool result. The parser was fixed; the pages did not need to be fetched again | Not waste | — |
+| 2026-10-06 | The cost view priced every cache write at the 5-minute price (1.25×). The main sessions wrote 1-hour cache (2×). Removable cost was understated: 5.79% → 8.92%. Found by an audit before publication | Not waste (a measurement error, corrected) | — |
+| 2026-10-06 | The task-scoped what-if dropped the growth after a real compaction inside an instruction, about 4 points too optimistic. Found by a review of the replay; fixed before publication | Not waste (a measurement error, corrected) | — |
 
 ## Research cost to date
 

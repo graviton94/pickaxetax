@@ -83,16 +83,16 @@ T = {
   okr=lambda v: f"{v/1e8:.1f}억",
   kb="B. 기계 판정 하한 <span>· 세 갈래 합</span>",
   tok_lbl="지울 수 있던 토큰", tok_sub="중복(W1)과 오류(W2) 결과 ÷ 처리한 입력 전체. W6 토큰은 어차피 처리됐을 토큰이라 넣지 않습니다.",
-  cost_lbl="지울 수 있던 비용", cost_sub="W1·W2는 캐시 쓰기 값(1.25), W6은 쓰기와 읽기의 값 차이(1.25 − 0.1)로 매겨 입력 쪽 비용 전체와 비교.",
+  cost_lbl="지울 수 있던 비용", cost_sub="W1·W2는 캐시 쓰기 값으로, W6은 쓰기와 읽기의 값 차이(1시간 캐시 2 − 0.1)로 매겨 입력 쪽 비용 전체와 비교.",
   step_note="참고 (하한 밖): 중복이나 오류만 받고 끝난 걸음 {n}번이 처리한 입력은 {p:.1f}%입니다. 한 걸음마다 맥락 전체를 다시 읽기 때문입니다. 오류에는 실패한 테스트 같은 검증이 섞여 있어 사람 판정으로 가립니다.",
   kc="C. 갈래별 <span>· 건수와 토큰</span>",
   th=["갈래", "건", "토큰", "어디에 들어가나"],
   rows=[("W1 중복", "토큰·비용"), ("W2 오류", "토큰·비용"), ("W6 캐시 재작성", "비용만")],
-  src2="출처: research/survey/user01/floor-t1.json · dataset-v2.json (S09 완전 측정, 판 1은 그대로 보존). 가격 비율은 제공사 정가(비캐시 1, 캐시 읽기 0.1, 캐시 쓰기 1.25).",
+  src2="출처: research/survey/user01/floor-t1.json · dataset-v2.json (S09 완전 측정, 판 1은 그대로 보존). 가격 비율은 제공사 정가(비캐시 1, 캐시 읽기 0.1, 캐시 쓰기 5분짜리 1.25·1시간짜리 2). 주 세션은 거의 모두 1시간짜리 캐시를 썼습니다.",
   h2b="재작성의 {p:.0f}%는 1시간 넘게 쉬었다 돌아온 직후",
   kd="A. W6가 생긴 때 <span>· 직전 호출과의 간격, 토큰 기준</span>",
   gl=["5분 안 {:.0f}%", "5분~1시간 {:.0f}%", "1시간 넘게 {:.0f}%"],
-  gsub="캐시 수명은 기본 5분, 선택 1시간. 모델을 바꾼 직후에 생긴 재작성은 없었습니다.",
+  gsub="주 세션은 1시간짜리 캐시를 썼습니다. 1시간 안의 재작성은 캐시가 살아 있어야 했는데도 생긴 것입니다. 모델을 바꾼 직후에 생긴 재작성은 없었습니다.",
   ke="B. 어떤 재작성을 세느냐에 따른 범위 <span>· 지울 수 있던 비용</span>",
   sens=["재작성 모두 (v1 규칙, 본 결과)", "1시간 넘게 쉰 뒤의 재작성 제외", "5분 안의 재작성만"],
   note_b="쉰 것이 낭비는 아닙니다. 돌아올 때마다 맥락 전체(평균 {a:.0f}만 토큰)를 처음부터 다시 처리하게 만드는 구조가 비효율적이고, 한 세션을 며칠씩 이어 쓰는 사용 방식이 그 비용을 키웁니다.",
@@ -123,16 +123,16 @@ T = {
   okr=lambda v: f"{v/1e9:.2f} bn",
   kb="B. The mechanical floor <span>· three categories</span>",
   tok_lbl="Removable tokens", tok_sub="Duplicate (W1) and error (W2) results ÷ all input processed. W6 tokens would have been processed anyway, so they are not included.",
-  cost_lbl="Removable cost", cost_sub="W1 and W2 at the cache-write price (1.25), W6 at the write premium over a read (1.25 − 0.1), as a share of the input-side cost.",
+  cost_lbl="Removable cost", cost_sub="W1 and W2 at the cache-write price, W6 at the write premium over a read (1-hour cache: 2 − 0.1), as a share of the input-side cost.",
   step_note="For reference (outside the floor): {n} steps that got back only duplicates or errors processed {p:.1f}% of the input, since every step re-reads the whole context. Errors include verification such as failing tests, so people will sort them.",
   kc="C. By category <span>· events and tokens</span>",
   th=["Category", "Events", "Tokens", "Counted in"],
   rows=[("W1 duplication", "tokens · cost"), ("W2 errors", "tokens · cost"), ("W6 cache re-write", "cost only")],
-  src2="Sources: research/survey/user01/floor-t1.json · dataset-v2.json (S09 measured in full; v1 kept as published). Price ratios: provider list prices (uncached 1, cache read 0.1, cache write 1.25).",
+  src2="Sources: research/survey/user01/floor-t1.json · dataset-v2.json (S09 measured in full; v1 kept as published). Price ratios: provider list prices (uncached 1, cache read 0.1, cache write 1.25 for 5 minutes, 2 for 1 hour); the main sessions wrote almost only 1-hour cache.",
   h2b="{p:.0f}% of re-writes followed a break of over an hour",
   kd="A. When W6 happened <span>· gap since the previous call, by tokens</span>",
   gl=["Under 5 min {:.0f}%", "5 min–1 h {:.0f}%", "Over 1 h {:.0f}%"],
-  gsub="The cache lives 5 minutes by default, 1 hour as an option. No re-write followed a model switch.",
+  gsub="The main sessions used a 1-hour cache: re-writes within the hour came while it should have been alive. None followed a model switch.",
   ke="B. The range, by which re-writes count <span>· removable cost</span>",
   sens=["All re-writes (v1 rule, primary result)", "Without re-writes after an idle hour", "Re-writes within 5 minutes only"],
   note_b="Taking a break is not waste. The structure is inefficient: every return re-processes the whole context from scratch ({a:.0f},000 tokens on average). Keeping one session going for days makes that cost bigger.",
@@ -178,7 +178,7 @@ for lang, t in T.items():
     a = round(avg_w6 / 1e4) * (1 if lang == "ko" else 10)  # 44만 / 440,000
     ss = sorted(FJ["sessions"].items())
     persess = hbar([(k, v["floor_pct_price_weighted"], "#eb6834") for k, v in ss], max(v["floor_pct_price_weighted"] for _, v in ss),
-                   lambda v: f"{v:.2f}%", "by session", gutter=70, rowh=31)
+                   lambda v: f"{v:.2f}%", "by session", gutter=70, rowh=30)
     s3 = f'''<section class="slide" id="s3">{top(3)}
   <div><p class="cap">{t["fig"]} 2</p><h2>{t["h2b"].format(p=pc["gap_over_1h"])}</h2></div>
   <div class="panel"><p class="k">{t["kd"]}</p>{gaps}</div>

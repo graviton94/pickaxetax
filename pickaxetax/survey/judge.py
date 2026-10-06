@@ -38,7 +38,8 @@ from .events import lines_from
 SCHEMA = "pickaxetax.survey.judge.v1"
 CODEBOOK = "v1"
 # price ratios relative to uncached input, for the price-weighted view (Anthropic list prices)
-PRICE = {"input": 1.0, "cache_read": 0.1, "cache_write": 1.25}
+# 5-minute and 1-hour cache writes are priced differently; usage.cache_creation says which was paid
+PRICE = {"input": 1.0, "cache_read": 0.1, "cache_write_5m": 1.25, "cache_write_1h": 2.0}
 CHURN_TOLERANCE = 0.02  # ignore re-writes under 2% of the previous context (block alignment)
 # W6 is broken down by what preceded the re-write (descriptive only; the floor is unchanged):
 # a model switch, or the idle gap since the previous call against the cache lifetimes (5 min, 1 h)
@@ -96,7 +97,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
     occurred while it was current (to compare with blind human labels of the same items)."""
     seen_msg = set()
     calls = []  # main-chain calls: (ctx, cache_read, cache_write, time, model)
-    totals = {"input": 0, "cache_read": 0, "cache_write": 0}
+    totals = {"input": 0, "cache_read": 0, "cache_write": 0, "cache_write_5m": 0, "cache_write_1h": 0}
     by_ctx = {"main": {"calls": 0, "input": 0}, "side": {"calls": 0, "input": 0}}
     uses = {}  # tool_use_id -> (context key, signature)
     last_result = {}  # (context key, signature) -> (result hash, epoch)
@@ -177,24 +178,32 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             inp, cr, cw = (int(u.get(k) or 0) for k in ("input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"))
             if not inp + cr + cw:
                 continue
+            cc = u.get("cache_creation") if isinstance(u.get("cache_creation"), dict) else {}
+            w1h = min(cw, int(cc.get("ephemeral_1h_input_tokens") or 0))  # without a breakdown: 5-minute writes
             totals["input"] += inp
             totals["cache_read"] += cr
             totals["cache_write"] += cw
+            totals["cache_write_1h"] += w1h
+            totals["cache_write_5m"] += cw - w1h
+            rate = ((cw - w1h) * PRICE["cache_write_5m"] + w1h * PRICE["cache_write_1h"]) / cw if cw else PRICE["cache_write_5m"]
             st["ctx"] = inp + cr + cw
             by_ctx[bucket]["calls"] += 1
             by_ctx[bucket]["input"] += inp + cr + cw
             if bucket == "main":
-                calls.append((inp + cr + cw, cr, cw, _ts(d.get("timestamp")), m.get("model"), epoch, instructions))
+                calls.append((inp + cr + cw, cr, cw, _ts(d.get("timestamp")), m.get("model"), epoch, instructions, rate))
                 if limit_calls is not None and len(calls) >= limit_calls:
                     break
-    w6 = {"tokens": 0, "count": 0, "by_cause": {k: {"tokens": 0, "count": 0} for k, _ in GAPS + (("unknown", None),)}}
-    for (pctx, _, _, pt, pm, _, _), (ctx, cr, cw, t, mdl, _, at) in zip(calls, calls[1:]):
+    w6 = {"tokens": 0, "count": 0, "price_units": 0.0,
+          "by_cause": {k: {"tokens": 0, "count": 0, "price_units": 0.0} for k, _ in GAPS + (("unknown", None),)}}
+    for (pctx, _, _, pt, pm, _, _, _), (ctx, cr, cw, t, mdl, _, at, rate) in zip(calls, calls[1:]):
         if ctx < pctx:  # the context shrank: compaction or a cleared session, new content
             continue
         missed = min(cw, pctx - cr)
         if missed > CHURN_TOLERANCE * pctx:
             w6["tokens"] += missed
             w6["count"] += 1
+            premium = missed * (rate - PRICE["cache_read"])  # written at this call's write price instead of read
+            w6["price_units"] += premium
             if pm and mdl and pm != mdl:
                 cause = "model_switch"
             elif pt is None or t is None:
@@ -203,6 +212,7 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
                 cause = next(k for k, lim in GAPS[1:] if t - pt < lim)
             w6["by_cause"][cause]["tokens"] += missed
             w6["by_cause"][cause]["count"] += 1
+            w6["by_cause"][cause]["price_units"] += premium
             flag("W6", at)
     # descriptive, not in the floor: a W1/W2 result stays in the context and is processed again
     # by every later main-chain call until the next compaction (that carry is W5's to judge)
@@ -226,10 +236,13 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
             bt["input"] += st["ctx"]
     processed = totals["input"] + totals["cache_read"] + totals["cache_write"]
     price_total = sum(totals[k] * PRICE[k] for k in PRICE)
+    main_w = [c for c in calls if c[2]]
+    write_rate = (sum(c[2] * c[7] for c in main_w) / sum(c[2] for c in main_w)) if main_w else PRICE["cache_write_5m"]
     # W1/W2 arrive as new context (written to cache on the next call) and need not have;
     # W6 tokens would have been read anyway, so only the write premium over a read is waste
     removable = w1["tokens"] + w2["tokens"]
-    floor_price = removable * PRICE["cache_write"] + w6["tokens"] * (PRICE["cache_write"] - PRICE["cache_read"])
+    removable_price = removable * write_rate  # W1/W2 results are written to the cache on the next call
+    floor_price = removable_price + w6["price_units"]
     out = {
         "instructions": min(instructions, limit_instructions) if limit_instructions is not None else instructions,
         "calls": by_ctx["main"]["calls"] + by_ctx["side"]["calls"],  # calls that processed input
@@ -240,6 +253,8 @@ def judge_lines(lines, limit_instructions: int | None = None, limit_calls: int |
         "carried_by_later_calls": carried,
         "steps_spent_only_on": step_cost,
         "removable_tokens": removable,
+        "removable_price_units": removable_price,
+        "main_write_price": round(write_rate, 4),
         "floor_price_units": floor_price,
         "price_total_units": price_total,
         "floor_pct_of_input": round(100 * removable / processed, 4) if processed else 0,
@@ -259,7 +274,7 @@ def judge_source(source, limit_instructions: int | None = None, limit_calls: int
 
 
 def combine(per_session: dict) -> dict:
-    keys = ("input_processed", "removable_tokens", "floor_price_units", "price_total_units", "calls")
+    keys = ("input_processed", "removable_tokens", "removable_price_units", "floor_price_units", "price_total_units", "calls")
     tot = {k: sum(s[k] for s in per_session.values()) for k in keys}
     tot["subagent_input"] = sum(s["subagents"]["input"] for s in per_session.values())
     cats = {c: {"tokens": sum(s[c]["tokens"] for s in per_session.values()),
@@ -274,18 +289,19 @@ def combine(per_session: dict) -> dict:
                 acc["calls"] += v["calls"]
                 acc["input"] += v["input"]
     tot["steps_spent_only_on"] = sc
-    cats["W6"]["by_cause"] = {k: {x: sum(s["W6"]["by_cause"][k][x] for s in per_session.values()) for x in ("tokens", "count")}
+    cats["W6"]["price_units"] = sum(s["W6"]["price_units"] for s in per_session.values())
+    cats["W6"]["by_cause"] = {k: {x: sum(s["W6"]["by_cause"][k][x] for s in per_session.values()) for x in ("tokens", "count", "price_units")}
                               for k in next(iter(per_session.values()))["W6"]["by_cause"]} if per_session else {}
-    parts = {k: sum(s["input_parts"][k] for s in per_session.values()) for k in PRICE}
+    parts = {k: sum(s["input_parts"][k] for s in per_session.values()) for k in next(iter(per_session.values()))["input_parts"]} \
+        if per_session else {}
     # sensitivity of the cost view to which W6 re-writes count (descriptive; v1 counts all of them)
     if cats["W6"].get("by_cause") and tot["price_total_units"]:
-        base = tot["removable_tokens"] * PRICE["cache_write"]
-        prem = PRICE["cache_write"] - PRICE["cache_read"]
+        base = tot["removable_price_units"]
         bc = cats["W6"]["by_cause"]
         views = {"all_w6 (v1)": list(bc), "without_gap_over_1h": [k for k in bc if k != "gap_over_1h"],
                  "only_gap_under_5m": ["gap_under_5m"]}
         tot["sensitivity_pct_price_weighted"] = {
-            v: round(100 * (base + prem * sum(bc[k]["tokens"] for k in ks)) / tot["price_total_units"], 2) for v, ks in views.items()}
+            v: round(100 * (base + sum(bc[k]["price_units"] for k in ks)) / tot["price_total_units"], 2) for v, ks in views.items()}
     return {"schema": SCHEMA, "codebook": CODEBOOK, "tier": "T1 mechanical (floor)",
             "sessions": per_session, "total": {**tot, "input_parts": parts, **cats,
             "floor_pct_of_input": round(100 * tot["removable_tokens"] / tot["input_processed"], 4) if tot["input_processed"] else 0,

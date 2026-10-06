@@ -33,9 +33,10 @@ cache-read price. So W6 adds no removable tokens, only a **removable cost**.
 
 - **Tokens:** removable tokens (W1 + W2) as a share of all input processed (uncached input +
   cache reads + cache writes, main session and sub-agents).
-- **Cost:** W1 + W2 priced as cache writes (1.25×), plus W6 priced at the write premium over a
-  read (1.25× − 0.1× = 1.15×), as a share of the input-side cost (uncached 1×, cache reads
-  0.1×, cache writes 1.25×). This is closer to the compute and the money spent, because cache
+- **Cost:** W1 + W2 priced as cache writes, plus W6 priced at the write premium over a read, as a
+  share of the input-side cost (uncached 1×, cache reads 0.1×, 5-minute cache writes 1.25×,
+  1-hour cache writes 2×; each call's writes are priced by the split its usage records in
+  `cache_creation`, and W1/W2 at the session's average main-session write price). This is closer to the compute and the money spent, because cache
   reads are cheap and cache writes are not.
 
 ## W6, broken down by cause

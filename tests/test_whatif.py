@@ -34,3 +34,15 @@ def test_cli_on_a_dataset(tmp_path, capsys):
     assert r["total"]["measured"] == 180_100
     assert r["sessions"]["S01"]["task_scoped_summary_2000"] == 100 + 20_000 + 50_000 + 2_100 + 12_100
     assert "not waste" in capsys.readouterr().out
+
+
+def test_restart_rules_keep_growth_after_a_real_compaction():
+    # base 10; instr 1: 10 -> 30; instr 2: 35 -> 50, compacted to 12, grows to 20; instr 3 starts at 25
+    ctx, starts = [10, 20, 30, 35, 45, 50, 12, 20, 25], [0, 3, 8]
+    r = whatif.restart(ctx, starts, base=10, summary=5, every=1)
+    assert r["restarts"] == 2
+    # instr 2 restarts at 15 and grows +10, +5; the compaction drops it to 12; the +8 after it is kept
+    assert r["input"] == 10 + 20 + 30 + 15 + 25 + 30 + 12 + 20 + 15
+    # a size trigger restarts only when the replayed context before the instruction is above it
+    assert whatif.restart(ctx, starts, base=10, summary=5, threshold=40)["restarts"] == 0
+    assert whatif.restart(ctx, starts, base=10, summary=5, threshold=15)["restarts"] == 2
