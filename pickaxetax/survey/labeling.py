@@ -251,7 +251,7 @@ RULE_CATEGORIES = ("W4", "W5", "W8")  # rule-tier candidates (research/protocol/
 
 
 def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", coder: str | None = None,
-                   tier: str = "t1") -> dict:
+                   tier: str = "t1", placebo: str | None = None) -> dict:
     """The T1 judge's decisions on a packet's items, as a labels file.
 
     For the mechanical categories only (W1, W2, W6): "yes" when the judge counted that category
@@ -263,12 +263,14 @@ def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", co
     from .rules import detect
 
     cats_of = MACHINE_CATEGORIES if tier == "t1" else RULE_CATEGORIES
-    coder = coder or f"machine-{tier}"
+    if placebo and tier != "t2":
+        raise ValueError("a placebo applies to the rule tier (t2) only")
+    coder = coder or (f"machine-{tier}" if not placebo else f"machine-{tier}-{placebo}")
     maps = {}
     for label, lines in lines_by_session.items():
         lines = list(lines)
         instr = instructions(lines)
-        flags = judge_lines(lines, per_instruction=True)["per_instruction"] if tier == "t1" else detect(lines)["flags"]
+        flags = judge_lines(lines, per_instruction=True)["per_instruction"] if tier == "t1" else detect(lines, placebo)["flags"]
         if len(flags) != len(instr):
             raise ValueError(f"{label}: {len(instr)} instructions but the judge saw {len(flags)}")
         with_calls = [i for i, it in enumerate(instr) if it["stats"]["calls"]]  # packet indexes count these only
@@ -280,7 +282,8 @@ def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", co
             raise ValueError(f"no transcript for item {item['id']} ({item['session']} #{item['index']})")
         labels[item["id"]] = {c: ("yes" if c in cats[item["index"]] else "no") for c in cats_of}
     return {"schema": LABELS_SCHEMA, "codebook": packet.get("codebook"), "packet": packet["sha256"], "phase": phase,
-            "coder": coder, "machine": {"tier": tier.upper(), "categories": list(cats_of)}, "labels": labels}
+            "coder": coder, "machine": {"tier": tier.upper(), "categories": list(cats_of), **({"placebo": placebo} if placebo else {})},
+            "labels": labels}
 
 
 def cohen_kappa(a: list, b: list) -> float | None:

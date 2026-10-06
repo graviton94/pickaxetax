@@ -98,9 +98,13 @@ def read_trace_lines(lines, keep_text: bool = False) -> Trace:
         if n:
             t.segments.append(Segment(kind, n, birth, frozenset(TOKEN_RE.findall(text)), text=text if keep_text else ""))
 
+    from ..survey.events import _is_instruction  # the instruction rule every survey module shares
+
     for d in lines:
         if not isinstance(d, dict) or d.get("isSidechain"):
             continue
+        if _is_instruction(d) and (not t.instruction_starts or t.instruction_starts[-1] != len(t.contexts)):
+            t.instruction_starts.append(len(t.contexts))
         if d.get("type") == "system" and d.get("subtype") == "compact_boundary":
             if not t.compactions or t.compactions[-1] != len(t.contexts):
                 t.compactions.append(len(t.contexts))
@@ -151,15 +155,18 @@ def read_trace_lines(lines, keep_text: bool = False) -> Trace:
                     add("tool_result", _text(b.get("content")), birth)
                 elif b.get("type") == "text":
                     s = str(b.get("text", ""))
-                    kind = "harness" if d.get("isMeta") or "<system-reminder>" in s else "user_prompt"
-                    add(kind, s, birth)
-                    if kind == "user_prompt" and s.strip() and (not t.instruction_starts or t.instruction_starts[-1] != birth):
-                        t.instruction_starts.append(birth)
+                    add("harness" if d.get("isMeta") or "<system-reminder>" in s else "user_prompt", s, birth)
     return t
 
 
-def link(t: Trace, min_shared: int = 1, common_frac: float = 0.02) -> None:
-    """Set each segment's residency window and the calls that needed it."""
+def link(t: Trace, min_shared: int = 1, common_frac: float = 0.02, placebo: str | None = None) -> dict | None:
+    """Set each segment's residency window and the calls that needed it.
+
+    ``placebo=None`` is lexical-v1. ``placebo="mirror"`` then keeps a segment's later refs only
+    if they beat its time-mirrored placebo (see ``_mirror_test``) and returns the test's counts.
+    """
+    if placebo is not None and placebo not in PLACEBOS:
+        raise ValueError(f"unknown placebo {placebo!r} (choose from {sorted(PLACEBOS)})")
     n_calls = len(t.contexts)
     bounds = sorted(set(t.compactions)) + [n_calls]
     df = Counter(tok for out in t.outputs for tok in out)
@@ -179,6 +186,54 @@ def link(t: Trace, min_shared: int = 1, common_frac: float = 0.02) -> None:
             continue
         hits = Counter(k for tok in s.terms - common for k in used_at.get(tok, ()) if s.birth < k < s.end)
         s.refs = [s.birth] + sorted(k for k, c in hits.items() if c >= min_shared)
+    if placebo == "mirror":
+        return _mirror_test(t, used_at, common, min_shared)
+    return None
+
+
+def _mirror_test(t: Trace, used_at: dict, common: set, min_shared: int) -> dict:
+    """Time-mirror placebo with a deterministic 2-sigma test (cycle E5, "Tmirror").
+
+    Lexical reuse is time-symmetric: calls made before a segment existed share its tokens about as
+    often as calls after it, so a raw link measures topic, not need. For a segment with ``W`` calls
+    in its window after birth and ``n_obs`` ref calls among them, the placebo rate ``p`` is the share
+    of its time-mirrored calls (distance ``d`` after birth <-> call ``origin(s) - d``, so the calls
+    ``origin - W .. origin - 1``, truncated at the session start) whose outputs share at least
+    ``min_shared`` distinctive tokens with it. Without any mirrored call, ``p`` is the session's pooled
+    mirror rate for the segment's kind (0 if that kind has none either). The later refs are kept iff
+    ``n_obs > pW + 2 sqrt(W p (1 - p))``, otherwise all are dropped; the birth ref always stays.
+    """
+    mirror: list[tuple[Segment, int, int]] = []
+    pool: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    for s in t.segments:
+        if s.kind == "unattributed" or s.birth >= s.end:
+            continue
+        o = origin(s)
+        lo = max(0, o - (s.end - s.birth - 1))
+        hits = Counter(k for tok in s.terms - common for k in used_at.get(tok, ()) if lo <= k < o)
+        hit = sum(1 for c in hits.values() if c >= min_shared)
+        mirror.append((s, hit, o - lo))
+        pool[s.kind][0] += hit
+        pool[s.kind][1] += o - lo
+    stats = {"reused": 0, "kept": 0, "dropped": 0, "fallback": 0}
+    for s, hit, avail in mirror:
+        n_obs = len(s.refs) - 1
+        if n_obs <= 0:
+            continue
+        if avail:
+            p = hit / avail
+        else:
+            ph, pa = pool[s.kind]
+            p = ph / pa if pa else 0.0
+            stats["fallback"] += 1
+        w = s.end - s.birth - 1
+        stats["reused"] += 1
+        if n_obs > p * w + 2 * math.sqrt(w * p * (1 - p)):
+            stats["kept"] += 1
+        else:
+            s.refs = s.refs[:1]
+            stats["dropped"] += 1
+    return stats
 
 
 def calibrate(t: Trace, min_tokens: int = 2_000) -> float:
@@ -219,6 +274,12 @@ def calibrate(t: Trace, min_tokens: int = 2_000) -> float:
     return factor
 
 
+def origin(s: Segment) -> int:
+    """The call a segment came from: a prompt arrives at the call that reads it (`birth`); an
+    output or a tool result belongs to the call before (call k's output is born at k + 1)."""
+    return s.birth if s.kind in ("user_prompt", "harness", "compact_summary") else s.birth - 1
+
+
 def needed(s: Segment, penalty: float) -> float:
     """Token-calls the oracle spends on one segment for a given re-fetch cost."""
     if not s.refs:
@@ -253,7 +314,7 @@ def bound(t: Trace, penalties=DEFAULT_PENALTIES) -> dict:
     for s in t.segments:
         if s.kind == "unattributed" or s.end <= s.birth:
             continue
-        i = bisect.bisect_right(starts, s.birth)
+        i = bisect.bisect_right(starts, origin(s))
         nxt = starts[i] if i < len(starts) else s.end
         a = max(nxt, s.birth)
         if a >= s.end:
@@ -325,10 +386,17 @@ def merge(reports: list[dict]) -> dict:
             "dead_after_last_use_pct": round(100 * dead / res, 1) if res else 0.0,
             "unneeded_pct": round(100 * unneeded / res, 1) if res else 0.0,
         }
+    methods = {r.get("method", METHOD) for r in reports}
+    if methods - {METHOD}:  # lexical-v1 reports carry no method key, so their merge stays as it was
+        if len(methods) > 1:
+            raise ValueError(f"cannot merge reports of different methods: {sorted(methods)}")
+        m["method"] = methods.pop()
+        m["placebo"] = {k: sum(r["placebo"][k] for r in reports) for k in reports[0]["placebo"]}
     return m
 
 
 METHOD = "lexical-v1"  # bump when detection or calibration changes, so results stay comparable
+PLACEBOS = {"mirror": METHOD + "+mirror-2sigma"}  # reuse must beat the session's own pre-birth calls (E5)
 PCT_KEYS = {"P=0": "P0", "P=1000": "P1000", "P=10000": "P10000", "P=inf": "Pinf"}
 MAX_SESSIONS = 200
 
@@ -341,7 +409,7 @@ def export(reports: list[dict]) -> dict:
              round(100 * r["pinned_input"] / r["measured_input"], 1) if r["measured_input"] else 0.0,
              *(r["policies"][k]["avoidable_pct"] for k in PCT_KEYS)] for r in reports[:MAX_SESSIONS]]
     return {
-        "method": METHOD,
+        "method": m.get("method", METHOD),
         "sessions": m["sessions"],
         "api_calls": m["api_calls"],
         "measured_input": m["measured_input"],
@@ -357,12 +425,23 @@ def _label(p: float) -> str:
     return "P=inf" if p == math.inf else f"P={int(p)}"
 
 
+def method_tag(placebo: str | None = None) -> str:
+    """The method a report was computed with: lexical-v1, or lexical-v1 plus a placebo test."""
+    return METHOD if placebo is None else PLACEBOS[placebo]
+
+
 def analyze(path, min_shared: int = 1, common_frac: float = 0.02, penalties=DEFAULT_PENALTIES,
-            calibrated: bool = True) -> dict:
-    """path: a transcript file, or an iterable of parsed transcript lines."""
+            calibrated: bool = True, placebo: str | None = None) -> dict:
+    """path: a transcript file, or an iterable of parsed transcript lines.
+
+    With a ``placebo`` the report also carries ``method`` and the placebo test's counts; without
+    one it is exactly the lexical-v1 report (no extra keys)."""
     t = read_trace(path) if isinstance(path, str) else read_trace_lines(path)
     factor = calibrate(t) if calibrated else None
-    link(t, min_shared, common_frac)
+    test = link(t, min_shared, common_frac, placebo)
     out = bound(t, penalties)
     out["tokenizer_factor"] = round(factor, 2) if factor else None
+    if placebo is not None:
+        out["method"] = method_tag(placebo)
+        out["placebo"] = test
     return out

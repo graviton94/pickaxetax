@@ -34,3 +34,32 @@ def test_cli_on_a_dataset(tmp_path, capsys):
     assert r["total"]["measured"] == 180_100
     assert r["sessions"]["S01"]["task_scoped_summary_2000"] == 100 + 20_000 + 50_000 + 2_100 + 12_100
     assert "not waste" in capsys.readouterr().out
+
+
+def test_restart_rules_and_the_compaction_ceiling():
+    # base 10; instr 1: 10 -> 30; instr 2: 35 -> 50, actually compacted to 12, grows to 20; instr 3 at 25
+    ctx, starts = [10, 20, 30, 35, 45, 50, 12, 20, 25], [0, 3, 8]
+    r = whatif.restart(ctx, starts, base=10, summary=5, every=1)
+    assert r["restarts"] == 2
+    # instr 2 restarts at base + summary + its first growth (20) and grows to 35; the actual compaction
+    # does not apply, because the replay never reached the size the real session compacted at; instr 3
+    # restarts again at 20
+    assert r["input"] == 10 + 20 + 30 + 20 + 30 + 35 + 35 + 43 + 20
+    # a size trigger restarts only when the replayed context before the instruction is above it
+    assert whatif.restart(ctx, starts, base=10, summary=5, threshold=40)["restarts"] == 0  # replay = actual, compacted
+    assert whatif.restart(ctx, starts, base=10, summary=5, threshold=15)["restarts"] == 2
+    # nobody restarts into a bigger context
+    big = whatif.restart(ctx, starts, base=10, summary=1_000, every=1)
+    assert (big["input"], big["restarts"], big["compactions"]) == (sum(ctx), 0, 0)
+
+
+def test_optimal_ceiling_is_the_minimum_of_the_sawtooth_model():
+    post, growth, reread = 70_000, 1_800, 80_000
+    c_star = whatif.optimal_ceiling(post, growth, reread)
+
+    def per_call(c):  # mean context plus the compaction read and re-reads, spread over the cycle
+        return (post + c) / 2 + growth * (c + reread) / (c - post)
+
+    assert per_call(c_star) <= min(per_call(c_star * 0.8), per_call(c_star * 1.25))
+    assert whatif.optimal_ceiling(post, growth) < c_star  # re-reading pushes the optimum up
+    assert whatif.growth_per_call([10, 30, 20, 50]) == (50, 4)  # positive growth, number of calls

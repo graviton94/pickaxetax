@@ -43,7 +43,7 @@ def test_cache_churn(tmp_path):
     assert r["W6"]["tokens"] == 10_805   # the previous context (10,500 + 300 + 5) re-written
     # churned tokens are processed either way: not removable tokens, but a removable cost
     assert r["removable_tokens"] == 0 and r["floor_pct_of_input"] == 0
-    assert r["floor_price_units"] == 10_805 * (judge.PRICE["cache_write"] - judge.PRICE["cache_read"])
+    assert r["floor_price_units"] == 10_805 * (judge.PRICE["cache_write_5m"] - judge.PRICE["cache_read"])
     assert 0 < r["floor_pct_price_weighted"] < 100
 
 
@@ -51,7 +51,7 @@ def test_limit_instructions(tmp_path):
     t = T()
     for i in range(3):
         t.raw({"type": "user", "message": {"role": "user", "content": f"task {i}"}})
-        t.tool(f"e{i}", "Bash", {"command": "x"}).result(f"e{i}", "err", is_error=True)
+        t.tool(f"e{i}", "Bash", {"command": f"step {i}"}).result(f"e{i}", f"err {i}", is_error=True)
     assert run(t, tmp_path, limit_instructions=2)["W2"]["count"] == 2
 
 
@@ -101,7 +101,8 @@ def test_local_subagent_transcripts_are_read_and_kept_apart(tmp_path):
     r = judge.judge_source(path)
     assert r["main"]["calls"] == 1 and r["subagents"]["calls"] == 2
     assert r["W1"]["count"] == 0
-    assert judge.judge_source(path, limit_calls=1)["subagents"]["calls"] == 0  # cut at the snapshot
+    # cut at the snapshot as events.cut does: the sub-agents started by the last kept call belong to it
+    assert judge.judge_source(path, limit_calls=1)["subagents"]["calls"] == 2
 
 
 def test_carry_until_compaction(tmp_path):
@@ -136,3 +137,14 @@ def test_steps_spent_only_on_duplicates_or_errors(tmp_path):
     assert r["W2_by_tool"] == {"Bash": {"calls": 1, "input": 7_005}} and r["W1_by_tool"] == {"Read": {"calls": 1, "input": 6_005}}
     total = judge.combine({"a": run(t, tmp_path, name="k.jsonl")})["total"]["steps_spent_only_on"]
     assert total["W1"]["calls"] == 1 and total["W2_by_tool"]["Bash"]["input"] == 7_005
+
+
+def test_one_hour_cache_writes_are_priced_higher(tmp_path):
+    t = T()
+    t.call(10_000)
+    t.call(0, write=10_100)
+    for line in t.lines[-1:]:
+        line["message"]["usage"]["cache_creation"] = {"ephemeral_5m_input_tokens": 0, "ephemeral_1h_input_tokens": 10_100}
+    r = run(t, tmp_path)
+    assert r["input_parts"]["cache_write_1h"] == 10_100 and r["input_parts"]["cache_write_5m"] == 0
+    assert r["W6"]["price_units"] == r["W6"]["tokens"] * (judge.PRICE["cache_write_1h"] - judge.PRICE["cache_read"])

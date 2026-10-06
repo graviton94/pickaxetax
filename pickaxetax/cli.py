@@ -93,6 +93,9 @@ def main(argv: list[str] | None = None) -> int:
     ab.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
     ab.add_argument("--min-shared", type=int, default=1, help="distinctive tokens a later output must reuse to count as a use")
     ab.add_argument("--raw", action="store_true", help="skip calibration against measured context growth")
+    ab.add_argument("--placebo", choices=["mirror"], default=None,
+                    help="count a reuse only if it beats a placebo; mirror: the session's own calls before the "
+                         "segment existed, 2-sigma test (method lexical-v1+mirror-2sigma)")
     ab.add_argument("--json", action="store_true", help="print the aggregate as JSON")
     ab.add_argument("--export", action="store_true", help="print an anonymous aggregate (audit + bound) for contribution")
     ah = agsub.add_parser("hook", help="guard hook (called by Claude Code) and its installer")
@@ -162,13 +165,25 @@ def main(argv: list[str] | None = None) -> int:
     sm2.add_argument("--phase", choices=("main", "calibration"), default="main")
     sm2.add_argument("--tier", choices=("t1", "t2"), default="t1",
                      help="t1: the mechanical judge (W1, W2, W6); t2: the rule-tier candidates (W4, W5, W8)")
+    sm2.add_argument("--placebo", choices=["mirror"], default=None,
+                     help="t2 only: W5's reuse links under the time-mirror test (the pre-registered secondary analysis)")
     sm2.add_argument("--out", default="labels-machine.json")
+    srun = svsub.add_parser("run", help="everything at once: dataset, mechanical floor, opportunity bound, what-ifs, report")
+    srun.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    srun.add_argument("--label", default="me")
+    srun.add_argument("--out-dir", default="survey-out")
     sw = svsub.add_parser("whatif", help="counterfactual context structures replayed on a dataset's per-call series")
     sw.add_argument("dataset")
     sw.add_argument("--out", help="write the numbers as JSON")
     sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
     sa.add_argument("labels", nargs=2)
     sa.add_argument("--json", action="store_true")
+    sc = svsub.add_parser("compare", help="before/after comparison of two datasets (experiment E1; numbers only)")
+    sc.add_argument("before", help="a dataset JSON, or a `pxt survey run` folder (dataset.json, floor.json if present)")
+    sc.add_argument("after", help="the same, for the sessions after the change")
+    sc.add_argument("--out", help="write the numbers as JSON")
+    sc.add_argument("--seed", type=int, default=20261006)
+    sc.add_argument("--reps", type=int, default=2000, help="bootstrap resamples (default 2000)")
 
     co = sub.add_parser("contribute", help="contribute anonymous numbers to the public index")
     cosub = co.add_subparsers(dest="contrib_cmd", required=True)
@@ -348,6 +363,10 @@ def _agent(args) -> int:
     if not files:
         print("no Claude Code transcripts found (looked in ~/.claude/projects)", file=sys.stderr)
         return 1
+    if args.agent_cmd == "bound" and args.export and args.placebo:
+        print("--placebo is not part of the contribution format (lexical-v1); drop --export or --placebo",
+              file=sys.stderr)
+        return 2
     if args.agent_cmd == "bound" and not args.export:
         return _agent_bound(files, args)
     reports = [audit_session(parse(f)) for f in files]
@@ -386,7 +405,8 @@ def _agent(args) -> int:
 def _agent_bound(files: list[str], args) -> int:
     from .agent import bound
 
-    reports = [r for r in (bound.analyze(f, min_shared=args.min_shared, calibrated=not args.raw) for f in files)
+    reports = [r for r in (bound.analyze(f, min_shared=args.min_shared, calibrated=not args.raw,
+                                         placebo=args.placebo) for f in files)
                if r["api_calls"]]
     if not reports:
         print("no API calls found in the transcripts", file=sys.stderr)
@@ -398,6 +418,10 @@ def _agent_bound(files: list[str], args) -> int:
     measured = m["measured_input"]
     print(f"sessions {m['sessions']}  ·  API calls {m['api_calls']:,}  ·  input processed {measured:,} tokens")
     print(f"pinned (fixed base + context the transcript does not show): {100 * m['pinned_input'] / measured:.1f}%")
+    if "method" in m:  # only placebo runs report a method here; the lexical-v1 output is unchanged
+        pt = m["placebo"]
+        print(f"method {m['method']}: reuse kept only where it beats the session's own calls before the segment; "
+              f"{pt['kept']:,} of {pt['reused']:,} reused segments kept ({pt['fallback']:,} on the kind's pooled rate)")
     names = {"P=inf": "drop after last use, never re-fetch", "P=0": "oracle, free re-fetch"}
     print(f"\n{'policy':<40}{'bound input':>16}{'avoidable':>11}")
     for label, p in sorted(m["policies"].items(), key=lambda kv: -kv[1]["bound_input"]):
@@ -435,6 +459,18 @@ def _survey(args) -> int:
             print(f"  {k:32} {t[k]:>16,}  {v:5.1f}% less")
         print("Counterfactuals under stated assumptions (a summary is enough; nothing has to be re-read): not waste judgments.")
         return 0
+    if args.survey_cmd == "compare":
+        from .survey import compare
+        try:
+            r = compare.compare_paths(args.before, args.after, seed=args.seed, reps=args.reps)
+        except (OSError, ValueError) as err:
+            print(f"error: {err}", file=sys.stderr)
+            return 2
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as f:
+                json.dump(r, f, ensure_ascii=False, indent=1)
+        print(compare.render(r))
+        return 0
     if args.survey_cmd == "report":
         with open(args.dataset, encoding="utf-8") as f:
             ds = json.load(f)
@@ -447,7 +483,9 @@ def _survey(args) -> int:
     from .agent import find_transcripts
     from .survey.measure import with_subagents
 
-    files = find_transcripts(args.paths or None)
+    files = _main_transcripts(find_transcripts(args.paths or None))
+    if args.survey_cmd == "run":
+        return _survey_run(args, files)
     sessions = []
     for i, path in enumerate(files, 1):
         m = with_subagents(path, include_series=True)
@@ -467,6 +505,63 @@ def _survey(args) -> int:
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(ds, f, ensure_ascii=False, separators=(",", ":"))
     print(f"measured {len(sessions)} sessions -> {args.out} (numbers only; no text, paths or ids)")
+    return 0
+
+
+def _main_transcripts(paths: list[str]) -> list[str]:
+    """Sub-agent transcripts (<session>/subagents/*.jsonl) are measured with their session."""
+    return [p for p in paths if os.path.basename(os.path.dirname(p)) != "subagents"]
+
+
+def _survey_run(args, files: list[str]) -> int:
+    """Everything the survey can say about one person's transcripts, in one folder (numbers only)."""
+    from datetime import datetime, timezone
+
+    from .agent import bound
+    from .survey import dataset, judge, report, whatif
+    from .survey.measure import with_subagents
+
+    os.makedirs(args.out_dir, exist_ok=True)
+    sessions, floors, bounds = [], {}, []
+    for i, path in enumerate(files, 1):
+        m = with_subagents(path, include_series=True)
+        if not m["api_calls"]:
+            continue
+        sid = f"S{i:02d}"
+        models = m.get("models") or {}
+        sessions.append({"id": sid, "type": "", "model": max(models, key=models.get) if models else "", "origin": "",
+                         "span_hours": m["span_hours"], "session_list": None, "measurement": m, "source": "local",
+                         "partial": False, "base_override": None})
+        floors[sid] = judge.judge_source(path)
+        b = bound.analyze(path)
+        if b["api_calls"]:
+            bounds.append(b)
+    if not sessions:
+        print("no Claude Code transcripts with API calls found", file=sys.stderr)
+        return 1
+    stamp = datetime.now(timezone.utc).date().isoformat()
+    ds = dataset.build({"label": args.label, "who": args.label, "scope": "Claude Code (local transcripts)",
+                        "period": f"measured {stamp}", "sources": "provider-recorded usage in local transcripts",
+                        "dataset_path": "dataset.json", "notes": []}, sessions)
+    floor = judge.combine(floors)
+    merged = bound.merge(bounds)
+    opp = {"schema": "pickaxetax.survey.opportunity.v1", "method": bound.METHOD,
+           "note": "Counterfactual opportunity, not a waste judgment; reuse detection is lexical and unvalidated.",
+           "merged": merged, "whatif": whatif.run(ds)}
+    out = {"dataset.json": ds, "floor.json": floor, "opportunity.json": opp}
+    for name, obj in out.items():
+        with open(os.path.join(args.out_dir, name), "w", encoding="utf-8") as f:
+            json.dump(obj, f, ensure_ascii=False, indent=1 if name != "dataset.json" else None)
+    with open(os.path.join(args.out_dir, "report.html"), "w", encoding="utf-8") as f:
+        f.write(report.render(ds))
+    t, p = floor["total"], merged["policies"]
+    w = opp["whatif"]["total"]["saved_pct"]
+    print(f"{len(sessions)} sessions, {dataset.derive(ds)['total_input']:,} input tokens -> {args.out_dir}/ (numbers only)")
+    print(f"  mechanical floor (codebook v1): removable tokens {t['floor_pct_of_input']:.4f}%, removable cost {t['floor_pct_price_weighted']:.2f}%")
+    print(f"  oracle bound (lexical, unvalidated): drop only what is never used again {p['P=inf']['avoidable_pct']}%, "
+          f"fetch on demand {p['P=1000']['avoidable_pct']}%")
+    print(f"  what-if (a summary is enough): new session above 200k at an instruction boundary {w['restart_above_200000_summary_10000']}%")
+    print("Not waste judgments beyond the floor. To contribute, see research/protocol/labeling.md and `pxt contribute`.")
     return 0
 
 
@@ -532,7 +627,7 @@ def _survey_machine(args) -> int:
             sources[label] = events.lines_from([l.strip() for l in f if l.strip()])
     lines = {k: events.cut(v, call_limits.get(k), limits.get(k)) for k, v in sources.items()}
     try:
-        lab = labeling.machine_labels(packet, lines, phase=args.phase, tier=args.tier)
+        lab = labeling.machine_labels(packet, lines, phase=args.phase, tier=args.tier, placebo=args.placebo)
     except ValueError as e:
         print(str(e), file=sys.stderr)
         return 1
@@ -568,7 +663,8 @@ def _survey_labeling(args) -> int:
     from .agent import find_transcripts
 
     sessions = {}
-    for i, path in enumerate(find_transcripts(args.paths or None) if (args.paths or not args.pages) else [], 1):
+    paths = _main_transcripts(find_transcripts(args.paths or None)) if (args.paths or not args.pages) else []
+    for i, path in enumerate(paths, 1):
         items = labeling.session_instructions(path)
         if items:
             sessions[f"S{i:02d}"] = items

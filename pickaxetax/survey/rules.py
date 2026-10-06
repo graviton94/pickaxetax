@@ -10,7 +10,7 @@ then their outputs are not published as waste. Everything here is computed from 
   W8 over-exploration exploration results (Read, Grep, Glob, WebFetch, WebSearch, LS, and shell
                      commands that only read: cat, grep, sed -n, git log ...) of which fewer than
                      two distinctive words reappear in any later output of the same context
-                     (main session, or one sub-agent run)
+                     (main session, or one sub-agent run) or, for a sub-agent, of the main session
   W4 discarded output a file written whole (Write) and later written whole again before the
                      session ended: the first version's tokens, at the instruction that wrote it
 """
@@ -51,8 +51,9 @@ def _text(content) -> str:
     return ""
 
 
-def detect(lines) -> dict:
-    """Per-instruction scores and flags. `lines`: parsed transcript lines of one session."""
+def detect(lines, placebo: str | None = None) -> dict:
+    """Per-instruction scores and flags. `lines`: parsed transcript lines of one session.
+    `placebo`: W5's reuse links under a placebo test (`bound.link`); None is the sealed primary rule."""
     lines = list(lines)
     # main-session API calls in order, and the instruction each belongs to (1-based; 0 = before any)
     instr, call_instr, call_ctx, seen = 0, [], [], set()
@@ -104,7 +105,8 @@ def detect(lines) -> dict:
                     name, k2, ins = uses[b["tool_use_id"]]
                     if name in EXPLORE and not b.get("is_error"):
                         text = _text(b.get("content"))
-                        explore.append((ins, k2, estimate_tokens(text), frozenset(bound.TOKEN_RE.findall(text)), len(outputs[k2])))
+                        explore.append((ins, k2, estimate_tokens(text), frozenset(bound.TOKEN_RE.findall(text)),
+                                        len(outputs[k2]), len(outputs["main"])))
     n = instr
     score = [{"W4": 0, "W5": 0, "W5_input": 0, "W8": 0, "W8_explore": 0} for _ in range(n)]
 
@@ -119,11 +121,15 @@ def detect(lines) -> dict:
             for t in o - common:
                 first_seen.setdefault(t, []).append(i)
         later[key] = (first_seen, common)
-    for ins, key, tok, terms, at in explore:
+    def reused(key, terms, at):
+        first_seen, common = later.get(key, ({}, set()))
+        return sum(1 for t in terms - common if any(i >= at for i in first_seen.get(t, ()))) >= W8_MIN_SHARED
+
+    for ins, key, tok, terms, at, main_at in explore:
         if not ins or not tok:
             continue
-        first_seen, common = later.get(key, ({}, set()))
-        used = sum(1 for t in terms - common if any(i >= at for i in first_seen.get(t, ()))) >= W8_MIN_SHARED
+        # used if a later output of the same agent, or of its parent (the main session), reuses it
+        used = reused(key, terms, at) or (key != "main" and reused("main", terms, main_at))
         score[ins - 1]["W8_explore"] += tok
         if not used:
             score[ins - 1]["W8"] += tok
@@ -139,14 +145,14 @@ def detect(lines) -> dict:
     # W5: the bound's carried-and-dead residency, attributed to the call where it is carried
     t = bound.read_trace_lines(lines)
     bound.calibrate(t)
-    bound.link(t)
+    bound.link(t, placebo=placebo)
     n_calls = len(t.contexts)
     diff = [0.0] * (n_calls + 1)
     starts = t.instruction_starts
     for s in t.segments:
         if s.kind == "unattributed" or s.end <= s.birth:
             continue
-        i = bisect.bisect_right(starts, s.birth)
+        i = bisect.bisect_right(starts, bound.origin(s))
         a = max(starts[i] if i < len(starts) else s.end, s.birth)
         last = s.refs[-1] if s.refs else s.birth - 1
         lo = max(a, last + 1)

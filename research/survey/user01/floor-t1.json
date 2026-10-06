@@ -11,7 +11,9 @@
    "input_parts": {
     "input": 898,
     "cache_read": 168264446,
-    "cache_write": 1661408
+    "cache_write": 1661408,
+    "cache_write_5m": 90539,
+    "cache_write_1h": 1570869
    },
    "main": {
     "calls": 400,
@@ -32,26 +34,32 @@
    "W6": {
     "tokens": 16244,
     "count": 2,
+    "price_units": 30863.6,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 8362,
-      "count": 1
+      "count": 1,
+      "price_units": 15887.8
      },
      "gap_5m_to_1h": {
       "tokens": 7882,
-      "count": 1
+      "count": 1,
+      "price_units": 14975.8
      },
      "gap_over_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -90,10 +98,10 @@
     }
    },
    "removable_tokens": 2836,
-   "floor_price_units": 22225.6,
-   "price_total_units": 18904102.6,
+   "floor_price_units": 36535.6,
+   "price_total_units": 20082254.35,
    "floor_pct_of_input": 0.0017,
-   "floor_pct_price_weighted": 0.12
+   "floor_pct_price_weighted": 0.18
   },
   "S02": {
    "instructions": 49,
@@ -102,7 +110,9 @@
    "input_parts": {
     "input": 3214,
     "cache_read": 603741436,
-    "cache_write": 8010106
+    "cache_write": 8010106,
+    "cache_write_5m": 1421710,
+    "cache_write_1h": 6588396
    },
    "main": {
     "calls": 1303,
@@ -123,26 +133,32 @@
    "W6": {
     "tokens": 3803806,
     "count": 8,
+    "price_units": 7227231.399999999,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_5m_to_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_over_1h": {
       "tokens": 3803806,
-      "count": 8
+      "count": 8,
+      "price_units": 7227231.399999999
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -185,10 +201,10 @@
     }
    },
    "removable_tokens": 2713,
-   "floor_price_units": 4377768.149999999,
-   "price_total_units": 70389990.1,
+   "floor_price_units": 7232657.399999999,
+   "price_total_units": 75331287.1,
    "floor_pct_of_input": 0.0004,
-   "floor_pct_price_weighted": 6.22
+   "floor_pct_price_weighted": 9.6
   },
   "S03": {
    "instructions": 299,
@@ -197,7 +213,9 @@
    "input_parts": {
     "input": 10979,
     "cache_read": 2079976812,
-    "cache_write": 24930704
+    "cache_write": 24930704,
+    "cache_write_5m": 3346415,
+    "cache_write_1h": 21584289
    },
    "main": {
     "calls": 4820,
@@ -218,26 +236,32 @@
    "W6": {
     "tokens": 10709971,
     "count": 25,
+    "price_units": 20348944.899999995,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 22873,
-      "count": 2
+      "count": 2,
+      "price_units": 43458.7
      },
      "gap_5m_to_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_over_1h": {
       "tokens": 10687098,
-      "count": 23
+      "count": 23,
+      "price_units": 20305486.199999996
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -292,10 +316,10 @@
     }
    },
    "removable_tokens": 20252,
-   "floor_price_units": 12341781.649999999,
-   "price_total_units": 239172040.20000002,
+   "floor_price_units": 20389448.899999995,
+   "price_total_units": 255360256.95000002,
    "floor_pct_of_input": 0.001,
-   "floor_pct_price_weighted": 5.16
+   "floor_pct_price_weighted": 7.98
   },
   "S04": {
    "instructions": 10,
@@ -304,7 +328,9 @@
    "input_parts": {
     "input": 332,
     "cache_read": 28130179,
-    "cache_write": 1644681
+    "cache_write": 1644681,
+    "cache_write_5m": 0,
+    "cache_write_1h": 1644681
    },
    "main": {
     "calls": 166,
@@ -325,26 +351,32 @@
    "W6": {
     "tokens": 641059,
     "count": 3,
+    "price_units": 1218012.0999999999,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 311473,
-      "count": 1
+      "count": 1,
+      "price_units": 591798.7
      },
      "gap_5m_to_1h": {
       "tokens": 329586,
-      "count": 2
+      "count": 2,
+      "price_units": 626213.3999999999
      },
      "gap_over_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -370,10 +402,10 @@
     }
    },
    "removable_tokens": 673,
-   "floor_price_units": 738059.1,
-   "price_total_units": 4869201.15,
+   "floor_price_units": 1219358.0999999999,
+   "price_total_units": 6102711.9,
    "floor_pct_of_input": 0.0023,
-   "floor_pct_price_weighted": 15.16
+   "floor_pct_price_weighted": 19.98
   },
   "S05": {
    "instructions": 56,
@@ -382,7 +414,9 @@
    "input_parts": {
     "input": 3779,
     "cache_read": 770044919,
-    "cache_write": 8507084
+    "cache_write": 8507084,
+    "cache_write_5m": 0,
+    "cache_write_1h": 8507084
    },
    "main": {
     "calls": 1923,
@@ -403,26 +437,32 @@
    "W6": {
     "tokens": 5151514,
     "count": 10,
+    "price_units": 9787876.6,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 458433,
-      "count": 1
+      "count": 1,
+      "price_units": 871022.7
      },
      "gap_5m_to_1h": {
       "tokens": 838489,
-      "count": 2
+      "count": 2,
+      "price_units": 1593129.0999999999
      },
      "gap_over_1h": {
       "tokens": 3854592,
-      "count": 7
+      "count": 7,
+      "price_units": 7323724.800000001
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -461,10 +501,10 @@
     }
    },
    "removable_tokens": 5357,
-   "floor_price_units": 5930937.35,
-   "price_total_units": 87642125.9,
+   "floor_price_units": 9798590.6,
+   "price_total_units": 94022438.9,
    "floor_pct_of_input": 0.0007,
-   "floor_pct_price_weighted": 6.77
+   "floor_pct_price_weighted": 10.42
   },
   "S06": {
    "instructions": 36,
@@ -473,7 +513,9 @@
    "input_parts": {
     "input": 1414,
     "cache_read": 163950945,
-    "cache_write": 2362049
+    "cache_write": 2362049,
+    "cache_write_5m": 0,
+    "cache_write_1h": 2362049
    },
    "main": {
     "calls": 464,
@@ -494,26 +536,32 @@
    "W6": {
     "tokens": 1383695,
     "count": 4,
+    "price_units": 2629020.4999999995,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_5m_to_1h": {
       "tokens": 1170458,
-      "count": 3
+      "count": 3,
+      "price_units": 2223870.1999999997
      },
      "gap_over_1h": {
       "tokens": 213237,
-      "count": 1
+      "count": 1,
+      "price_units": 405150.3
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -552,10 +600,10 @@
     }
    },
    "removable_tokens": 556,
-   "floor_price_units": 1591944.2499999998,
-   "price_total_units": 19349069.75,
+   "floor_price_units": 2630132.4999999995,
+   "price_total_units": 21120606.5,
    "floor_pct_of_input": 0.0003,
-   "floor_pct_price_weighted": 8.23
+   "floor_pct_price_weighted": 12.45
   },
   "S07": {
    "instructions": 4,
@@ -564,7 +612,9 @@
    "input_parts": {
     "input": 124,
     "cache_read": 8450842,
-    "cache_write": 173152
+    "cache_write": 173152,
+    "cache_write_5m": 0,
+    "cache_write_1h": 173152
    },
    "main": {
     "calls": 66,
@@ -585,26 +635,32 @@
    "W6": {
     "tokens": 0,
     "count": 0,
+    "price_units": 0.0,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_5m_to_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_over_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -626,7 +682,7 @@
    },
    "removable_tokens": 0,
    "floor_price_units": 0.0,
-   "price_total_units": 1061648.2000000002,
+   "price_total_units": 1191512.2000000002,
    "floor_pct_of_input": 0.0,
    "floor_pct_price_weighted": 0.0
   },
@@ -637,7 +693,9 @@
    "input_parts": {
     "input": 197,
     "cache_read": 18473343,
-    "cache_write": 760379
+    "cache_write": 760379,
+    "cache_write_5m": 0,
+    "cache_write_1h": 760379
    },
    "main": {
     "calls": 105,
@@ -658,26 +716,32 @@
    "W6": {
     "tokens": 299688,
     "count": 2,
+    "price_units": 569407.2,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 39018,
-      "count": 1
+      "count": 1,
+      "price_units": 74134.2
      },
      "gap_5m_to_1h": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_over_1h": {
       "tokens": 260670,
-      "count": 1
+      "count": 1,
+      "price_units": 495273.0
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -703,10 +767,10 @@
     }
    },
    "removable_tokens": 458,
-   "floor_price_units": 345213.69999999995,
-   "price_total_units": 2798005.05,
+   "floor_price_units": 570323.2,
+   "price_total_units": 3368289.3,
    "floor_pct_of_input": 0.0024,
-   "floor_pct_price_weighted": 12.34
+   "floor_pct_price_weighted": 16.93
   },
   "S09": {
    "instructions": 129,
@@ -715,7 +779,9 @@
    "input_parts": {
     "input": 23202,
     "cache_read": 1809936783,
-    "cache_write": 21952939
+    "cache_write": 21952939,
+    "cache_write_5m": 4417910,
+    "cache_write_1h": 17535029
    },
    "main": {
     "calls": 4056,
@@ -736,26 +802,32 @@
    "W6": {
     "tokens": 11095014,
     "count": 24,
+    "price_units": 21080526.600000005,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 1163860,
-      "count": 3
+      "count": 3,
+      "price_units": 2211334.0
      },
      "gap_5m_to_1h": {
       "tokens": 1496889,
-      "count": 3
+      "count": 3,
+      "price_units": 2844089.0999999996
      },
      "gap_over_1h": {
       "tokens": 8434265,
-      "count": 18
+      "count": 18,
+      "price_units": 16025103.500000004
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
@@ -798,10 +870,10 @@
     }
    },
    "removable_tokens": 12670,
-   "floor_price_units": 12775103.6,
-   "price_total_units": 208458054.05,
+   "floor_price_units": 21105866.600000005,
+   "price_total_units": 221609325.8,
    "floor_pct_of_input": 0.0007,
-   "floor_pct_price_weighted": 6.13
+   "floor_pct_price_weighted": 9.52
   },
   "S10": {
    "instructions": 75,
@@ -810,7 +882,9 @@
    "input_parts": {
     "input": 6805,
     "cache_read": 1105185436,
-    "cache_write": 13765681
+    "cache_write": 13765681,
+    "cache_write_5m": 0,
+    "cache_write_1h": 13765681
    },
    "main": {
     "calls": 2878,
@@ -821,51 +895,57 @@
     "input": 0
    },
    "W1": {
-    "tokens": 36,
-    "count": 48
+    "tokens": 40,
+    "count": 49
    },
    "W2": {
-    "tokens": 10299,
-    "count": 72
+    "tokens": 10295,
+    "count": 71
    },
    "W6": {
     "tokens": 6099736,
     "count": 12,
+    "price_units": 11589498.399999997,
     "by_cause": {
      "model_switch": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      },
      "gap_under_5m": {
       "tokens": 1171091,
-      "count": 3
+      "count": 3,
+      "price_units": 2225072.9
      },
      "gap_5m_to_1h": {
       "tokens": 1278394,
-      "count": 3
+      "count": 3,
+      "price_units": 2428948.5999999996
      },
      "gap_over_1h": {
       "tokens": 3650251,
-      "count": 6
+      "count": 6,
+      "price_units": 6935476.899999999
      },
      "unknown": {
       "tokens": 0,
-      "count": 0
+      "count": 0,
+      "price_units": 0.0
      }
     }
    },
    "carried_by_later_calls": {
-    "W1": 16404,
-    "W2": 2146789
+    "W1": 16660,
+    "W2": 2146533
    },
    "steps_spent_only_on": {
     "W1": {
-     "calls": 47,
-     "input": 23506204
+     "calls": 48,
+     "input": 24057566
     },
     "W2": {
-     "calls": 55,
-     "input": 20936622
+     "calls": 54,
+     "input": 20385260
     },
     "W1_by_tool": {
      "Read": {
@@ -873,14 +953,14 @@
       "input": 22472489
      },
      "Bash": {
-      "calls": 3,
-      "input": 1033715
+      "calls": 4,
+      "input": 1585077
      }
     },
     "W2_by_tool": {
      "Bash": {
-      "calls": 52,
-      "input": 19974367
+      "calls": 51,
+      "input": 19423005
      },
      "WebFetch": {
       "calls": 1,
@@ -897,31 +977,32 @@
     }
    },
    "removable_tokens": 10335,
-   "floor_price_units": 7027615.149999999,
-   "price_total_units": 127732449.85000001,
+   "floor_price_units": 11610168.399999997,
+   "price_total_units": 138056710.60000002,
    "floor_pct_of_input": 0.0009,
-   "floor_pct_price_weighted": 5.5
+   "floor_pct_price_weighted": 8.41
   }
  },
  "total": {
   "input_processed": 6839974268,
   "removable_tokens": 55850,
-  "floor_price_units": 45150648.55,
-  "price_total_units": 780376686.85,
+  "removable_price_units": 111700.0,
+  "floor_price_units": 74593081.3,
+  "price_total_units": 836245393.6,
   "calls": 18543,
   "subagent_input": 260563333,
   "carried_by_later_calls": {
-   "W1": 409183,
-   "W2": 9351115
+   "W1": 409439,
+   "W2": 9350859
   },
   "steps_spent_only_on": {
    "W1": {
-    "calls": 222,
-    "input": 92455835
+    "calls": 223,
+    "input": 93007197
    },
    "W2": {
-    "calls": 256,
-    "input": 84431767
+    "calls": 255,
+    "input": 83880405
    },
    "W1_by_tool": {
     "mcp": {
@@ -933,8 +1014,8 @@
      "input": 79553746
     },
     "Bash": {
-     "calls": 15,
-     "input": 6411275
+     "calls": 16,
+     "input": 6962637
     },
     "ToolSearch": {
      "calls": 1,
@@ -943,8 +1024,8 @@
    },
    "W2_by_tool": {
     "Bash": {
-     "calls": 239,
-     "input": 77732930
+     "calls": 238,
+     "input": 77181568
     },
     "mcp": {
      "calls": 5,
@@ -977,51 +1058,59 @@
    }
   },
   "sensitivity_pct_price_weighted": {
-   "all_w6 (v1)": 5.79,
-   "without_gap_over_1h": 1.23,
-   "only_gap_under_5m": 0.48
+   "all_w6 (v1)": 8.92,
+   "without_gap_over_1h": 1.9,
+   "only_gap_under_5m": 0.73
   },
   "input_parts": {
    "input": 50944,
    "cache_read": 6756155141,
-   "cache_write": 83768183
+   "cache_write": 83768183,
+   "cache_write_5m": 9276574,
+   "cache_write_1h": 74491609
   },
   "W1": {
-   "tokens": 3410,
-   "count": 265
+   "tokens": 3414,
+   "count": 266
   },
   "W2": {
-   "tokens": 52440,
-   "count": 347
+   "tokens": 52436,
+   "count": 346
   },
   "W6": {
    "tokens": 39200727,
    "count": 90,
+   "price_units": 74481381.3,
    "by_cause": {
     "model_switch": {
      "tokens": 0,
-     "count": 0
+     "count": 0,
+     "price_units": 0.0
     },
     "gap_under_5m": {
      "tokens": 3175110,
-     "count": 12
+     "count": 12,
+     "price_units": 6032709.0
     },
     "gap_5m_to_1h": {
      "tokens": 5121698,
-     "count": 14
+     "count": 14,
+     "price_units": 9731226.2
     },
     "gap_over_1h": {
      "tokens": 30903919,
-     "count": 64
+     "count": 64,
+     "price_units": 58717446.09999999
     },
     "unknown": {
      "tokens": 0,
-     "count": 0
+     "count": 0,
+     "price_units": 0.0
     }
    }
   },
   "floor_pct_of_input": 0.0008,
-  "floor_pct_price_weighted": 5.79
+  "floor_pct_price_weighted": 8.92
  },
  "not_in_floor": {
   "W3": "rule tier, pending validation",
