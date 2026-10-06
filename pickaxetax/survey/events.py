@@ -22,7 +22,7 @@ KINDS = ("assistant", "user", "system")
 def _pages(path):
     raw = open(path, encoding="utf-8", errors="replace").read()
     try:
-        obj = json.loads(raw)
+        obj = json.loads(raw, strict=False)  # tool output may hold raw control characters
     except ValueError:
         obj = None
     texts = []
@@ -33,7 +33,7 @@ def _pages(path):
         return
     else:
         texts = [raw]
-    dec = json.JSONDecoder()
+    dec = json.JSONDecoder(strict=False)
     for t in texts:
         start = t.find('{"ccr"')
         if start >= 0:  # raw_decode stops where the object ends, ignoring braces inside strings
