@@ -13,8 +13,11 @@ calls, of the context at each call:
 
 Everything measured in phase 2 is a statement about one of the two factors.
 
-- **Steps.** 87% of the variance in an instruction's input is its number of calls (cycle B). Steps
-  that came back only as duplicates or errors re-read the whole context each time (2.6% of input).
+- **Steps.** 87% of the variance in an instruction's input is its number of calls (cycle B). The
+  costly instructions are long ordinary chains of reading, running and editing (median 75 steps
+  against 11), not retry loops: all loops together are about 2% of input and no poll repeated an
+  unchanged result (cycle B2). Steps that came back only as duplicates or errors re-read the whole
+  context each time (2.6% of input).
 - **Context.** It stays near the 780k ceiling because compaction fires only there; a call
   after the third instruction carries about 420k tokens, about 80% of it from instructions already
   finished (cycle B). About 30% of the growth is invisible in the records: mostly the model's own
@@ -36,6 +39,7 @@ Share of main-session input that would not have been processed, with what each l
 | Fetch content again only when needed (oracle, 1k per fetch) | 41.5% (35–54%; 16–28% raw) | lexical detection, perfect foresight | yes | — (upper bound) | bound |
 | Simple recency policy, miss rate < 5% | about 3% | none beyond the replay | no | harness | backtest |
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | cut part re-read on reuse | no | harness | A |
+| Remove every retry and polling loop | about 1.4% (0.3–2.1%) | loops were avoidable | no | agent | B2 |
 | **Carry a pointer instead of what the agent wrote** | **about 20%** (10.5% file bodies only) | the agent re-reads when it needs it | no | harness / agent convention | A2 |
 | **New session above 200k tokens at an instruction boundary** | **58.6%** | a 10k summary is enough | no | the user, today | B |
 | New session every 3 / 10 instructions | 58.6% / 31.2% | same | no | the user, today | B |
@@ -63,4 +67,4 @@ Share of main-session input that would not have been processed, with what each l
 - Blind labels: W4, W5, W8 detectors, and whether the "steps spent only on errors" are waste or
   verification.
 - n > 1: other people's transcripts through `pxt survey run`.
-- Step anatomy and compaction cost (cycles B2, D2): pending.
+- Compaction cost (cycle D2): pending.

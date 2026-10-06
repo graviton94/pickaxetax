@@ -166,3 +166,21 @@ disk, the agent knows its path, and re-reading is a normal tool call. Unlike the
 policies (about 3% at a low miss rate), a "write, then carry a pointer" convention targets exactly
 the content that is least read back. It is a harness or agent-convention change, testable in a
 controlled experiment (phase 3).
+
+## Cycle B2 — what makes an instruction take many steps (`B2-step-anatomy.md`)
+
+**Found.** Steps are reading (32% of steps), running something (31%; a quarter of all steps are
+ad-hoc inline scripts), editing (15%), waiting or polling (6%), version control (5%). Context per
+step hardly differs by class, so input follows the step count. The most expensive 10% of
+instructions (42% of input) are long sustained chains — median 75 steps against 11 — not retry
+loops: edit-verify-error cycles are 0.3% of input (about 1% under looser definitions), polling runs
+1.8%, and **none of 181 consecutive polls returned an unchanged result**. Removing every loop would
+save about 1.4%.
+
+**Review.** Regex classification cannot tell an analysis script from a test from a file write; the
+loop shares are robust to the definition (0.3–2.1%).
+
+**Discussion.** The W3 "polling with no state change" candidate is not supported in these sessions.
+Retry waste is small. The step lever is in ordinary chains: fewer, larger steps (batched reads,
+scripts that do more per call), or the same steps in a smaller context. Inline scripts tie back to
+cycle A2: they are written into the context and then carried.
