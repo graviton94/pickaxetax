@@ -37,7 +37,7 @@ label, and are kept away from the labelers until every labels file is in. Their 
 | packet | `8b430b57962582568fdbe1b3c11f50d2583b56c2e2e06e9350f8dd2cac69ea26` (the packet's own digest) |
 | T1 (W1, W2, W6), main | `dab850164fd2cf935c710dac1274029d047890c6d8d073ff2dba46e365608ae8` |
 | T1, practice | `a0bdffbea8dce7714666e0693b181c016fda0dab9712409c628765bdadfe2a05` |
-| T2 (W4, W5, W8), main | `977ed59069ad3fd2b4c240f7149d05eb4be84b26a192dc521b0bb2e19837ae8f` |
+| T2 (W4, W5, W8), main | `9a38967b65a774647579de616ad7f55fbe3787599dbe0b321d857b8ad716939b` (re-sealed 2026-10-06, see below; was `977ed590…`) |
 | T2, practice | `6b74e9162297954232ebc9d21e37c8cfb40b8e0fd91a4383a83b1cb544e7c0eb` |
 
 If the packet is re-issued (for example after the data owner's redaction review), the sealed
@@ -48,6 +48,13 @@ labels are exchanged.
 fixed the shared instruction rule in the bound, the attribution of outputs to their instruction,
 a parent-output check in W8 and the de-duplication of tool results in the judge, before any label
 existed. All four sealed files came out byte-identical to the hashes above.
+
+**Correction (2026-10-06, cycle E7, still before any label).** That statement was wrong for one
+file. The re-make ran three minutes before the last E2 fix (the attribution of a call's final answer
+to its own instruction) was committed. Re-made from the committed code, three files are
+byte-identical, but the T2 main file differs in one label: one S01 instruction's W5 changes from
+"no" to "yes". Its hash above is the corrected one; the earlier file is kept privately for
+comparison. No labeler had seen any machine label, and no human label existed.
 
 ## What the labels then give
 
@@ -69,7 +76,12 @@ so that the labels can say which reuse definition tracks need:
    own time-mirrored placebo by two standard deviations (`pickaxetax.agent.bound`, method tag
    `lexical-v1+mirror-2sigma`). Its machine labels for the main packet are made from the same code
    and sealed here (SHA-256) before labels are exchanged; if they cannot be sealed in time, the
-   secondary analysis is dropped rather than run after the labels are seen.
+   secondary analysis is dropped rather than run after the labels are seen. Sealed 2026-10-06
+   (`pxt survey machine --tier t2 --placebo mirror`): main
+   `cdcf7c4fa21462e063b8936f2576409d2c30ad796c45055f7b62c178b404ad3f`, practice
+   `8a33ce287e2b1854b291e40950b0dfe747d5417a49ab6c78ac49ea9aaf1eef51`. The mirror detector says
+   "yes" far more often than the primary one (W5: 196 against 29 of the 200 main items; they
+   disagree on 167), so the disagreement set is large.
 2. **Which definition the labels side with.** On the instructions where the two W5 detectors
    disagree, the share that the consensus label marks as W5. The disagreement set and the test (an
    exact binomial test of that share against 50%) are fixed now; no threshold is tuned on the labels.
