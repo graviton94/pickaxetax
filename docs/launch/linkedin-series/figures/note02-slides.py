@@ -7,6 +7,12 @@ FJ = json.load(open(R + "research/survey/user01/floor-t1.json"))
 F = FJ["total"]
 D = derive(json.load(open(R + "research/survey/user01/dataset-v2.json")))
 D1 = derive(json.load(open(R + "research/survey/user01/dataset.json")))
+O = json.load(open(R + "research/survey/user01/opportunity-v1.json"))
+OP = O["merged"]["policies"]
+OG = [v for k, v in O["sensitivity"].items() if k.endswith(",calibrated")]
+orng = lambda p: (min(v["avoidable_pct"][p] for v in OG), max(v["avoidable_pct"][p] for v in OG))
+SC = F["steps_spent_only_on"]
+step_pct = 100 * (SC["W1"]["input"] + SC["W2"]["input"]) / F["input_processed"]
 src01 = open(R + "docs/launch/linkedin-series/figures/note01-slides.template.html").read()
 CSS = src01[src01.index("<style>"):src01.index("</style>") + 8]
 CSS = CSS.replace("</style>", """
@@ -21,6 +27,9 @@ tr.main td { font-weight: 800; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 20px; font-weight: 700; }
 .legend i { display: inline-block; width: 18px; height: 18px; border-radius: 3px; margin-right: 8px; vertical-align: -2px; }
 .toc b { width: 120px; }
+.obar { height: 22px; background: var(--carried); border-radius: 3px; }
+.obar.dim { background: #a9a7a1; }
+table.o td { vertical-align: middle; }
 .sub2 { font-size: 17px; line-height: 1.5; color: var(--ink2); }
 </style>""")
 
@@ -62,9 +71,9 @@ avg_w6 = w6 / F["W6"]["count"]
 T = {
 "ko": dict(
   head="#AntiTokenMaxing · 연구 노트 #2",
-  cap1="21세기 골드러시의 영수증 · 첫 판정", h1="반박할 수 없는<br>바닥부터",
-  lead1="판정 기준 v1에서 기록만으로 정할 수 있는 세 갈래<br>(W1 중복 · W2 오류 · W6 캐시 재작성)를 세션 10개 전체에 적용했습니다.",
-  toc=["측정 범위 정정과 기계 판정 하한", "재작성은 언제 생겼나, 그리고 범위", "아직 판정하지 않은 것"],
+  cap1="21세기 골드러시의 영수증 · 첫 판정", h1="버리는 문제가 아니라,<br>들고 다니는 문제",
+  lead1="판정 기준 v1에서 기록만으로 정할 수 있는 세 갈래(W1·W2·W6)를 세션 10개에 적용하고,<br>이미 끝난 지시에서 넘어온 맥락이 다시 쓰였는지 추적했습니다.",
+  toc=["측정 범위 정정과 기계 판정 하한", "재작성은 언제 생겼나, 그리고 범위", "넘어온 76%는 다시 쓰였나"],
   fig="그림", src1="판정 기준 v1 (2026-10-06 고정) · 기계 판정 규칙 research/protocol/mechanical-tier-v1.md · 조사 대상: 연구자 본인의 Claude Code 세션 10개, 2026-07-10 ~ 10-05 · github.com/graviton94/pickaxetax",
   h2a="토큰으로는 거의 0, 비용으로는 {c:.2f}%",
   ka="A. 측정 범위 정정 <span>· 처리한 입력, 하위 에이전트 포함</span>",
@@ -75,6 +84,7 @@ T = {
   kb="B. 기계 판정 하한 <span>· 세 갈래 합</span>",
   tok_lbl="지울 수 있던 토큰", tok_sub="중복(W1)과 오류(W2) 결과 ÷ 처리한 입력 전체. W6 토큰은 어차피 처리됐을 토큰이라 넣지 않습니다.",
   cost_lbl="지울 수 있던 비용", cost_sub="W1·W2는 캐시 쓰기 값(1.25), W6은 쓰기와 읽기의 값 차이(1.25 − 0.1)로 매겨 입력 쪽 비용 전체와 비교.",
+  step_note="참고 (하한 밖): 중복이나 오류만 받고 끝난 걸음 {n}번이 처리한 입력은 {p:.1f}%입니다. 한 걸음마다 맥락 전체를 다시 읽기 때문입니다. 오류에는 실패한 테스트 같은 검증이 섞여 있어 사람 판정으로 가립니다.",
   kc="C. 갈래별 <span>· 건수와 토큰</span>",
   th=["갈래", "건", "토큰", "어디에 들어가나"],
   rows=[("W1 중복", "토큰·비용"), ("W2 오류", "토큰·비용"), ("W6 캐시 재작성", "비용만")],
@@ -87,21 +97,23 @@ T = {
   sens=["재작성 모두 (v1 규칙, 본 결과)", "1시간 넘게 쉰 뒤의 재작성 제외", "5분 안의 재작성만"],
   note_b="쉰 것이 낭비는 아닙니다. 돌아올 때마다 맥락 전체(평균 {a:.0f}만 토큰)를 처음부터 다시 처리하게 만드는 구조가 비효율적이고, 한 세션을 며칠씩 이어 쓰는 사용 방식이 그 비용을 키웁니다.",
   src3="본 결과는 미리 정한 v1 규칙입니다. 나머지 두 기준은 결과를 본 뒤에 더한 민감도 분석이며 본 결과를 대신하지 않습니다.",
-  h2c="바닥은 작다. 판정할 것은 크다",
+  h2c="버릴 것은 적고, 들고 다닌 것은 많다",
   kf="A. 매 호출 입력의 구성 <span>· 판 2, 세션 10개 전체 호출 합</span>",
   dl=["고정 {:.1f}%", "이전 지시에서 넘어온 몫 {:.1f}%", "지금 지시 {:.1f}%"],
-  dsub="1편의 73.6%는 시계열이 있던 세션 8개 기준이고, 판 2는 10개 모두입니다. 넘어온 몫이 필요했는지는 기록만으로 정할 수 없습니다(W5). 두 사람의 블라인드 판정으로 정합니다.",
-  kg="B. 이 조사 자체: 입력의 45%가 하위 에이전트 <span>· 연구 세션, 2026-10-06 중간 집계</span>",
-  sl=["주 세션", "하위 에이전트"], sfmt=lambda v: f"{v/1e8:.2f}억",
-  note_c="하위 에이전트 입력의 98%는 세션 기록을 쪽 단위로 받아 오는 일이었습니다. 낭비를 재는 일도 낭비를 만듭니다. 큰 세션은 세션 안에서 직접 재는 방법으로 바꿉니다.",
+  dsub="1편의 73.6%는 시계열이 있던 세션 8개 기준이고, 판 2는 10개 모두입니다.",
+  kg="B. 넘어온 내용은 다시 쓰였나 <span>· 오라클 최소치, 주 세션 {m:.1f}억 토큰</span>",
+  oth=["필요한 것만 들고 갔다면", "덜 읽었을 몫", "탐지 기준 9가지"],
+  orows=["다시는 안 쓰인 것만 버리기", "필요할 때 다시 불러오기 (1천 토큰)", "불러오기가 공짜라면"],
+  simple="참고: 과거만 보는 단순 규칙, 놓침 {m:.1f}%", simple_r="최근 {n}번 호출",
+  note_c="끝까지 다시 쓰이지 않은 내용은 적었습니다. 대부분은 언젠가 다시 쓰였지만, 그때까지 매 호출마다 다시 읽혔습니다. 미래를 아는 오라클의 값이라 실현 가능한 정책의 결과가 아니라 기회의 크기이고, 재사용은 글자 겹침으로 추정했습니다. 보정 없이 가장 보수적으로 잡으면 필요할 때 불러오기는 {lo:.0f}~{hi:.0f}%입니다.",
   nxt="<b>다음</b>연습 20개 → 본 판정 200개, 두 사람이 서로의 판정을 모른 채 → 갈래별 일치도 κ ≥ 0.70일 때만 결과를 냅니다.",
-  src4="출처: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/self-audit-log.md",
+  src4="출처: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1, 기본 기준 min_shared 1, common_frac 0.02, 보정) · 단순 규칙: backtest-v1, opportunity-v1.json",
 ),
 "en": dict(
   head="#AntiTokenMaxing · Research note #2",
-  cap1="The receipt of the 21st-century gold rush · first judgment", h1="Starting from the floor<br>nobody can dispute",
-  lead1="The three categories of codebook v1 that the records decide on their own<br>(W1 duplication · W2 errors · W6 cache re-writes), applied to all ten sessions.",
-  toc=["Corrected scope and the mechanical floor", "When re-writes happened, and the range", "What is still to be judged"],
+  cap1="The receipt of the 21st-century gold rush · first judgment", h1="Not what to throw away,<br>but what we carry",
+  lead1="The three categories of codebook v1 that the records decide on their own (W1, W2, W6), applied to all ten sessions,<br>and a trace of whether context carried over from finished instructions was used again.",
+  toc=["Corrected scope and the mechanical floor", "When re-writes happened, and the range", "Was the carried-over 76% used again?"],
   fig="Figure", src1="Waste codebook v1 (frozen 2026-10-06) · mechanical rules: research/protocol/mechanical-tier-v1.md · subject: the researcher's own 10 Claude Code sessions, 2026-07-10 to 10-05 · github.com/graviton94/pickaxetax",
   h2a="Close to zero in tokens, {c:.2f}% in cost",
   ka="A. Corrected scope <span>· input processed, sub-agents included</span>",
@@ -112,6 +124,7 @@ T = {
   kb="B. The mechanical floor <span>· three categories</span>",
   tok_lbl="Removable tokens", tok_sub="Duplicate (W1) and error (W2) results ÷ all input processed. W6 tokens would have been processed anyway, so they are not included.",
   cost_lbl="Removable cost", cost_sub="W1 and W2 at the cache-write price (1.25), W6 at the write premium over a read (1.25 − 0.1), as a share of the input-side cost.",
+  step_note="For reference (outside the floor): {n} steps that got back only duplicates or errors processed {p:.1f}% of the input, since every step re-reads the whole context. Errors include verification such as failing tests, so people will sort them.",
   kc="C. By category <span>· events and tokens</span>",
   th=["Category", "Events", "Tokens", "Counted in"],
   rows=[("W1 duplication", "tokens · cost"), ("W2 errors", "tokens · cost"), ("W6 cache re-write", "cost only")],
@@ -124,15 +137,17 @@ T = {
   sens=["All re-writes (v1 rule, primary result)", "Without re-writes after an idle hour", "Re-writes within 5 minutes only"],
   note_b="Taking a break is not waste. The structure is inefficient: every return re-processes the whole context from scratch ({a:.0f},000 tokens on average). Keeping one session going for days makes that cost bigger.",
   src3="The primary result uses the v1 rule fixed in advance. The other two counts are a sensitivity analysis added after the results were seen; they never replace it.",
-  h2c="The floor is small. What remains to judge is large",
+  h2c="Little to throw away, a lot carried",
   kf="A. What each call's input is made of <span>· v2, all calls of the 10 sessions</span>",
   dl=["Fixed {:.1f}%", "Carried over from finished instructions {:.1f}%", "Current {:.1f}%"],
-  dsub="Note 1's 73.6% covered the 8 sessions that had per-call series; v2 covers all 10. Whether the carried-over part was needed cannot be decided from the records (W5). Blind labeling by two people decides it.",
-  kg="B. This research itself: 45% of input went to sub-agents <span>· research session, interim 2026-10-06</span>",
-  sl=["Main session", "Sub-agents"], sfmt=lambda v: f"{v/1e6:.0f} M",
-  note_c="98% of the sub-agents' input went to fetching session records page by page. Measuring waste makes waste. Large sessions will be measured from inside the session instead.",
+  dsub="Note 1's 73.6% covered the 8 sessions that had per-call series; v2 covers all 10.",
+  kg="B. Was the carried-over content used again? <span>· oracle bound, main sessions, {m:.2f} bn tokens</span>",
+  oth=["Carrying only what is needed", "Less input", "9 detection settings"],
+  orows=["Drop only what is never used again", "Fetch again when needed (1,000 tokens)", "Fetching is free"],
+  simple="For reference: a simple rule using only the past, {m:.1f}% missed", simple_r="last {n} calls",
+  note_c="Little was never used again. Most of it was used at some point, but until then it was re-read on every call. These are an oracle's numbers: the size of the opportunity, not the result of a policy one could run, and reuse is estimated from overlapping words. Without calibration, the most conservative range for fetching on demand is {lo:.0f}–{hi:.0f}%.",
   nxt="<b>Next</b>20 practice items → 200 main items, two people labeling without seeing each other's labels → a category is reported only if κ ≥ 0.70.",
-  src4="Sources: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/self-audit-log.md",
+  src4="Sources: dataset-v2.json → pxt survey report (report-v2.html) · research/survey/user01/opportunity-v1.md (pickaxetax.agent.bound, lexical-v1; default min_shared 1, common_frac 0.02, calibrated) · simple rule: backtest-v1, opportunity-v1.json",
 ),
 }
 
@@ -152,7 +167,8 @@ for lang, t in T.items():
   <div class="panel"><p class="k">{t["ka"]}</p>{scope}<p class="sub2">{t["scope_note"].format(d=(v2 - v1) / (1e8 if lang == "ko" else 1e9))}</p></div>
   <div class="panel"><p class="k">{t["kb"]}</p><div class="pair">
     <div class="cell"><span class="lbl">{t["tok_lbl"]}</span><span class="big">{F["floor_pct_of_input"]:.4f}<small>%</small></span><span class="sub">{t["tok_sub"]}</span></div>
-    <div class="cell hot"><span class="lbl">{t["cost_lbl"]}</span><span class="big hot">{F["floor_pct_price_weighted"]:.2f}<small>%</small></span><span class="sub">{t["cost_sub"]}</span></div></div></div>
+    <div class="cell hot"><span class="lbl">{t["cost_lbl"]}</span><span class="big hot">{F["floor_pct_price_weighted"]:.2f}<small>%</small></span><span class="sub">{t["cost_sub"]}</span></div></div>
+    <p class="sub2">{t["step_note"].format(n=SC["W1"]["calls"] + SC["W2"]["calls"], p=step_pct)}</p></div>
   <div class="panel"><p class="k">{t["kc"]}</p><table class="n"><thead><tr><th>{t["th"][0]}</th><th class="r">{t["th"][1]}</th><th class="r">{t["th"][2]}</th><th>{t["th"][3]}</th></tr></thead><tbody>{trs}</tbody></table></div>
   <p class="src">{t["src2"]}</p></section>'''
     gaps = bar3([pc["gap_under_5m"], pc["gap_5m_to_1h"], pc["gap_over_1h"]], ["#2a78d6", "#a9a7a1", "#eb6834"],
@@ -172,11 +188,24 @@ for lang, t in T.items():
   <p class="src">{t["src3"]}</p></section>'''
     decbar = bar3([dp["fixed"], dp["carried"], dp["current"]], ["#2a78d6", "#eb6834", "#1baf7a"],
                   [g.format(p) for g, p in zip(t["dl"], (dp["fixed"], dp["carried"], dp["current"]))], t["dsub"], "decomposition")
-    selfbar = hbar([(t["sl"][0], 423766657, "#52514e"), (t["sl"][1], 340654835, "#eb6834")], 423766657, t["sfmt"], "research session")
+    pols = ["P=inf", "P=1000", "P=0"]
+    raw = [v for k, v in O["sensitivity"].items() if k.endswith(",raw")]
+    lo, hi = min(v["avoidable_pct"]["P=1000"] for v in raw), max(v["avoidable_pct"]["P=1000"] for v in raw)
+    orows = "".join(
+        f'<tr><td>{lab}</td><td style="width:38%"><div class="obar{"" if p == "P=1000" else " dim"}" style="width:{OP[p]["avoidable_pct"] / 60 * 100:.1f}%"></div></td>'
+        f'<td class="r"><b>{OP[p]["avoidable_pct"]:.1f}%</b></td><td class="r">{orng(p)[0]:.1f}{"~" if lang == "ko" else "–"}{orng(p)[1]:.1f}%</td></tr>'
+        for lab, p in zip(t["orows"], pols))
+    sg = O["backtest_exploratory"]["grid"]["recency-64"]
+    orows += (f'<tr><td>{t["simple"].format(m=sg["median_miss_rate"])}</td><td style="width:38%"><div class="obar dim" '
+              f'style="width:{sg["median_saved_pct"] / 60 * 100:.1f}%"></div></td><td class="r"><b>{sg["median_saved_pct"]:.1f}%</b></td>'
+              f'<td class="r">{t["simple_r"].format(n=64)}</td></tr>')
+    omain = O["merged"]["measured_input"] / (1e8 if lang == "ko" else 1e9)
+    otable = f'<table class="n o"><thead><tr><th>{t["oth"][0]}</th><th></th><th class="r">{t["oth"][1]}</th><th class="r">{t["oth"][2]}</th></tr></thead><tbody>{orows}</tbody></table>'
+
     s4 = f'''<section class="slide" id="s4">{top(4)}
   <div><p class="cap">{t["fig"]} 3</p><h2>{t["h2c"]}</h2></div>
   <div class="panel"><p class="k">{t["kf"]}</p>{decbar}</div>
-  <div class="panel"><p class="k">{t["kg"]}</p>{selfbar}<p class="note">{t["note_c"]}</p></div>
+  <div class="panel"><p class="k">{t["kg"].format(m=omain)}</p>{otable}<p class="note">{t["note_c"].format(lo=lo, hi=hi)}</p></div>
   <div class="box">{t["nxt"]}</div>
   <p class="src">{t["src4"]}</p></section>'''
     html = '<!doctype html><meta charset="utf-8">\n' + CSS + "\n" + "\n".join([s1, s2, s3, s4]) + "\n"

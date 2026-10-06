@@ -47,7 +47,8 @@ agreement from the two labels files.
    `pxt survey agreement consensus.json labels-machine.json` then reports how often the code and
    the people agree. Disagreements are published with the T1 result: where people saw waste the
    code did not count, the floor is confirmed as a floor; where the code counted waste people
-   did not see, the rule is reviewed (a change is a new version).
+   did not see, the rule is reviewed (a change is a new version). The same with `--tier t2` for the rule-tier
+   candidates (`rule-tier-v0.md`), whose labels are sealed and hashed before labeling starts.
 
 ## What gets published
 

@@ -59,6 +59,16 @@ A W1 or W2 result stays in the context and is processed again by every later mai
 until the next compaction. The judge reports that carry (tokens × later calls) next to the
 floor, never in it: whether carrying something is waste is W5's to judge (rule tier).
 
+## Steps spent only on W1 or W2, descriptive
+
+A duplicate or failed tool call costs more than its result: the API call that issued it
+re-read its whole context to take that step. The judge reports the API calls whose every tool
+call came back as W1 (or W2) and which wrote no text, with the input they processed, by tool.
+This is outside the floor for now: an error can still be verification (a failing test run),
+which the codebook does not count as waste, and a repeated check can be a polling loop (W3).
+Both are settled by the blind labels; the rule that decides whether a step counts goes in a
+later version.
+
 ## What it does not count, by design
 
 - W3, W4, W5, W7, W8: they need validated rules or human judgment (codebook §2).

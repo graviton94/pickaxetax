@@ -247,9 +247,11 @@ def validate_labels(lab: dict) -> list[str]:
 
 
 MACHINE_CATEGORIES = ("W1", "W2", "W6")  # the mechanical tier (T1) of codebook v1
+RULE_CATEGORIES = ("W4", "W5", "W8")  # rule-tier candidates (research/protocol/rule-tier-v0.md)
 
 
-def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", coder: str = "machine-t1") -> dict:
+def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", coder: str | None = None,
+                   tier: str = "t1") -> dict:
     """The T1 judge's decisions on a packet's items, as a labels file.
 
     For the mechanical categories only (W1, W2, W6): "yes" when the judge counted that category
@@ -258,12 +260,15 @@ def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", co
     labeler ever sees it. lines_by_session: {label: transcript lines cut at the same snapshot
     as the packet}."""
     from .judge import judge_lines
+    from .rules import detect
 
+    cats_of = MACHINE_CATEGORIES if tier == "t1" else RULE_CATEGORIES
+    coder = coder or f"machine-{tier}"
     maps = {}
     for label, lines in lines_by_session.items():
         lines = list(lines)
         instr = instructions(lines)
-        flags = judge_lines(lines, per_instruction=True)["per_instruction"]
+        flags = judge_lines(lines, per_instruction=True)["per_instruction"] if tier == "t1" else detect(lines)["flags"]
         if len(flags) != len(instr):
             raise ValueError(f"{label}: {len(instr)} instructions but the judge saw {len(flags)}")
         with_calls = [i for i, it in enumerate(instr) if it["stats"]["calls"]]  # packet indexes count these only
@@ -273,9 +278,9 @@ def machine_labels(packet: dict, lines_by_session: dict, phase: str = "main", co
         cats = maps.get(item["session"])
         if cats is None or item["index"] >= len(cats):
             raise ValueError(f"no transcript for item {item['id']} ({item['session']} #{item['index']})")
-        labels[item["id"]] = {c: ("yes" if c in cats[item["index"]] else "no") for c in MACHINE_CATEGORIES}
+        labels[item["id"]] = {c: ("yes" if c in cats[item["index"]] else "no") for c in cats_of}
     return {"schema": LABELS_SCHEMA, "codebook": packet.get("codebook"), "packet": packet["sha256"], "phase": phase,
-            "coder": coder, "machine": {"tier": "T1", "categories": list(MACHINE_CATEGORIES)}, "labels": labels}
+            "coder": coder, "machine": {"tier": tier.upper(), "categories": list(cats_of)}, "labels": labels}
 
 
 def cohen_kappa(a: list, b: list) -> float | None:

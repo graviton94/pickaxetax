@@ -160,7 +160,12 @@ def main(argv: list[str] | None = None) -> int:
     sm2.add_argument("--limit", action="append", default=[], metavar="LABEL=N", help="the same instruction cut as the packet")
     sm2.add_argument("--limit-calls", action="append", default=[], metavar="LABEL=N")
     sm2.add_argument("--phase", choices=("main", "calibration"), default="main")
+    sm2.add_argument("--tier", choices=("t1", "t2"), default="t1",
+                     help="t1: the mechanical judge (W1, W2, W6); t2: the rule-tier candidates (W4, W5, W8)")
     sm2.add_argument("--out", default="labels-machine.json")
+    sw = svsub.add_parser("whatif", help="counterfactual context structures replayed on a dataset's per-call series")
+    sw.add_argument("dataset")
+    sw.add_argument("--out", help="write the numbers as JSON")
     sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
     sa.add_argument("labels", nargs=2)
     sa.add_argument("--json", action="store_true")
@@ -417,6 +422,19 @@ def _survey(args) -> int:
         return _survey_judge(args)
     if args.survey_cmd == "machine":
         return _survey_machine(args)
+    if args.survey_cmd == "whatif":
+        from .survey import whatif
+        with open(args.dataset, encoding="utf-8") as f:
+            r = whatif.run(json.load(f))
+        if args.out:
+            with open(args.out, "w", encoding="utf-8") as f:
+                json.dump(r, f, ensure_ascii=False, indent=1)
+        t = r["total"]
+        print(f"main-session input measured: {t['measured']:,}")
+        for k, v in t["saved_pct"].items():
+            print(f"  {k:32} {t[k]:>16,}  {v:5.1f}% less")
+        print("Counterfactuals under stated assumptions (a summary is enough; nothing has to be re-read): not waste judgments.")
+        return 0
     if args.survey_cmd == "report":
         with open(args.dataset, encoding="utf-8") as f:
             ds = json.load(f)
@@ -514,13 +532,13 @@ def _survey_machine(args) -> int:
             sources[label] = events.lines_from([l.strip() for l in f if l.strip()])
     lines = {k: events.cut(v, call_limits.get(k), limits.get(k)) for k, v in sources.items()}
     try:
-        lab = labeling.machine_labels(packet, lines, phase=args.phase)
+        lab = labeling.machine_labels(packet, lines, phase=args.phase, tier=args.tier)
     except ValueError as e:
         print(str(e), file=sys.stderr)
         return 1
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(lab, f, ensure_ascii=False, indent=1)
-    yes = {c: sum(v[c] == "yes" for v in lab["labels"].values()) for c in labeling.MACHINE_CATEGORIES}
+    yes = {c: sum(v[c] == "yes" for v in lab["labels"].values()) for c in lab["machine"]["categories"]}
     print(f"wrote {args.out}: {len(lab['labels'])} items, yes: " + ", ".join(f"{c} {n}" for c, n in yes.items()))
     print("Keep it away from labelers until every labels file is in; then compare with "
           "`pxt survey agreement consensus.json " + args.out + "`.")

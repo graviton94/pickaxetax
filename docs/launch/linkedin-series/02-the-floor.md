@@ -1,61 +1,56 @@
-# 연구 노트 #2 — 반박할 수 없는 바닥부터
+# 연구 노트 #2 — 버리는 문제가 아니라, 들고 다니는 문제
 
-- 상태: **초안 v1 (2026-10-06)**, 검토 전. 결정 반영: 본 결과는 v1 규칙(5.79%), 나머지 두 기준은 민감도 분석(범위 0.48~5.79%).
-  해석은 "쉰 것이 아니라 구조가 비효율적, 며칠씩 이어 쓰는 사용 방식이 키운다".
-- 목적: 판정 기준 v1의 첫 적용. 기계가 정할 수 있는 세 갈래(W1·W2·W6)만. 1편 숫자 정정(S09 완전 측정). 다음 단계(블라인드 판정) 예고.
-  조사 자체의 비용도 보고.
-- 분량: 한국어 본문 718자(공백 포함). 게시물 전체(한·영) 2330자. 붙여넣기용 `02-post.txt`.
+- 상태: **초안 v2 (2026-10-07)**, 검토 전. v1(반박할 수 없는 바닥부터)에서 바뀐 것: 조사 자체 비용 단락 삭제(데이터는
+  `research/survey/self-audit-log.md`에 유지), 걸음 비용과 오라클 최소치(넘어온 내용이 다시 쓰였나)를 더했다.
+  결정 반영: 본 결과는 v1 규칙(5.79%)과 민감도 범위, 해석은 "쉰 것이 아니라 구조가 비효율적".
+- 목적: 판정 기준 v1의 첫 적용(기계 판정 세 갈래)과, 기록만으로 잴 수 있는 구조의 몫(오라클 최소치, 낭비 판정 아님).
+  1편 숫자 정정(S09 완전 측정). 다음 단계(블라인드 판정) 예고.
+- 분량: 한국어 본문 831자(공백 포함). 게시물 전체(한·영) 2680자. 붙여넣기용 `02-post.txt`.
 - 이미지: 4장씩, `img/note02/ko/01~04.png`, `img/note02/en/01~04.png` (1080×1350). 원본 `figures/note02-slides.html`,
   `figures/note02-slides.en.html`. 숫자는 데이터 파일에서 바로 뽑는다: `python3 docs/launch/linkedin-series/figures/note02-slides.py`,
   그림은 `node docs/launch/linkedin-series/figures/render-slides.mjs <html> <폴더>`.
-- 게시 전 할 일: 공동 검토자의 규칙 검토(`research/protocol/review-kit-ko.md`), 사이트 숫자를 판 2로 전환하는 브랜치 머지.
+- 게시 전 할 일: PR 머지(첫 댓글 링크가 열리도록), 공동 검토자의 규칙 검토(`research/protocol/review-kit-ko.md`),
+  사이트 숫자를 판 2로 전환하는 브랜치 머지.
 - 링크: 본문에 넣지 않고 첫 댓글에 단다
 
 ## 게시물
 
-[연구 노트 #2] 반박할 수 없는 바닥부터
+[연구 노트 #2] 버리는 문제가 아니라, 들고 다니는 문제
 
-1편에서 낭비를 여덟 갈래로 정의했습니다. 오늘은 그중 사람의 판단 없이 기록만으로 정할 수 있는 세 갈래를 먼저 셌습니다. 같은 결과를 다시 받은 중복, 오류, 그리고 이미 처리한 맥락을 처음부터 다시 처리한 경우입니다.
+1편에서 낭비를 여덟 갈래로 정의했습니다. 오늘은 그중 기록만으로 정할 수 있는 세 갈래를 먼저 셌습니다. 같은 결과를 다시 받은 중복, 오류, 이미 처리한 맥락을 처음부터 다시 처리한 경우입니다. 먼저 바로잡습니다. 1편의 58억 7천만 토큰은 한 세션을 일부만 받은 하한이었고, 다 받아 다시 재니 68억 4천만 토큰입니다.
 
-먼저 바로잡습니다. 1편의 58억 7천만 토큰은 한 세션을 일부만 받은 하한이었습니다. 빠진 구간까지 다 받아 다시 재니 68억 4천만 토큰입니다.
+중복과 오류로 받은 토큰 자체는 0.001%도 안 됩니다. 하지만 그 한 걸음을 내딛느라 AI는 매번 맥락 전체를 다시 읽었고, 그렇게 쓰인 입력이 2.6%입니다. 비용으로 보면 5.79%입니다. 거의 전부가 이미 처리한 맥락(평균 44만 토큰)을 처음부터 다시 처리한 값이고, 그 79%는 제가 1시간 넘게 쉬었다 돌아온 직후였습니다. 쉰 것이 낭비가 아니라, 그렇게 만드는 구조가 비효율적입니다.
 
-결과입니다. 중복과 오류로 받은 토큰은 전체의 0.001%도 안 됩니다. 토큰으로는 반박할 수 없는 낭비가 거의 없습니다. 그런데 비용으로는 5.79%입니다. 거의 전부가 캐시에 있던 맥락을 처음부터 다시 처리한 값이고, 그중 79%는 제가 1시간 넘게 쉬었다 돌아온 직후에 생겼습니다.
+진짜 질문은 따로 있습니다. 매 호출 맥락의 76%는 이미 끝난 지시에서 넘어온 내용이었습니다. 그 내용이 뒤에서 다시 쓰였는지 기록을 추적했습니다. 끝까지 다시 쓰이지 않을 내용만 버렸다면 줄었을 입력은 생각보다 적었습니다(4~25%). 대부분은 언젠가 다시 쓰였지만, 그때까지 쓰이지 않은 채 매 호출마다 다시 읽혔습니다. 필요할 때 정확히 불러오는 이상적인 구조였다면 입력의 35~54%가 필요 없었습니다. 다만 과거만 보고 정하는 단순한 규칙으로는 필요한 내용을 거의 놓치지 않으면서 3% 남짓밖에 줄이지 못했습니다.
 
-쉰 것이 낭비는 아닙니다. 돌아올 때마다 평균 44만 토큰의 맥락을 통째로 다시 처리하게 만드는 구조가 비효율적이고, 한 세션을 며칠씩 이어 쓴 제 사용 방식이 그 비용을 키웠습니다. 어디까지 셀지에 따라 결과는 0.48~5.79%의 범위로 냅니다.
-
-바닥이 작다고 낭비가 작은 것은 아닙니다. 매 호출 맥락의 76%는 이미 끝난 지시에서 넘어온 내용이었습니다. 그것이 필요했는지는 사람이 판정해야 합니다. 다음은 두 사람의 블라인드 판정입니다.
-
-이 조사 자체도 쟀습니다. 기록을 받아 오느라 조사 세션 입력의 45%를 하위 에이전트가 썼습니다. 낭비를 재는 일도 낭비를 만듭니다. 더 싼 방법으로 바꿉니다. (계속)
+버릴 것이 많은 게 아니라, 전부를 늘 들고 다니는 방식이 문제입니다. 그리고 그 방식을 바꾸는 일은 생각보다 어렵습니다. 다시 쓰였는지는 글자 겹침으로 추정한 값이라, 다음은 두 사람의 블라인드 판정으로 검증합니다. (계속)
 
 
 — English —
 
-[Research note #2] Starting from the floor nobody can dispute
+[Research note #2] Not what to throw away, but what we carry
 
-Note 1 defined waste in eight categories. Today I counted the three that the records decide on their own, with no human judgment: duplicates (the same result received again), errors, and context that had already been processed but was processed again from scratch.
+Note 1 defined waste in eight categories. Today I counted the three that the records decide on their own: duplicates (the same result received again), errors, and context already processed but processed again from scratch. A correction first: the 5.87 billion tokens in note 1 was a lower bound, because one session had been fetched only in part. Fetched in full, it is 6.84 billion.
 
-A correction first. The 5.87 billion tokens in note 1 was a lower bound: one session had been fetched only in part. With the missing part fetched, the total is 6.84 billion.
+The duplicate and error results themselves are under 0.001% of the tokens. But to take each of those steps the AI re-read its whole context, and those steps took 2.6% of the input. In cost it is 5.79%. Almost all of that is context already processed being processed again from scratch (440,000 tokens on average), and 79% of it came right after I returned from more than an hour away. The break is not the waste; the structure that makes it so expensive is inefficient.
 
-The result. Tokens received as duplicates or errors are under 0.001% of the total. In tokens, the waste nobody can dispute is close to zero. In cost it is 5.79%. Almost all of that is context the cache already held being processed again from scratch, and 79% of it happened right after I came back from a break of more than an hour.
+The real question is elsewhere. 76% of each call's context was carried over from instructions already finished. I traced whether that content was used again later. Dropping only what was never used again would have saved less than I expected (4–25% of the input). Most of it was used again at some point, but until then it was re-read, unused, on every call. With an ideal structure that fetches content exactly when it is needed, 35–54% of the input would not have been needed. But simple rules that decide from the past alone, without missing needed content, cut only about 3%.
 
-Taking a break is not waste. The structure is inefficient: every return re-processes the whole context, 440,000 tokens on average. My habit of keeping one session going for days made that cost bigger. Depending on which of these re-writes count, the result is a range: 0.48–5.79%.
-
-A small floor does not mean little waste. 76% of each call's context was carried over from instructions already finished. Whether it was needed is for people to judge. Next: blind labeling by two people.
-
-I measured this research too. Fetching the records took 45% of the research session's input, spent by sub-agents. Measuring waste makes waste. I am switching to a cheaper method. (To be continued)
+The problem is not that much should be thrown away. It is carrying everything, all the time, and changing that is harder than it looks. Reuse was estimated from overlapping words, so next, two people will check it by blind labeling. (To be continued)
 
 #AntiTokenMaxing #AI #LLM #TOKENMAXING #GREENAI
 
 ## 첫 댓글 (링크)
 
-데이터와 판정 규칙, 결과 전부: https://github.com/graviton94/pickaxetax/blob/main/research/survey/user01/floor-t1.md
+기계 판정 결과와 규칙: https://github.com/graviton94/pickaxetax/blob/main/research/survey/user01/floor-t1.md
+넘어온 내용은 다시 쓰였나 (오라클 최소치): https://github.com/graviton94/pickaxetax/blob/main/research/survey/user01/opportunity-v1.md
 판정 기준 v1: https://github.com/graviton94/pickaxetax/blob/main/research/protocol/waste-codebook-v1.md
 영수증 판 2: https://graviton94.github.io/pickaxetax/report/user01.html
 1편: https://lnkd.in/p/esfBHm8W
 
 Data, rules and results: the links above (in English and Korean).
 
-(게시 전 확인: PR #4가 main에 머지돼 첫 두 링크가 열리는지, 사이트 판 2 브랜치가 머지돼 영수증이 판 2인지.)
+(게시 전 확인: 이 문서들이 main에 머지돼 링크가 열리는지, 사이트 판 2 브랜치가 머지돼 영수증이 판 2인지.)
 
 ## 출처
 
@@ -69,5 +64,11 @@ Data, rules and results: the links above (in English and Korean).
 - 평균 44만 토큰: W6 39,200,727 ÷ 90건 = 435,564.
 - 0.48~5.79%: 민감도. 5분 안의 재작성만 0.48%, 1시간 넘게 쉰 뒤 제외 1.23%, 모두 5.79%(본 결과).
 - 76%: 판 2 컨텍스트 분해, 이전 지시에서 넘어온 몫 76.1% (10개 세션 모두). 1편의 73.6%는 시계열이 있던 8개 세션 기준.
-- 45%: 연구 세션(S01)의 중간 집계, 입력 764,421,492 중 하위 에이전트 340,654,835 (44.6%). 하위 에이전트 입력의 98%가
-  이벤트 기록을 쪽 단위로 받아 온 에이전트. `research/survey/self-audit-log.md`.
+- 2.6%: 걸음 비용(하한 밖). 도구 호출이 모두 중복이었던 걸음 222번 92,455,835 + 모두 오류였던 걸음 256번 84,431,767
+  = 176,887,602 ÷ 6,839,974,268 = 2.59%. `floor-t1.md`의 "걸음 비용".
+- 4~25%, 35~54%: 오라클 최소치(`opportunity-v1.md`), 주 세션 6,579,410,935토큰. 다시는 안 쓰인 것만 버리기(P = ∞) 5.6%,
+  9가지 탐지 기준(보정) 3.5~24.7%. 필요할 때 다시 불러오기(P = 1,000) 41.5%, 같은 9가지 35.2~53.9%(보정 없이 16.2~28.1%).
+  미래를 아는 오라클의 값(기회의 크기)이고, 재사용은 글자 겹침(`lexical-v1`)으로 추정해 아직 블라인드 판정으로 검증하지 않았다.
+- 3% 남짓: 사전 등록 백테스트(`research/survey/user01/backtest-v1.json`, 규약 `research/protocol/backtest-v1.md`)와 그 밖의
+  탐색. 최근 N번 호출 안에 쓰인 것만 들고 가는 정책은 N = 64에서 놓침 2.5%, 덜 읽은 몫 2.9%(세션 중앙값; 합산 3.4%).
+  규약 기본값 N = 8은 17.6%를 줄이지만 필요한 내용을 30.3% 놓친다. `opportunity-v1.md` 5절.

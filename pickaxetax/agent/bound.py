@@ -29,6 +29,7 @@ Only aggregates leave this module; segment text is never stored.
 
 from __future__ import annotations
 
+import bisect
 import json
 import math
 import re
@@ -60,6 +61,7 @@ class Trace:
     segments: list[Segment] = field(default_factory=list)
     compactions: list[int] = field(default_factory=list)
     written_tokens: int = 0  # Write content + Edit replacements: what persisted to disk
+    instruction_starts: list[int] = field(default_factory=list)  # call index at each user prompt
 
 
 def _text(content) -> str:
@@ -70,8 +72,23 @@ def _text(content) -> str:
     return ""
 
 
+def _parsed(path: str):
+    with open(path, encoding="utf-8", errors="replace") as f:
+        for line in f:
+            try:
+                d = json.loads(line)
+            except ValueError:
+                continue
+            yield d
+
+
 def read_trace(path: str, keep_text: bool = False) -> Trace:
     """Parse a Claude Code transcript into calls, outputs and context segments."""
+    return read_trace_lines(_parsed(path), keep_text)
+
+
+def read_trace_lines(lines, keep_text: bool = False) -> Trace:
+    """The same from already-parsed transcript lines (e.g. event-API pages cut at a snapshot)."""
     t = Trace()
     call_of: dict[str, int] = {}
     skipped: set[str] = set()
@@ -81,65 +98,63 @@ def read_trace(path: str, keep_text: bool = False) -> Trace:
         if n:
             t.segments.append(Segment(kind, n, birth, frozenset(TOKEN_RE.findall(text)), text=text if keep_text else ""))
 
-    with open(path, encoding="utf-8", errors="replace") as f:
-        for line in f:
-            try:
-                d = json.loads(line)
-            except ValueError:
+    for d in lines:
+        if not isinstance(d, dict) or d.get("isSidechain"):
+            continue
+        if d.get("type") == "system" and d.get("subtype") == "compact_boundary":
+            if not t.compactions or t.compactions[-1] != len(t.contexts):
+                t.compactions.append(len(t.contexts))
+            continue
+        msg = d.get("message")
+        if not isinstance(msg, dict):
+            continue
+        content = msg.get("content")
+        if d.get("type") == "assistant":
+            mid = str(msg.get("id") or d.get("requestId") or d.get("uuid"))
+            if mid in skipped:
                 continue
-            if not isinstance(d, dict) or d.get("isSidechain"):
-                continue
-            if d.get("type") == "system" and d.get("subtype") == "compact_boundary":
-                if not t.compactions or t.compactions[-1] != len(t.contexts):
-                    t.compactions.append(len(t.contexts))
-                continue
-            msg = d.get("message")
-            if not isinstance(msg, dict):
-                continue
-            content = msg.get("content")
-            if d.get("type") == "assistant":
-                mid = str(msg.get("id") or d.get("requestId") or d.get("uuid"))
-                if mid in skipped:
+            if mid not in call_of:
+                u = msg.get("usage") if isinstance(msg.get("usage"), dict) else {}
+                ctx = (int(u.get("input_tokens") or 0) + int(u.get("cache_read_input_tokens") or 0)
+                       + int(u.get("cache_creation_input_tokens") or 0))
+                if not ctx:  # synthetic message (API error, interruption): no model call happened
+                    skipped.add(mid)
                     continue
-                if mid not in call_of:
-                    u = msg.get("usage") if isinstance(msg.get("usage"), dict) else {}
-                    ctx = (int(u.get("input_tokens") or 0) + int(u.get("cache_read_input_tokens") or 0)
-                           + int(u.get("cache_creation_input_tokens") or 0))
-                    if not ctx:  # synthetic message (API error, interruption): no model call happened
-                        skipped.add(mid)
-                        continue
-                    call_of[mid] = len(t.contexts)
-                    t.contexts.append(ctx)
-                    t.outputs.append(set())
-                k = call_of[mid]
-                for b in content if isinstance(content, list) else []:
-                    if not isinstance(b, dict):
-                        continue
-                    if b.get("type") == "text":
-                        s, kind = str(b.get("text", "")), "assistant_text"
-                    elif b.get("type") == "tool_use":
-                        inp = b.get("input") if isinstance(b.get("input"), dict) else {}
-                        s, kind = json.dumps(inp, ensure_ascii=False), "tool_input"
-                        if b.get("name") in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
-                            kind = "persisted_write"
-                            t.written_tokens += estimate_tokens(str(inp.get("content") or inp.get("new_string") or inp.get("new_source") or ""))
-                    else:
-                        continue  # thinking blocks are left to the unmodeled residual
-                    t.outputs[k].update(TOKEN_RE.findall(s))
-                    add(kind, s, k + 1)
-            elif d.get("type") == "user":
-                birth = len(t.contexts)
-                if d.get("isCompactSummary"):
-                    add("compact_summary", _text(content), birth)
+                call_of[mid] = len(t.contexts)
+                t.contexts.append(ctx)
+                t.outputs.append(set())
+            k = call_of[mid]
+            for b in content if isinstance(content, list) else []:
+                if not isinstance(b, dict):
                     continue
-                for b in content if isinstance(content, list) else [{"type": "text", "text": content}]:
-                    if not isinstance(b, dict):
-                        continue
-                    if b.get("type") == "tool_result":
-                        add("tool_result", _text(b.get("content")), birth)
-                    elif b.get("type") == "text":
-                        s = str(b.get("text", ""))
-                        add("harness" if d.get("isMeta") or "<system-reminder>" in s else "user_prompt", s, birth)
+                if b.get("type") == "text":
+                    s, kind = str(b.get("text", "")), "assistant_text"
+                elif b.get("type") == "tool_use":
+                    inp = b.get("input") if isinstance(b.get("input"), dict) else {}
+                    s, kind = json.dumps(inp, ensure_ascii=False), "tool_input"
+                    if b.get("name") in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
+                        kind = "persisted_write"
+                        t.written_tokens += estimate_tokens(str(inp.get("content") or inp.get("new_string") or inp.get("new_source") or ""))
+                else:
+                    continue  # thinking blocks are left to the unmodeled residual
+                t.outputs[k].update(TOKEN_RE.findall(s))
+                add(kind, s, k + 1)
+        elif d.get("type") == "user":
+            birth = len(t.contexts)
+            if d.get("isCompactSummary"):
+                add("compact_summary", _text(content), birth)
+                continue
+            for b in content if isinstance(content, list) else [{"type": "text", "text": content}]:
+                if not isinstance(b, dict):
+                    continue
+                if b.get("type") == "tool_result":
+                    add("tool_result", _text(b.get("content")), birth)
+                elif b.get("type") == "text":
+                    s = str(b.get("text", ""))
+                    kind = "harness" if d.get("isMeta") or "<system-reminder>" in s else "user_prompt"
+                    add(kind, s, birth)
+                    if kind == "user_prompt" and s.strip() and (not t.instruction_starts or t.instruction_starts[-1] != birth):
+                        t.instruction_starts.append(birth)
     return t
 
 
@@ -231,6 +246,25 @@ def bound(t: Trace, penalties=DEFAULT_PENALTIES) -> dict:
         "policies": {},
         "by_kind": {},
     }
+    # carried over from a finished instruction (codebook W5): the part of each segment's residency
+    # after the instruction it was born in ended; "dead" = after its last use, "idle" = not used there
+    starts = t.instruction_starts
+    car = {"resident": 0.0, "dead": 0.0, "idle": 0.0}
+    for s in t.segments:
+        if s.kind == "unattributed" or s.end <= s.birth:
+            continue
+        i = bisect.bisect_right(starts, s.birth)
+        nxt = starts[i] if i < len(starts) else s.end
+        a = max(nxt, s.birth)
+        if a >= s.end:
+            continue
+        last = s.refs[-1] if s.refs else s.birth - 1
+        used = sum(1 for k in s.refs if a <= k < s.end)
+        car["resident"] += s.tokens * (s.end - a)
+        car["dead"] += s.tokens * max(0, s.end - max(a, last + 1))
+        car["idle"] += s.tokens * (s.end - a - used)
+    out["carried_from_finished_instructions"] = {
+        k: {"tokens": round(v), "pct_of_input": round(100 * v / measured, 1) if measured else 0.0} for k, v in car.items()}
     for p in penalties:
         need = sum(needed(s, p) for s in t.segments)
         saved = resident - need
@@ -277,6 +311,11 @@ def merge(reports: list[dict]) -> dict:
             acc[1] += k["resident"]
             acc[2] += k["resident"] * k["dead_after_last_use_pct"] / 100
             acc[3] += k["resident"] * k["unneeded_pct"] / 100
+    if all("carried_from_finished_instructions" in r for r in reports) and reports:
+        m["carried_from_finished_instructions"] = {
+            k: {"tokens": (v := sum(r["carried_from_finished_instructions"][k]["tokens"] for r in reports)),
+                "pct_of_input": round(100 * v / measured, 1) if measured else 0.0}
+            for k in reports[0]["carried_from_finished_instructions"]}
     total = m["modeled_resident"]
     for name, (tok, res, dead, unneeded) in sorted(kinds.items(), key=lambda kv: -kv[1][1]):
         m["by_kind"][name] = {
@@ -318,9 +357,10 @@ def _label(p: float) -> str:
     return "P=inf" if p == math.inf else f"P={int(p)}"
 
 
-def analyze(path: str, min_shared: int = 1, common_frac: float = 0.02, penalties=DEFAULT_PENALTIES,
+def analyze(path, min_shared: int = 1, common_frac: float = 0.02, penalties=DEFAULT_PENALTIES,
             calibrated: bool = True) -> dict:
-    t = read_trace(path)
+    """path: a transcript file, or an iterable of parsed transcript lines."""
+    t = read_trace(path) if isinstance(path, str) else read_trace_lines(path)
     factor = calibrate(t) if calibrated else None
     link(t, min_shared, common_frac)
     out = bound(t, penalties)

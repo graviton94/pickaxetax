@@ -122,3 +122,13 @@ def test_machine_labels_follow_the_packet(tmp_path):
     pk.write_text(json.dumps(p))
     assert main(["survey", "machine", str(pk), path, "--out", str(out)]) == 0
     assert json.loads(out.read_text())["labels"] == m["labels"]
+
+
+def test_machine_labels_rule_tier(tmp_path):
+    from pickaxetax.survey import judge
+    path = session(tmp_path, "a.jsonl", 6)
+    p = labeling.build_packet({"S01": labeling.session_instructions(path)}, n=6, calibration=0, seed=3)
+    m = labeling.machine_labels(p, {"S01": list(judge._jsonl(path))}, tier="t2")
+    assert m["coder"] == "machine-t2" and m["machine"]["categories"] == ["W4", "W5", "W8"]
+    assert all(set(v) == {"W4", "W5", "W8"} for v in m["labels"].values())
+    assert labeling.validate_labels(m) == []
