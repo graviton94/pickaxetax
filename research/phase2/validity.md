@@ -36,3 +36,24 @@ still open. Kept up to date as cycles find new ones (`log.md`).
 |---|---|
 | **The same party builds the measures, runs them and interprets them**, with a stated position (against waste). Motivated choices are possible: which rule, which threshold, which view leads. | Rules and thresholds are committed before the data they judge (codebook v1, mechanical tier v1, rule tier v0 with sealed hashes); the primary result is always the pre-registered one and later views are labeled sensitivity analyses; corrections that lowered or raised a headline are logged either way; the blind labels come from someone other than the data owner. |
 | **An AI agent did most of the analysis.** | Its work is logged per cycle, every number traces to a committed file or a stated private input, and the data owner reviews before anything is published. |
+
+## What moves each headline, and by how much
+
+Each headline was stress-tested separately against each source of uncertainty. The widest range
+shows what the number depends on most.
+
+| Headline (point value) | Sample: resampling sessions (E4) | Detector: what counts as reuse (E3, E5, E8) | Prices: 48 ratio settings (C8) | Assumption: re-reads, cold start (A5, B5, A6) | Depends most on |
+|---|---|---|---|---|---|
+| Mechanical floor, cost (8.92%) | 8.1–9.8% | — (mechanical) | 4.7–15.4% | — | prices |
+| Steps spent only on duplicates/errors (2.6% of input) | 2.0–3.4% | — | — (tokens) | — | sample |
+| Oracle paging, P = 1000 (41.5%) | 40.4–43.2% | 35–56% | — (tokens) | — (foresight assumed) | detector |
+| Forgetting only, P = ∞ (5.6%) | 5.2–6.5% | 5.6–13% supported by behaviour; 3–45% across all | — | — | detector |
+| Restart above 200k (55.2% of input) | 48.7–59.5% | 26.7–45.7% if lexical reuse were need (A4); behaviour says it is not | 37–49% of total money | 52–53% with observed charges; 41% at the 90th-percentile cold start | sample, then the charge |
+| Ceiling 200k (66.8% of input) | 65–68% | — | 42–58% of total money | +R per compaction: 64–67% | prices (in money) |
+| Ceiling 390k (44% of input) | about ±1 | — | 29–38% of total money | 39% with D2's gross re-reads | prices |
+| "Half of all money re-reads finished work" (52–54%) | — | B definition vs visible-only: about a third at the lower bound | 41–63% (56–69% with re-writes) | — | prices, definition |
+| Optimal ceiling C\* (80–90k; 110–160k price-weighted) | 90–110k (pre-E6 grid) | — | — | 10× re-read cost: 120k (price 160k) | re-read cost per compaction |
+
+None of these ranges reverses an ordering between levers (E4: ≥ 97% of resamples for the orderings
+it tested; C8: 48 of 48 price settings). Every range is within this person's data. None says
+anything about other people, agents or tasks, and none tests quality. Those are phase 3's job.
