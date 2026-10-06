@@ -59,16 +59,25 @@ def lines_from(paths):
     return [l for _, l in sorted(events.values(), key=lambda x: x[0])]
 
 
-def measure_pages(paths, include_series=False):
-    """Measure a session from saved events-API pages."""
-    lines = lines_from(paths)
+def _measure_lines(lines, include_series=False):
     with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False, encoding="utf-8") as f:
         for l in lines:
             f.write(json.dumps(l) + "\n")
     try:
-        r = measure(f.name, include_series=include_series)
+        return measure(f.name, include_series=include_series)
     finally:
         os.unlink(f.name)
+
+
+def measure_pages(paths, include_series=False, subagents=True):
+    """Measure a session from saved events-API pages. Sub-agent (sidechain) calls are
+    measured separately under "subagents", as local transcripts are (`with_subagents`)."""
+    lines = list(lines_from(paths))
+    r = _measure_lines(lines, include_series)
+    side = [{**l, "isSidechain": False} for l in lines if l.get("isSidechain")]
+    if subagents and side:
+        s = _measure_lines(side)
+        r["subagents"] = {"api_calls": s["api_calls"], "tokens": s["tokens"], "user_instructions": 0}
     r["source"] = "events_api"
     r["pages"] = len(paths)
     return r
