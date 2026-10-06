@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- **Judging:** `pxt survey judge` computes the mechanical waste floor of codebook v1 (W1 duplication, W2 failures, W6 cache churn) per session, raw and price-weighted, with main session and sub-agents shown apart. Rules: `research/protocol/mechanical-tier-v1.md`.
+- `pxt survey sample --exclude` and `--limit`; the labeling page in five languages.
 - **Labeling:** `pxt survey sample` draws a blind-labeling packet from your own transcripts (stratified, seeded, optional redaction); `site/label.html` lets anyone label it in the browser with no account and nothing uploaded; `pxt survey agreement` computes Cohen's kappa per category from two labels files. Procedure: `research/protocol/labeling.md`.
 - **Research:** waste codebook v1 (eight categories, frozen before any judgment).
 

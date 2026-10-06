@@ -1,8 +1,8 @@
 # 연구 노트 #1 — 21세기 골드러시의 영수증
 
-- 게시일: 원고 확정 후 바로
+- 게시일: 2026-10-06, https://lnkd.in/p/esfBHm8W (해시태그: #AntiTokenMaxing #AI #LLM #TOKENMAXING #GREENAI)
 - 목적: 왜 시작했는지(계기), 그리고 무엇을 낭비로 볼지 판정 기준을 먼저 고정해 보여 준다. 판정은 다음 노트부터 한 갈래씩. 계기는 이 노트에만 넣는다.
-- 상태: **확정 v6** (2026-10-06, 한국어 확정 후 영어 번역). 결정 페이지의 결정 8개를 반영했다. 기계적 사실을 바로잡았다(매 호출 전체 재입력, 컴팩션 예외). 소탐대실 어조를 넣었다. 출력 비율 범위를 세션 3개로 한정했다. 갈래 정의를 이미지로 옮기고, 실제 오배송 사례를 넣고, "(계속)"으로 맺었다.
+- 상태: **게시됨** (확정 v6 2026-10-06, 한국어 확정 후 영어 번역). 결정 페이지의 결정 8개를 반영했다. 기계적 사실을 바로잡았다(매 호출 전체 재입력, 컴팩션 예외). 소탐대실 어조를 넣었다. 출력 비율 범위를 세션 3개로 한정했다. 갈래 정의를 이미지로 옮기고, 실제 오배송 사례를 넣고, "(계속)"으로 맺었다.
 - 분량: 한국어 본문 804자(공백 포함). 게시물 전체(한·영) 2,604자, 링크드인 3,000자 이내. 붙여넣기용 `01-post.txt`.
 - 이미지: 4장씩, 한국어 `img/note01/ko/01~04.png`, 영어 `img/note01/en/01~04.png` (1080×1350). 한 게시물에 한국어 4장 + 영어 4장을 순서대로 올린다. 원본 `figures/note01-slides.template.html`, `figures/note01-slides.en.template.html`
 - 링크: 본문에 넣지 않고 첫 댓글에 단다
@@ -40,7 +40,7 @@ The waste of this research counts too, including the time one of my agents sent 
 
 The criteria are fixed as of today. From the next note on, I will judge my own records against them, one category at a time. (To be continued)
 
-#AntiTokenMaxing
+#AntiTokenMaxing #AI #LLM #TOKENMAXING #GREENAI
 
 ## 출처
 

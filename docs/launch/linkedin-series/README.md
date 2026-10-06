@@ -19,7 +19,7 @@ The project is published on LinkedIn as **research notes, one at a time**. There
 
 | # | Note | Status | Posted |
 |---|---|---|---|
-| 1 | [21세기 골드러시의 영수증](01-the-pickaxe-tax.md) | final v6, ready to post | — |
+| 1 | [21세기 골드러시의 영수증](01-the-pickaxe-tax.md) | posted 2026-10-06 | [LinkedIn](https://lnkd.in/p/esfBHm8W) |
 
 ## How a note is made
 

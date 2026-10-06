@@ -143,6 +143,15 @@ def main(argv: list[str] | None = None) -> int:
     ss.add_argument("--limit", action="append", default=[], metavar="LABEL=N",
                     help="keep only a session's first N instructions (cut at a measurement snapshot)")
     ss.add_argument("--out", default="label-packet.json")
+    sj = svsub.add_parser("judge", help="mechanical waste floor (codebook v1, tier T1): duplication, failures, cache churn")
+    sj.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
+    sj.add_argument("--pages", action="append", default=[], metavar="LABEL=LISTFILE",
+                    help="a session saved as event-API pages: a file listing the page files, one per line")
+    sj.add_argument("--limit", action="append", default=[], metavar="LABEL=N",
+                    help="stop a session after its first N instructions (cut at a measurement snapshot)")
+    sj.add_argument("--limit-calls", action="append", default=[], metavar="LABEL=N",
+                    help="stop a session after its first N main-session API calls")
+    sj.add_argument("--out", help="write the numbers-only report as JSON")
     sa = svsub.add_parser("agreement", help="inter-rater agreement of two labels files (kappa per category)")
     sa.add_argument("labels", nargs=2)
     sa.add_argument("--json", action="store_true")
@@ -395,6 +404,8 @@ def _survey(args) -> int:
 
     if args.survey_cmd in ("sample", "agreement"):
         return _survey_labeling(args)
+    if args.survey_cmd == "judge":
+        return _survey_judge(args)
     if args.survey_cmd == "report":
         with open(args.dataset, encoding="utf-8") as f:
             ds = json.load(f)
@@ -427,6 +438,42 @@ def _survey(args) -> int:
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(ds, f, ensure_ascii=False, separators=(",", ":"))
     print(f"measured {len(sessions)} sessions -> {args.out} (numbers only; no text, paths or ids)")
+    return 0
+
+
+def _survey_judge(args) -> int:
+    from .agent import find_transcripts
+    from .survey import judge
+
+    limits = {k: int(v) for k, _, v in (x.partition("=") for x in args.limit)}
+    call_limits = {k: int(v) for k, _, v in (x.partition("=") for x in args.limit_calls)}
+    sources = {}
+    for i, path in enumerate(find_transcripts(args.paths or None) if (args.paths or not args.pages) else [], 1):
+        sources[f"S{i:02d}"] = path
+    for spec in args.pages:
+        label, _, listfile = spec.partition("=")
+        with open(listfile, encoding="utf-8") as f:
+            sources[label] = [l.strip() for l in f if l.strip()]
+    per = {}
+    for label, src in sources.items():
+        r = judge.judge_source(src, limits.get(label), call_limits.get(label))
+        if r["calls"]:
+            per[label] = r
+    if not per:
+        print("no sessions with API calls found", file=sys.stderr)
+        return 1
+    rep = judge.combine(per)
+    if args.out:
+        with open(args.out, "w", encoding="utf-8") as f:
+            json.dump(rep, f, ensure_ascii=False, indent=1)
+    print(f"{'session':8} {'calls':>7} {'input':>15} {'W1 dup':>10} {'W2 fail':>10} {'W6 churn':>12} {'floor %':>8} {'price %':>8}")
+    for label, r in sorted(per.items()):
+        print(f"{label:8} {r['calls']:>7,} {r['input_processed']:>15,} {r['W1']['tokens']:>10,} {r['W2']['tokens']:>10,} "
+              f"{r['W6']['tokens']:>12,} {r['floor_pct_of_input']:>8.3f} {r['floor_pct_price_weighted']:>8.2f}")
+    t = rep["total"]
+    print(f"{'total':8} {t['calls']:>7,} {t['input_processed']:>15,} {t['W1']['tokens']:>10,} {t['W2']['tokens']:>10,} "
+          f"{t['W6']['tokens']:>12,} {t['floor_pct_of_input']:>8.3f} {t['floor_pct_price_weighted']:>8.2f}")
+    print("Floor only: the mechanical tier of codebook v1. W3, W4, W5, W7, W8 need validated rules or human judgment.")
     return 0
 
 
