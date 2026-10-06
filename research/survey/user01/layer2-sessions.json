@@ -776,5 +776,138 @@
   "pages": 30,
   "measured_at": "2026-10-05T23:2xZ",
   "note": "events API; output tokens are stream-start placeholders. Session-list input was 67,217,416"
+ },
+ "S02": {
+  "schema": "pickaxetax.survey.session.v1",
+  "lines": 9298,
+  "event_types": {
+   "assistant": 2493,
+   "attachment": 2425,
+   "user": 1443,
+   "last-prompt": 529,
+   "atis-latch": 507,
+   "ai-title": 506,
+   "mode": 493,
+   "frame-link": 398,
+   "queue-operation": 310,
+   "system": 143,
+   "cost-state": 51
+  },
+  "api_calls": 1303,
+  "subagent_calls": 0,
+  "user_instructions": 48,
+  "compactions": 3,
+  "tokens": {
+   "input_processed": 574746376,
+   "cache_read": 568155208,
+   "cache_write": 6588396,
+   "output": 1109474
+  },
+  "context": {
+   "first": 64633,
+   "peak": 783881,
+   "quartiles": [
+    273629,
+    439397,
+    618178
+   ],
+   "curve_40": [
+    64633,
+    209490,
+    313098,
+    393349,
+    469853,
+    633792,
+    688703,
+    734557,
+    93802,
+    183172,
+    275418,
+    400180,
+    463391,
+    525652,
+    575684,
+    629969,
+    691211,
+    726768,
+    773550,
+    138444,
+    205213,
+    259339,
+    324663,
+    364776,
+    439397,
+    503516,
+    547653,
+    600730,
+    651719,
+    721239,
+    111727,
+    178514,
+    227424,
+    275701,
+    338361,
+    380732,
+    464904,
+    540954,
+    622139,
+    666386
+   ]
+  },
+  "per_instruction": {
+   "calls_quartiles": [
+    7,
+    18,
+    36
+   ],
+   "calls_max": 164,
+   "input_quartiles": [
+    3352557,
+    7473969,
+    14276379
+   ],
+   "input_max": 75853496
+  },
+  "tools": {
+   "Bash": 895,
+   "mcp": 107,
+   "Read": 95,
+   "ReadNotifications": 58,
+   "TaskUpdate": 41,
+   "TaskCreate": 29,
+   "Artifact": 20,
+   "Write": 19,
+   "ToolSearch": 8,
+   "Edit": 8,
+   "Agent": 7,
+   "SendUserFile": 6,
+   "TaskStop": 2,
+   "Skill": 1,
+   "AskUserQuestion": 1
+  },
+  "tool_calls": 1297,
+  "tool_errors": 9,
+  "images": 85,
+  "models": {
+   "claude-opus-5-5": 1303
+  },
+  "span_hours": 48.06,
+  "active_hours": 13.73,
+  "subagents": {
+   "count": 7,
+   "api_calls": 221,
+   "tokens": {
+    "input_processed": 37008380,
+    "cache_read": 35586228,
+    "cache_write": 1421710,
+    "output": 4563
+   },
+   "models": {
+    "claude-opus-5-5": 221
+   }
+  },
+  "source": "local_transcript (run in the session at the owner's request)",
+  "measured_at": "2026-10-06",
+  "note": "session-list input was 602,304,650; transcript incl. subagents 611,754,756 (1.02)"
  }
 }
