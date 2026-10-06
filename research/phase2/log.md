@@ -771,3 +771,26 @@ listed 24 discrepancies, mostly wording.
 - The rule-tier correction was attributed to cycle E7 instead of D4, and the E2 log entry now notes
   that correction.
 - Smaller fixes in the E8, C7 and task-set memos.
+
+## Cycle D7 — how many runs E2 needs (`research/phase3/e2-power-v0.md`)
+
+This is a simulation only, with fixed seeds and the standard library, from the public task set. The
+token model rebuilds D6's per-chain figures exactly. Only 15 of the 28 instructions come after a
+restart, so only those can show a quality difference.
+- **Tokens.** A ±5-point CI on the saving needs 6–8 replicates if a chain run varies by 20%, and
+  28–44 if it varies by 50%. Run-to-run variation is assumed, since no run exists.
+- **Quality.** At a 75% baseline pass rate, the loss estimate has an SD of about 15/√R points. 80%
+  power needs about 4 replicates for a 20-point loss, 13 for 10 points and 45 for 5 points. With 4
+  chains no test can reach two-sided 5% with fewer than 3 replicates.
+- **Recommendation.** Run arms (a) and (b) forked at the first boundary above 200k (exact, and 16%
+  cheaper). Drop arm (c). Use a 15-point non-inferiority margin with looks at 3 and 6 replicates,
+  at a cost of at most 1.3–1.7B input tokens.
+
+**Review.** The quality model is assumed: random effects for instructions and chains, with the
+effect only after restarts. Its conclusion is robust to the heterogeneity assumed. The scripts and
+tables are in `research/phase3/power/` and reproduce.
+
+**Discussion.** This is a limit to state up front. The experiment phase 2 calls for can rule out a
+large quality loss from restarting, but not a small one. A small one is what the behavioural
+evidence (A5, B5, D5, A6) suggests. Resolving it needs a larger task set (a public benchmark) or
+many more runs. Phase 3 should say so before running anything.

@@ -1,0 +1,28 @@
+### T10. Replicates for 80% power, normal approximation from the simulated SD of the loss estimate at R=10
+
+SD(R) = SD(10) * sqrt(10/R); R = 10 * (SD(10) * (z_alpha + 0.84) / loss)^2. Cell: one-sided 0.10 / two-sided 0.05.
+
+| design | baseline | SD at R=10 (points, no loss) | loss 5 | loss 10 | loss 20 |
+|---|---|---|---|---|---|
+| independent | 60% | 5.4 | 54 / 94 | 14 / 23 | 4 / 6 |
+| independent | 75% | 4.8 | 45 / 78 | 13 / 22 | 4 / 6 |
+| independent | 90% | 3.4 | 28 / 48 | 9 / 15 | 4 / 6 |
+| forked | 60% | 5.1 | 51 / 88 | 13 / 23 | 4 / 6 |
+| forked | 75% | 4.7 | 41 / 71 | 11 / 20 | 4 / 6 |
+| forked | 90% | 3.4 | 26 / 45 | 9 / 15 | 4 / 6 |
+
+### T11. Stopping rule, looks 3/6, M = 15: P(NI) / P(harm) / P(inconclusive) and mean R, by baseline (independent runs)
+
+| baseline | loss 0 | loss 5 | loss 10 | loss 15 (P(NI) = size) | loss 20 |
+|---|---|---|---|---|---|
+| 60% | 69 / 6 / 25, R̄ 4.7 | 45 / 16 / 40, R̄ 5.0 | 21 / 37 / 42, R̄ 5.1 | 8 / 63 / 29, R̄ 4.9 | 2 / 84 / 14, R̄ 4.5 |
+| 75% | 79 / 5 / 16, R̄ 4.4 | 50 / 18 / 32, R̄ 4.9 | 24 / 41 / 35, R̄ 5.1 | 9 / 67 / 24, R̄ 4.8 | 2 / 86 / 11, R̄ 4.4 |
+| 90% | 94 / 3 / 3, R̄ 3.7 | 67 / 19 / 14, R̄ 4.5 | 34 / 49 / 17, R̄ 4.7 | 11 / 79 / 10, R̄ 4.5 | 4 / 92 / 4, R̄ 4.0 |
+
+Size of the stopping rule's NI claim when the true loss equals M (looks 3/6), %:
+
+| baseline | M=10 | M=15 | M=20 |
+|---|---|---|---|
+| 60% | 7 | 8 | 8 |
+| 75% | 8 | 9 | 8 |
+| 90% | 11 | 11 | 12 |
