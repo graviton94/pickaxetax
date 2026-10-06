@@ -684,3 +684,29 @@ four and the two secondary), and the E5 / D4 numbers are unchanged (41.3 / 51.6 
 session in the data starts with a tool result. Smaller concerns are noted in the review and left as
 they are. The 5-session warning counts sessions without instructions, and nothing checks that a
 `floor.json` matches its dataset.
+
+## Cycle C7 — was the 1-hour cache the right choice? (`C7-cache-ttl.md`)
+
+**Found.** The main sessions wrote only 1-hour cache (2× input), and sub-agents only 5-minute cache
+(1.25×). A replay with every prefix change held fixed reproduces the observed price exactly. The data
+confirms that a read refreshes the timer.
+- 97% of calls follow a gap under 5 minutes, 2.6% a gap of 5–60 minutes, and 0.4% a gap over an
+  hour. Half of the 5–60 minute gaps fall inside an agent's turn.
+- All-5-minute caching would have cost 19.8% more main input money (about 17% of all money). The
+  1-hour premium (56M units) avoided 214M units of re-writes.
+- But 93% of the premium was paid on writes followed by a gap under 5 minutes. A per-write choice
+  with foresight saves 1.6–6.7% of main input money, depending on how mixed lifetimes are billed.
+  With keep-alive requests while idle it saves about 10%.
+- Realistic rules get 4–6% of total money. An hourly keep-alive while idle (up to 8 h) is the only
+  gain that holds under both billing readings: 4.1–4.2%.
+- Sub-agents were right on 5 minutes; 1 hour would cost them 14.6% more.
+
+**Review.** The mixed-lifetime billing ("entry" vs "segment" reading) cannot be checked here: no
+call in the data mixes the two, and the agent's statements about the provider's documentation and
+price list were not re-checked (no network). The memo marks them as assumptions. The read price of
+0.1 is the project's ratio; a lower read price would strengthen every direction.
+
+**Discussion.** The cache lifetime is a harness lever of the same size as the floor (about 4–8% of
+money). It needs no change in behaviour and is an order of magnitude smaller than moving the
+ceiling. Most of the W6 cost (re-writes after breaks over an hour, the floor's 8.92%) is also
+addressed by an hourly keep-alive, or by restarting on return (A6).

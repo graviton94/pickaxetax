@@ -66,6 +66,7 @@ Share of main-session input that would not have been processed, with what each l
 | **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |
 | **Compaction ceiling at 150–200k instead of 783k** | **67–73% of input** (about 61–65% of input-side cost) | more frequent summaries lose nothing needed | no | harness (one setting) | B4, E6 |
 | Compact before leaving (breaks over 1 h) | up to 29% of cost | a 30k summary is enough | no | the user / harness | C |
+| Cache lifetime chosen per write (5 min / 1 h), with keep-alive requests while idle | 4–6% of total money (about 9% with foresight); all-5-minute would cost 17% more | the harness can choose per write | no | harness | C7 |
 | Delegate reading to sub-agents (11–50 calls) | 1.4–5.1× cheaper than reading in the main session | the same reads were needed | no | the agent | D |
 
 In money (output included, cycle C5) every saving shrinks by about a fifth and the order stays the
