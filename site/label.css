@@ -1,9 +1,11 @@
 /* Labeling page: a working tool. Item on the left, the judgment form on the right. */
-body { font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
+body { font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; overflow-wrap: anywhere; }
+html:lang(ko) body { word-break: keep-all; }
 .lb-top { display: flex; align-items: center; gap: 14px; max-width: 1240px; margin: 0 auto; padding: 16px; }
 .lb-top .brand { letter-spacing: .06em; }
 .lb-title { color: var(--muted); font-weight: 600; }
-.lb-top #lang { margin-left: auto; }
+.lb-lang { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; }
+.lb-lang select { font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
 .lb { max-width: 1240px; margin: 0 auto; padding: 0 16px 48px; }
 .lb-setup { max-width: 720px; margin: 24px auto; display: grid; gap: 14px; }
 .lb-setup h1 { margin: 0; font-size: 26px; }

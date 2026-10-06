@@ -8,7 +8,7 @@ ran the research are measured with the same tools.
 | Date | What happened | Candidate category | Measured |
 |---|---|---|---|
 | 2026-10-05 | Ten research-note drafts were written in one go when only the first was wanted; all but note 1 were set aside | W7 Unrequested work | pending |
-| 2026-10-05 | During the S10 download, one agent in the hand-off chain sent its hand-off prompt to another session instead of to the next agent; that session refused, correctly | W3 Coordination loss | pending |
+| 2026-10-05 | During the S09 and S10 downloads, agents in the hand-off chain started two new cloud sessions and sent them their hand-off prompts instead of handing off to the next agent; both sessions refused, correctly, because the files were not in their containers | W3 Coordination loss | **two sessions, 394,395 input tokens processed (cache reads 279,426, cache writes 114,955, uncached 14), 2,485 output tokens, about $1.03** (provider-recorded usage of the two sessions) |
 | 2026-10-05 | The S10 download fetched page 102 twice (same cursor). De-duplication by event id kept the numbers unchanged | W1 Duplication | pending |
 | 2026-10-05 | An S09 download agent was started with the wrong session id and stopped | W3 Coordination loss | pending |
 | 2026-10-06 | 145 extra API calls to verify S10's page boundaries after the fact (verification, not waste by the codebook's definition; listed for completeness) | Not waste (verification) | 144 calls |
