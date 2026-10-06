@@ -223,3 +223,21 @@ carried over from finished instructions is 46.5% of input (was 50.8% under the b
 instruction rule); never used again 5.1% (was 5.4%). The restart what-ifs moved by up to 0.8 points
 (above 200k: 58.5%). **The sealed machine labels came out byte-identical**, so the rule-tier
 pre-registration stands as committed.
+
+## Cycle D3 — change over time, and the model (`D3-time-and-model.md`)
+
+**Found.** The ten sessions with token records start between 2026-08-10 and 10-05: **eight weeks**,
+not three months (the three-month period, from 07-10, is the session list's, which includes two
+July sessions with costs only). No workflow measure trends with the start date at a size n = 10 can
+detect (all |ρ| ≤ 0.54). Opus-5.5 and opus-5 sessions run the same loop (calls per instruction,
+carried share, input per active hour); compactions and the tool mix differ, but model, date and
+tooling cannot be separated. In the long sessions, calls per instruction fall from the first third
+to the last (clear only in S10); context per call does not.
+
+**Audit.** The phrase "three months" in research note 1 and on the site describes the session list's
+period; the token total comes from eight weeks of it. True as a statement about the list, imprecise
+as a statement about the tokens. Recorded for the data owner; note 1 is posted and stays as is.
+
+**Discussion.** Nothing here suggests the pattern is a passing phase of one model or one month; it
+also cannot show it is not. Separating model, date and task needs the same tasks on different models
+in the same weeks (an E2-style experiment).

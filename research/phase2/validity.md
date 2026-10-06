@@ -9,6 +9,7 @@ still open. Kept up to date as cycles find new ones (`log.md`).
 |---|---|
 | **One person, one agent, one kind of work.** Ten Claude Code sessions of one user, mostly software and game development, July–October 2026. Nothing generalizes to people, agents or tasks. | Open. `pxt survey run` lets others produce the same measurements on their own transcripts; the anonymous contribution path does not yet carry them (a schema change, for the maintainer to decide). |
 | **Long, heavy sessions dominate.** S03, S09 and S10 hold most of the input; pooled numbers follow them. | Reported: per-session tables everywhere, and session medians in the backtest. |
+| **Period.** The ten sessions with token records span eight weeks (2026-08-10 to 10-05); "three months" (from 07-10) is the session list's period, which includes two July sessions with costs only. | Stated in the phase 2 documents; note 1 and the site say "three months" (recorded for the data owner). No trend with date is detectable at n = 10 (cycle D3). |
 | **Snapshots.** S01, S02, S03 and S08 kept being used after they were measured; they are cut at the measurement. | Cuts are by call or instruction count and verified against the dataset (usage identical to the token). |
 
 ## Data
