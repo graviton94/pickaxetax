@@ -510,3 +510,19 @@ one". It holds only under the mild corrections, and the synthesis now presents t
 depending on the detector. The blind labels (W5 "dead context") are where it gets settled. They
 should be read against both brackets. The note 2 draft quotes 4~25% and 35~54% from the earlier
 ranges; this is for the data owner to decide.
+
+## Cycle D4 — the placebo test as an option of the tool
+
+`pxt agent bound --placebo mirror` (and `bound.link(placebo="mirror")`) runs E5's deterministic
+time-mirror test. A segment's later references count only if they beat the session's own calls
+before the segment existed by two standard deviations. The method tag is `lexical-v1+mirror-2sigma`.
+On the ten sessions it reproduces E5 exactly: 41.3 / 51.6 / 53.3% for P = ∞ / 1000 / 0 at
+min_shared 1. The default path is byte-identical to lexical-v1, and a contribution export refuses
+the option. The rule-tier W5 detector takes the same option (`pxt survey machine --tier t2
+--placebo mirror`), for the secondary analysis pre-registered in `research/protocol/rule-tier-v0.md`.
+Its labels are sealed there.
+
+While sealing, the primary T2 main labels did not reproduce their sealed hash: one S01 W5 label
+differs. The re-seal after cycle E2 had run three minutes before E2's last fix was committed. The
+file was re-sealed from the committed code and the protocol corrected, before any label existed.
+The other three primary files reproduce exactly.

@@ -51,8 +51,9 @@ def _text(content) -> str:
     return ""
 
 
-def detect(lines) -> dict:
-    """Per-instruction scores and flags. `lines`: parsed transcript lines of one session."""
+def detect(lines, placebo: str | None = None) -> dict:
+    """Per-instruction scores and flags. `lines`: parsed transcript lines of one session.
+    `placebo`: W5's reuse links under a placebo test (`bound.link`); None is the sealed primary rule."""
     lines = list(lines)
     # main-session API calls in order, and the instruction each belongs to (1-based; 0 = before any)
     instr, call_instr, call_ctx, seen = 0, [], [], set()
@@ -144,7 +145,7 @@ def detect(lines) -> dict:
     # W5: the bound's carried-and-dead residency, attributed to the call where it is carried
     t = bound.read_trace_lines(lines)
     bound.calibrate(t)
-    bound.link(t)
+    bound.link(t, placebo=placebo)
     n_calls = len(t.contexts)
     diff = [0.0] * (n_calls + 1)
     starts = t.instruction_starts

@@ -93,6 +93,9 @@ def main(argv: list[str] | None = None) -> int:
     ab.add_argument("--since", type=float, default=None, help="only sessions modified in the last N days")
     ab.add_argument("--min-shared", type=int, default=1, help="distinctive tokens a later output must reuse to count as a use")
     ab.add_argument("--raw", action="store_true", help="skip calibration against measured context growth")
+    ab.add_argument("--placebo", choices=["mirror"], default=None,
+                    help="count a reuse only if it beats a placebo; mirror: the session's own calls before the "
+                         "segment existed, 2-sigma test (method lexical-v1+mirror-2sigma)")
     ab.add_argument("--json", action="store_true", help="print the aggregate as JSON")
     ab.add_argument("--export", action="store_true", help="print an anonymous aggregate (audit + bound) for contribution")
     ah = agsub.add_parser("hook", help="guard hook (called by Claude Code) and its installer")
@@ -162,6 +165,8 @@ def main(argv: list[str] | None = None) -> int:
     sm2.add_argument("--phase", choices=("main", "calibration"), default="main")
     sm2.add_argument("--tier", choices=("t1", "t2"), default="t1",
                      help="t1: the mechanical judge (W1, W2, W6); t2: the rule-tier candidates (W4, W5, W8)")
+    sm2.add_argument("--placebo", choices=["mirror"], default=None,
+                     help="t2 only: W5's reuse links under the time-mirror test (the pre-registered secondary analysis)")
     sm2.add_argument("--out", default="labels-machine.json")
     srun = svsub.add_parser("run", help="everything at once: dataset, mechanical floor, opportunity bound, what-ifs, report")
     srun.add_argument("paths", nargs="*", help="transcript files or directories (default: ~/.claude/projects)")
@@ -352,6 +357,10 @@ def _agent(args) -> int:
     if not files:
         print("no Claude Code transcripts found (looked in ~/.claude/projects)", file=sys.stderr)
         return 1
+    if args.agent_cmd == "bound" and args.export and args.placebo:
+        print("--placebo is not part of the contribution format (lexical-v1); drop --export or --placebo",
+              file=sys.stderr)
+        return 2
     if args.agent_cmd == "bound" and not args.export:
         return _agent_bound(files, args)
     reports = [audit_session(parse(f)) for f in files]
@@ -390,7 +399,8 @@ def _agent(args) -> int:
 def _agent_bound(files: list[str], args) -> int:
     from .agent import bound
 
-    reports = [r for r in (bound.analyze(f, min_shared=args.min_shared, calibrated=not args.raw) for f in files)
+    reports = [r for r in (bound.analyze(f, min_shared=args.min_shared, calibrated=not args.raw,
+                                         placebo=args.placebo) for f in files)
                if r["api_calls"]]
     if not reports:
         print("no API calls found in the transcripts", file=sys.stderr)
@@ -402,6 +412,10 @@ def _agent_bound(files: list[str], args) -> int:
     measured = m["measured_input"]
     print(f"sessions {m['sessions']}  ·  API calls {m['api_calls']:,}  ·  input processed {measured:,} tokens")
     print(f"pinned (fixed base + context the transcript does not show): {100 * m['pinned_input'] / measured:.1f}%")
+    if "method" in m:  # only placebo runs report a method here; the lexical-v1 output is unchanged
+        pt = m["placebo"]
+        print(f"method {m['method']}: reuse kept only where it beats the session's own calls before the segment; "
+              f"{pt['kept']:,} of {pt['reused']:,} reused segments kept ({pt['fallback']:,} on the kind's pooled rate)")
     names = {"P=inf": "drop after last use, never re-fetch", "P=0": "oracle, free re-fetch"}
     print(f"\n{'policy':<40}{'bound input':>16}{'avoidable':>11}")
     for label, p in sorted(m["policies"].items(), key=lambda kv: -kv[1]["bound_input"]):
@@ -595,7 +609,7 @@ def _survey_machine(args) -> int:
             sources[label] = events.lines_from([l.strip() for l in f if l.strip()])
     lines = {k: events.cut(v, call_limits.get(k), limits.get(k)) for k, v in sources.items()}
     try:
-        lab = labeling.machine_labels(packet, lines, phase=args.phase, tier=args.tier)
+        lab = labeling.machine_labels(packet, lines, phase=args.phase, tier=args.tier, placebo=args.placebo)
     except ValueError as e:
         print(str(e), file=sys.stderr)
         return 1
