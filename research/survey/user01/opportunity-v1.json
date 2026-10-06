@@ -1329,7 +1329,15 @@
     "restart_above_200000_summary_10000": 65245145,
     "restarts_above_200000": 5,
     "restart_above_400000_summary_10000": 104037033,
-    "restarts_above_400000": 2
+    "restarts_above_400000": 2,
+    "ceiling_100000": 37691145,
+    "ceiling_150000": 45333093,
+    "ceiling_200000": 53754247,
+    "ceiling_300000": 74477653,
+    "ceiling_400000": 91285327,
+    "ceiling_600000": 122828437,
+    "growth_sum": 1071559,
+    "growth_steps": 397
    },
    "S02": {
     "measured": 574746376,
@@ -1347,7 +1355,15 @@
     "restart_above_200000_summary_10000": 253930055,
     "restarts_above_200000": 14,
     "restart_above_400000_summary_10000": 381569473,
-    "restarts_above_400000": 6
+    "restarts_above_400000": 6,
+    "ceiling_100000": 145948366,
+    "ceiling_150000": 160123228,
+    "ceiling_200000": 193510728,
+    "ceiling_300000": 259070559,
+    "ceiling_400000": 315921758,
+    "ceiling_600000": 445908669,
+    "growth_sum": 2734472,
+    "growth_steps": 1299
    },
    "S03": {
     "measured": 2055390268,
@@ -1365,7 +1381,15 @@
     "restart_above_200000_summary_10000": 791472328,
     "restarts_above_200000": 60,
     "restart_above_400000_summary_10000": 1298351089,
-    "restarts_above_400000": 27
+    "restarts_above_400000": 27,
+    "ceiling_100000": 498052948,
+    "ceiling_150000": 581776197,
+    "ceiling_200000": 698680664,
+    "ceiling_300000": 928838890,
+    "ceiling_400000": 1173196683,
+    "ceiling_600000": 1652220467,
+    "growth_sum": 10575774,
+    "growth_steps": 4805
    },
    "S04": {
     "measured": 29775192,
@@ -1383,7 +1407,15 @@
     "restart_above_200000_summary_10000": 22070427,
     "restarts_above_200000": 1,
     "restart_above_400000_summary_10000": 29775192,
-    "restarts_above_400000": 0
+    "restarts_above_400000": 0,
+    "ceiling_100000": 15557420,
+    "ceiling_150000": 18304267,
+    "ceiling_200000": 22442988,
+    "ceiling_300000": 26295830,
+    "ceiling_400000": 29775192,
+    "ceiling_600000": 29775192,
+    "growth_sum": 309197,
+    "growth_steps": 162
    },
    "S05": {
     "measured": 778555782,
@@ -1401,7 +1433,15 @@
     "restart_above_200000_summary_10000": 483985882,
     "restarts_above_200000": 11,
     "restart_above_400000_summary_10000": 563315817,
-    "restarts_above_400000": 6
+    "restarts_above_400000": 6,
+    "ceiling_100000": 178069351,
+    "ceiling_150000": 219494194,
+    "ceiling_200000": 269173274,
+    "ceiling_300000": 362307319,
+    "ceiling_400000": 455613462,
+    "ceiling_600000": 626951351,
+    "growth_sum": 2801248,
+    "growth_steps": 1918
    },
    "S06": {
     "measured": 166314408,
@@ -1419,7 +1459,15 @@
     "restart_above_200000_summary_10000": 66984042,
     "restarts_above_200000": 5,
     "restart_above_400000_summary_10000": 98446866,
-    "restarts_above_400000": 2
+    "restarts_above_400000": 2,
+    "ceiling_100000": 43823943,
+    "ceiling_150000": 53971757,
+    "ceiling_200000": 63690052,
+    "ceiling_300000": 85067350,
+    "ceiling_400000": 103378293,
+    "ceiling_600000": 139630295,
+    "growth_sum": 946587,
+    "growth_steps": 462
    },
    "S07": {
     "measured": 8624118,
@@ -1437,7 +1485,15 @@
     "restart_above_200000_summary_10000": 8624118,
     "restarts_above_200000": 0,
     "restart_above_400000_summary_10000": 8624118,
-    "restarts_above_400000": 0
+    "restarts_above_400000": 0,
+    "ceiling_100000": 5887432,
+    "ceiling_150000": 6920291,
+    "ceiling_200000": 8624118,
+    "ceiling_300000": 8624118,
+    "ceiling_400000": 8624118,
+    "ceiling_600000": 8624118,
+    "growth_sum": 132815,
+    "growth_steps": 65
    },
    "S08": {
     "measured": 19233919,
@@ -1455,7 +1511,15 @@
     "restart_above_200000_summary_10000": 13567961,
     "restarts_above_200000": 1,
     "restart_above_400000_summary_10000": 19233919,
-    "restarts_above_400000": 0
+    "restarts_above_400000": 0,
+    "ceiling_100000": 9074342,
+    "ceiling_150000": 11267386,
+    "ceiling_200000": 13604161,
+    "ceiling_300000": 19233919,
+    "ceiling_400000": 19233919,
+    "ceiling_600000": 19233919,
+    "growth_sum": 262138,
+    "growth_steps": 103
    },
    "S09": {
     "measured": 1658330482,
@@ -1473,7 +1537,15 @@
     "restart_above_200000_summary_10000": 692955368,
     "restarts_above_200000": 28,
     "restart_above_400000_summary_10000": 1076374601,
-    "restarts_above_400000": 14
+    "restarts_above_400000": 14,
+    "ceiling_100000": 348183953,
+    "ceiling_150000": 443787487,
+    "ceiling_200000": 535158549,
+    "ceiling_300000": 746204048,
+    "ceiling_400000": 953922175,
+    "ceiling_600000": 1328677313,
+    "growth_sum": 5744237,
+    "growth_steps": 4047
    },
    "S10": {
     "measured": 1118957922,
@@ -1491,7 +1563,15 @@
     "restart_above_200000_summary_10000": 548983168,
     "restarts_above_200000": 21,
     "restart_above_400000_summary_10000": 800959934,
-    "restarts_above_400000": 10
+    "restarts_above_400000": 10,
+    "ceiling_100000": 262555478,
+    "ceiling_150000": 327432499,
+    "ceiling_200000": 397890535,
+    "ceiling_300000": 544286846,
+    "ceiling_400000": 671821826,
+    "ceiling_600000": 972403418,
+    "growth_sum": 4333269,
+    "growth_steps": 2865
    }
   },
   "total": {
@@ -1507,6 +1587,12 @@
    "restart_every_10_summary_10000": 5110981279,
    "restart_above_200000_summary_10000": 2947818494,
    "restart_above_400000_summary_10000": 4380688042,
+   "ceiling_100000": 1544844378,
+   "ceiling_150000": 1868410399,
+   "ceiling_200000": 2256529316,
+   "ceiling_300000": 3054406532,
+   "ceiling_400000": 3822772753,
+   "ceiling_600000": 5346253179,
    "saved_pct": {
     "task_scoped_summary_2000": 69.6,
     "task_scoped_summary_10000": 67.7,
@@ -1518,8 +1604,20 @@
     "restart_every_5_summary_10000": 43.8,
     "restart_every_10_summary_10000": 22.3,
     "restart_above_200000_summary_10000": 55.2,
-    "restart_above_400000_summary_10000": 33.4
+    "restart_above_400000_summary_10000": 33.4,
+    "ceiling_100000": 76.5,
+    "ceiling_150000": 71.6,
+    "ceiling_200000": 65.7,
+    "ceiling_300000": 53.6,
+    "ceiling_400000": 41.9,
+    "ceiling_600000": 18.7
    }
+  },
+  "ceiling_model": {
+   "growth_per_call": 1793,
+   "post_compaction": 72210,
+   "optimum_no_reread": 88303,
+   "note": "C* = post + sqrt(2 growth (post + reread)); reread = extra input per compaction"
   }
  },
  "backtest_exploratory": {

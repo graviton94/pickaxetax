@@ -316,3 +316,22 @@ forbid; no data was involved and the repository was untouched. The rules now say
 has to reach far in time) but long in instructions (a third of reused content crosses five or more
 instruction boundaries). The second is the risk to the restart rule: what a summary drops may be
 exactly what comes back. Cycle A4 measures that directly.
+
+## Cycle B4 — where the compaction ceiling should be (`B4-ceiling-curve.md`)
+
+**Found.** On the public series alone: a ceiling of 100k / 150k / 200k / 300k / 400k / 600k instead
+of 783k would have cut input by 76.5 / 71.6 / 65.7 / 53.6 / 41.9 / 18.7%, compaction reads included.
+A sawtooth model gives the optimum in closed form, **C\* = P + √(2g(P + R))** (P ≈ 72k after a
+compaction, g ≈ 1,790 tokens of growth a call, R the re-reading a compaction causes): about 88k with
+no re-reading, about 96k with D2's observed re-reading, 120–170k price-weighted; the model tracks the
+replay within about 1 point from 150k up. Re-reading would have to be 46–230× the observed amount to
+erase the gain.
+
+**Review.** The replay matches `whatif.cap`; the sweep and the model are now in `pxt survey whatif`
+(`ceiling_*`, `ceiling_model`, `optimal_ceiling`), reproducible from `dataset-v2.json`. At 100k the
+session would compact every ~12 calls (about 40× today's summaries): whatever quality a summary loses
+is multiplied, which the numbers cannot see.
+
+**Discussion.** Today's ceiling sits about 5–8× above the token-optimal one. This is the cleanest
+structural result of phase 2: one harness setting, a closed-form optimum, and a single unknown (the
+quality cost per summary) for an experiment to measure.

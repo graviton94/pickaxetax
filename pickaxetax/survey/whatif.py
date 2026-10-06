@@ -19,6 +19,8 @@ Only numbers are read: dataset-v2's `series` (context per main-session call, ins
 
 from __future__ import annotations
 
+import statistics
+
 SCHEMA = "pickaxetax.survey.whatif.v1"
 # the harness compacts at a ceiling: an observed compaction happens in a replay only if the replayed
 # context had reached (nearly) the same size; otherwise the replay would not have compacted there
@@ -32,6 +34,23 @@ SUMMARIES = (2_000, 10_000, 30_000)
 CAPS = (100_000, 200_000, 400_000)
 EVERY = (3, 5, 10)
 THRESHOLDS = (200_000, 400_000)
+SWEEP = (100_000, 150_000, 200_000, 300_000, 400_000, 600_000)
+POST_COMPACTION_NEW = 22_000  # observed median new part after a compaction (research/phase2/D2-compaction.md)
+
+
+def optimal_ceiling(post: float, growth: float, reread: float = 0.0) -> float:
+    """The ceiling that minimizes input in a sawtooth model (research/phase2/B4-ceiling-curve.md):
+    the context grows by `growth` tokens a call from `post` (its size after a compaction) to the
+    ceiling C, and each compaction costs one read of C plus `reread` tokens of re-reading. Input per
+    call is about (post + C)/2 + growth (C + reread) / (C - post); its minimum is at
+    C* = post + sqrt(2 growth (post + reread)) — the same form as the economic order quantity."""
+    return post + (2 * growth * (post + reread)) ** 0.5
+
+
+def growth_per_call(ctx: list[int]) -> tuple[int, int]:
+    """(sum of positive growth between consecutive calls, number of such steps)."""
+    ups = [b - a for a, b in zip(ctx, ctx[1:]) if b >= a]
+    return sum(ups), len(ups)
 
 
 def _base(s: dict) -> int:
@@ -113,10 +132,20 @@ def run(dataset: dict) -> dict:
             rr = restart(ctx, starts, base, 10_000, threshold=x)
             r[f"restart_above_{x}_summary_10000"] = rr["input"]
             r[f"restarts_above_{x}"] = rr["restarts"]
+        for c in SWEEP:
+            r[f"ceiling_{c}"] = cap(ctx, base, c, POST_COMPACTION_NEW)["input"]
+        g, n = growth_per_call(ctx)
+        r["growth_sum"], r["growth_steps"] = g, n
         out["sessions"][s["id"]] = r
         for k, v in r.items():
-            if k not in ("calls", "base") and not k.startswith("restarts_"):
+            if k not in ("calls", "base") and not k.startswith(("restarts_", "growth_")):
                 tot[k] = tot.get(k, 0) + v
     tot["saved_pct"] = {k: round(100 * (1 - v / tot["measured"]), 1) for k, v in tot.items() if k != "measured"}
+    steps = sum(s["growth_steps"] for s in out["sessions"].values())
+    g = sum(s["growth_sum"] for s in out["sessions"].values()) / steps if steps else 0
+    post = statistics.median([s["base"] for s in out["sessions"].values()]) + POST_COMPACTION_NEW if out["sessions"] else 0
+    out["ceiling_model"] = {"growth_per_call": round(g), "post_compaction": round(post),
+                            "optimum_no_reread": round(optimal_ceiling(post, g)),
+                            "note": "C* = post + sqrt(2 growth (post + reread)); reread = extra input per compaction"}
     out["total"] = tot
     return out

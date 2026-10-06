@@ -50,3 +50,15 @@ def test_restart_rules_and_the_compaction_ceiling():
     assert whatif.restart(ctx, starts, base=10, summary=5, threshold=15)["restarts"] == 2
     # nobody restarts into a bigger context
     assert whatif.restart(ctx, starts, base=10, summary=1_000, every=1) == {"input": sum(ctx), "restarts": 0}
+
+
+def test_optimal_ceiling_is_the_minimum_of_the_sawtooth_model():
+    post, growth, reread = 70_000, 1_800, 80_000
+    c_star = whatif.optimal_ceiling(post, growth, reread)
+
+    def per_call(c):  # mean context plus the compaction read and re-reads, spread over the cycle
+        return (post + c) / 2 + growth * (c + reread) / (c - post)
+
+    assert per_call(c_star) <= min(per_call(c_star * 0.8), per_call(c_star * 1.25))
+    assert whatif.optimal_ceiling(post, growth) < c_star  # re-reading pushes the optimum up
+    assert whatif.growth_per_call([10, 30, 20, 50]) == (50, 2)

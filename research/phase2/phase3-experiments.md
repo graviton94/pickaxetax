@@ -58,8 +58,11 @@ The levers a user can pull today, as a short project instruction file (for examp
 
 ## E4 — Compaction ceiling (needs a harness setting)
 
-- **Arms:** compaction at about 780k (today) against about 390k.
-- **Expectation:** about 39–43% less input, 29% less cost, after the observed re-reads (cycles D2, B3),
+- **Arms:** compaction at about 780k (today) against about 390k and about 200k (the model's
+  price-weighted optimum is 120–170k, cycle B4).
+- **Expectation:** about 39–43% less input at 390k and about 65% at 200k, after the observed re-reads
+  (cycles D2, B3, B4); the experiment measures the one unknown, the quality cost of more frequent
+  summaries (R in C\* = P + √(2g(P + R))),
   if the more frequent summaries lose nothing needed.
 
 ## Disclosures to ask for (no experiment needed)

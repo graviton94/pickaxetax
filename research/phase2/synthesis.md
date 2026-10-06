@@ -36,7 +36,10 @@ context runs a sawtooth between about 64k and 783k whatever goes into it. A poli
 the growth (trimming, pointers) mostly delays the next compaction and leaves the average about where
 it was: alone, carrying pointers instead of the agent's writes saved nothing (−4%) once compaction
 was left to fire at the ceiling (cycle B3). What lowers the average is moving the boundary: a new
-session or an earlier compaction.
+session or an earlier compaction. Where the boundary should be has a closed form: in a sawtooth that
+grows g tokens a call from P after a compaction, with R tokens of re-reading per compaction, the
+input-minimizing ceiling is **C\* = P + √(2g(P + R))**, the economic-order-quantity form; here about
+90–100k tokens, 120–170k price-weighted, against 783k today (cycle B4).
 
 ## 2. The levers on one scale
 
@@ -55,6 +58,7 @@ Share of main-session input that would not have been processed, with what each l
 | New session every 3 / 10 instructions | 55.1% / 22.3% | same | no | the user, today | B |
 | Compact at half the usual ceiling (about 390k instead of 780k) | 39–43% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3 |
 | **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |
+| **Compaction ceiling at 150–200k instead of 783k** | **66–72% of input** (about 56–64% of cost) | more frequent summaries lose nothing needed | no | harness (one setting) | B4 |
 | Compact before leaving (breaks over 1 h) | up to 29% of cost | a 30k summary is enough | no | the user / harness | C |
 | Delegate reading to sub-agents (11–50 calls) | 1.4–5.1× cheaper than reading in the main session | the same reads were needed | no | the agent | D |
 
