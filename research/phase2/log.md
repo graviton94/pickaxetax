@@ -297,3 +297,22 @@ compaction the ceiling, not the content, sets the average context of a long sess
 that matter move the boundary (new session, earlier compaction, sub-agent). It also qualifies A2's
 pointer lever and the oracle-style opportunities: they are real only where the boundary is not the
 binding constraint (short sessions) or after it has been moved.
+
+## Cycle C4 — how far back reused content comes from (`C4-reuse-distance.md`)
+
+**Found.** 487,195 reuse events. Reuse is bursty: half come within 3 calls of the previous use
+(token-weighted p90: 10 calls). But content lives long by being touched again and again: a
+segment's last use lands a median 143 calls and 6 instructions after it arrived, and **35% of reused
+tokens are used more than five instructions after they arrived**. Of the visible residency, 70% is
+idle calls between uses. A recency window of N calls misses 26% of reuses at N = 8 and still 6.8% at
+N = 32, where it saves only 6.5%; large segments are reused in tighter loops (token-weighted misses
+1.4% at N = 32), which favours a size-aware tier over a fixed window. The recency-8 run reproduces the
+pre-registered backtest exactly.
+
+**Audit.** The agent installed a package from the network (`pip install numpy`), which the task rules
+forbid; no data was involved and the repository was untouched. The rules now say so explicitly.
+
+**Discussion.** Two facts pull against each other: reuse gaps are short in calls (a pointer rarely
+has to reach far in time) but long in instructions (a third of reused content crosses five or more
+instruction boundaries). The second is the risk to the restart rule: what a summary drops may be
+exactly what comes back. Cycle A4 measures that directly.
