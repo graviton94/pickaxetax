@@ -53,9 +53,9 @@ belongs to an intervening commit (handled by the upstream patch, below).
 
 Columns: files/lines changed in agent paths, in tests, and elsewhere (docs, research, data); size
 class from agent-path lines (S < 100, M 100–399, L 400–999, XL ≥ 1000); fail-to-pass and
-pass-to-pass counts; the bottom-up context growth estimate (section 5); chain. "thin" = the commit
+pass-to-pass counts; the bottom-up context growth estimate (section 4); chain. "thin" = the commit
 message is a subject line only, so the statement says little; the visible tests carry the
-specification (section 6).
+specification (sections 5 and 8).
 
 | commit | date | agent f/lines | tests f/lines | other f/lines | size | F2P | P2P | est. growth | chain |
 |---|---|---|---|---|---|---|---|---|---|
@@ -175,8 +175,8 @@ Paired by chain and replicate, arms (b) and (c) against (a):
   separately for instructions before and after the first restart.
 - **Steps**: API calls and tool calls per instruction; re-reads of files already read before the
   restart; wall time.
-- **Pre-registered expectation** (phase 2): (b) saves about 52–55% of input if the summary
-  suffices. On these shorter sessions the bottom-up model gives less: about 43% for (b) and 45% for
+- **Pre-registered expectation** (phase 2): (b) saves about 55% of input if the summary
+  suffices, 52–53% with the observed re-read and cold-start charges. On these shorter sessions the bottom-up model gives less: about 43% for (b) and 45% for
   (c) (section 7). What would count against the rule: fewer checks passing after a restart than in
   (a) at the same instruction.
 
@@ -190,7 +190,7 @@ Paired by chain and replicate, arms (b) and (c) against (a):
 The bottom-up model spreads each instruction's growth over 25 calls and charges every restart a 20k
 base, the summary (10k or 2k) and a 26.8k cold start (B5 median). Per chain, arm (a): A 40.9M,
 B 38.4M, C 33.7M, D 45.6M. The phase 2 rate comes from sessions whose average context was about
-300k, so it is an upper figure for these. In cache-weighted terms, phase 2's 0.92M cost-equivalent
+400k, so it is an upper figure for these. In cache-weighted terms, phase 2's 0.92M cost-equivalent
 per commit gives about 77M cost-equivalent tokens per replicate. Three replicates (to see run-to-run
 spread at n = 4 chains) cost about 1.0–1.9B input tokens. A pilot of one chain in arms (a) and (b)
 costs about 60–105M.

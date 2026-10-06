@@ -46,8 +46,8 @@ The levers a user can pull today, as a short project instruction file (for examp
   summary the agent writes; (c) the same with a 2k-token summary.
 - **Measures:** input processed, cost, checks passed, steps; paired by task.
 - **Pre-registered expectation from phase 2:** (b) saves about 55% of input if the summary suffices,
-  52–55% with the re-reads seen after real compactions (cycle A5), 43% if re-reads were ten times
-  that; 52–53% with a median real cold start (20–30k tokens of orientation, cycle B5). The experiment measures what the logs cannot: whether checks pass as often with about 150
+  52–55% with the re-reads seen after real compactions (cycle A5), 43% at the worst plausible re-read
+  rate (4–19× the observed); 52–53% with a median real cold start (20–30k tokens of orientation, cycle B5). The experiment measures what the logs cannot: whether checks pass as often with about 150
   restarts as with 34 compactions.
 
 ## E3 — Pointer for authored content (needs a harness change or a convention)
@@ -66,7 +66,7 @@ The levers a user can pull today, as a short project instruction file (for examp
 
 - **Arms:** compaction at about 780k (today) against about 390k and about 200k (the model's
   price-weighted optimum is 110–160k, cycles B4, E6).
-- **Expectation:** about 39–43% less input at 390k and about 67% at 200k, after the observed re-reads
+- **Expectation:** about 39–44% less input at 390k and about 67% at 200k, after the observed re-reads
   (cycles D2, B3, B4); the experiment measures the one unknown, the quality cost of more frequent
   summaries (R in C\* = P + √(2g(P + R))),
   if the more frequent summaries lose nothing needed.

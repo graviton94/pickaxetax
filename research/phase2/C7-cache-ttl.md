@@ -194,7 +194,7 @@ The premium is 0.75 × the 1h-written tokens = 55.87M units: 7.0% of main input-
    then saves 6.7% of main input money (5.7–5.9% of total); under the pessimistic per-span semantics, 1.6%.
 3. Adding keep-alive pings, the ideal policy saves 10.1% of main input money (8.6–8.8% of total money). Realistic rules get most of it:
    - hourly keep-alive on 1h up to 8 h idle: 4.8% (4.1–4.2% of total, the only gain robust to TTL semantics);
-   - 5m plus a 1h-upgrade ping at 4.5 min idle: 6.2%;
+   - 5m plus a 1h-upgrade ping at 4.5 min idle, with hourly pings up to 4 h: 6.2% (the single upgrade ping alone: 4.5%);
    - 1h except large writes, plus hourly pings: 6.7%.
 4. A context-size threshold does not help (best −0.2%), and 5-minute keep-alive pings are worse than 1h (+4.7% or more). Sub-agents
    were right on 5 minutes: 1h would cost them +14.6%.

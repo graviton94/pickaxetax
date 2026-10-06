@@ -49,7 +49,7 @@ fixed the shared instruction rule in the bound, the attribution of outputs to th
 a parent-output check in W8 and the de-duplication of tool results in the judge, before any label
 existed. All four sealed files came out byte-identical to the hashes above.
 
-**Correction (2026-10-06, cycle E7, still before any label).** That statement was wrong for one
+**Correction (2026-10-06, cycle D4, still before any label).** That statement was wrong for one
 file. The re-make ran three minutes before the last E2 fix (the attribution of a call's final answer
 to its own instruction) was committed. Re-made from the committed code, three files are
 byte-identical, but the T2 main file differs in one label: one S01 instruction's W5 changes from

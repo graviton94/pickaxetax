@@ -212,7 +212,7 @@ V0 m1 has the higher AUC in 6/7 sessions at N = 50 and 5/7 at N = 200. S01 and S
    same-session mirror corrections (Cmirror, Tmirror, U3+Cmirror) and U4 do no better than chance
    (AUC 0.50-0.53; V0 minus Cmirror is +0.12, 95% interval 0.06-0.18, at N = 200).
 2. Stricter rules buy almost no precision: lift over prevalence is 1.06-1.46, and AP precision is 51-67% against a
-   base of 46%. Recall falls instead: 64 → 3-26% at N = 50. Mirror and strict rules call 69-93% of the
+   base of 46%. Recall falls instead: 64 → 3-26% at N = 50. Mirror and strict rules call 69-87% of the
    confirmed-need segments "unused" at N = 200, against 15% for V0 m1.
 3. The forgetting share this supports is about **5.6-13%** (V0 m1 to U3 / Cother m1; Tother's 16.8% at most), not
    E5's 33-45%. Even V0's "unused" set is leaky: 49% of it is re-read within 200 calls (base 65%).

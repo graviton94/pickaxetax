@@ -222,7 +222,8 @@ W2 346; steps 2.6%). The oracle policies are unchanged (5.6 / 41.5 / 46.1%). The
 carried over from finished instructions is 46.5% of input (was 50.8% under the bound's own looser
 instruction rule); never used again 5.1% (was 5.4%). The restart what-ifs moved by up to 0.8 points
 (above 200k: 58.5%). **The sealed machine labels came out byte-identical**, so the rule-tier
-pre-registration stands as committed.
+pre-registration stands as committed. *(Corrected in cycle D4: the re-make ran before E2's last fix
+was committed; the T2 main file differs in one label and was re-sealed before any label existed.)*
 
 ## Cycle D3 — change over time, and the model (`D3-time-and-model.md`)
 
@@ -747,3 +748,26 @@ is applied to calls from several models.
 should quote "half of all money" with its condition, or quote the robust form: "56–69% counting the
 re-writes". The floor's 8.92% should keep its price basis attached. Note 2 states 8.92% with
 "비용으로 보면", which is the default-ratio figure; that is for the data owner's wording.
+
+## Cycle E10 — second consistency audit
+
+An auditor checked everything changed since E7: synthesis v2 and its Korean version, the new
+memos, the protocols, the phase 3 task set, the opportunity page. Most matched, including all 281
+what-if values (against `whatif.run`) and every cell of the task-set table (against its JSON). It
+listed 24 discrepancies, mostly wording.
+
+**Fixed.**
+- Two E7 fixes had reached the synthesis but not the phase 3 plan: the 390k range and the "ten
+  times" wording.
+- validity.md counted two reviews instead of three.
+- One AUC range was attributed to lexical reuse and the cross-session corrections together, where
+  0.57–0.61 is lexical reuse alone and 0.55–0.60 the corrections.
+- In the levers table, the break-only restart and the 390k row were on a different price basis
+  from their neighbours.
+- The restart rule's time saving now carries its condition (no summary generated).
+- The resampling claim is limited to the orderings E4 actually tested.
+- The Korean synthesis gave the 12–45% forgetting range for the time correction alone, and its
+  table is now labelled a summary.
+- The rule-tier correction was attributed to cycle E7 instead of D4, and the E2 log entry now notes
+  that correction.
+- Smaller fixes in the E8, C7 and task-set memos.

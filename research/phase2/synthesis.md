@@ -1,6 +1,6 @@
 # Phase 2 synthesis: what drives the input, and which levers move it
 
-Status: **draft v2, 2026-10-06**, from the cycles in `log.md` (A–A6, B–B6, C–C7, D–D6, E1–E9).
+Status: **draft v2, 2026-10-06**, from the cycles in `log.md` (A–A6, B–B6, C–C8, D–D7, E1–E10).
 Ten Claude Code sessions of one person (dataset v2, 6.84 billion input tokens). This is not a waste
 judgment. Waste is decided only under the codebook, and the categories that need people wait for
 the blind labels. Threats to validity: `validity.md`. Experiments that follow: `phase3-experiments.md`.
@@ -53,8 +53,8 @@ Everything measured in phase 2 is a statement about one of the two factors.
 - The 1-hour cache lifetime fitted this person's rhythm: all-5-minute caching would have cost 17%
   more (cycle C7).
 - These numbers rest on fixed price ratios (cache read 0.1, writes 1.25 / 2.0, output 5). Across
-  48 alternative settings (cycle C8) the order of the levers and the 1-hour choice never change. The
-  "half of all money" reading holds only if a cache read costs at least about 0.06–0.09 of an input
+  48 settings (24 ratio sets × 2 output estimates, cycle C8) the order of the levers and the 1-hour choice never change. The
+  "half of all money" reading holds only if a cache read costs at least about 0.05–0.09 of an input
   token; counting the re-writes, it is 56–69% in every setting. The floor's cost share moves most
   (4.7–15.4%).
 
@@ -78,14 +78,14 @@ Share of main-session input that would not have been processed, and what each le
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | the cut part is re-read on reuse | no | harness | A |
 | Remove every retry and polling loop | about 1.4% (0.3–2.1%) | the loops were avoidable | no | agent | B2 |
 | Carry a pointer instead of what the agent wrote | about 20% if compactions stayed where they were; **about 0 (−4%) alone** under today's ceiling; negative in cost | the agent re-reads when it needs to | no | harness / agent convention | A2, B3 |
-| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; **52–53%** (47–48% of cost) with the observed re-reads and a median cold start charged to every restart; 41–43% at pessimistic charges | each restart loses nothing the re-reads do not restore | no | the user, today | B, A4, A5, B5 |
+| **New session above 200k tokens at an instruction boundary** | **55.2%** if a 10k summary is enough; **52–53%** (47–48% of cost) with the observed re-reads and a median cold start charged to every restart; 41–43% at pessimistic charges | each restart loses nothing the re-reads do not restore | no | the user, today | B, A4, A5, B5, A6 |
 | New session every 3 / 10 instructions | 55.1% / 23.0% | same | no | the user, today | B |
-| New session only on returning from a break over 1 h (context above 200k) | 16% of input, 20% of cost, 48 restarts | same; the return re-writes the whole context anyway | no | the user, today | A6, C |
+| New session only on returning from a break over 1 h (context above 200k) | 16% of input, 15% of cost on the same basis as the row above (20% counting cache expiry), 48 restarts | same; the return re-writes the whole context anyway | no | the user, today | A6, C |
 | Compact before leaving (breaks over 1 h) | up to 29% of cost | a 30k summary is enough | no | the user / harness | C |
-| Compact at about 390k instead of 783k | 39–44% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3, E6 |
+| Compact at about 390k instead of 783k | 39–44% of input (34–36% of total money; 29% with D2's gross re-read burden) | the more frequent summaries lose nothing needed | no | harness | D2, B3, E6 |
 | **Compaction ceiling at 150–200k** | **67–73% of input** (about 61–65% of input-side cost) | same | no | harness (one setting) | B4, E6 |
 | Bundle: new session above 200k + compaction at 390k | 57.5% of input, 52.6% of cost | both summary assumptions | no | user + harness | B3 |
-| Cache lifetime chosen per write, with keep-alive requests while idle | 4–6% of total money (about 9% with foresight) | the harness can choose per write | no | harness | C7 |
+| Cache lifetime chosen per write, with keep-alive requests while idle | 4.1–4.2% of total money for an hourly keep-alive; up to 5–6% (9% with foresight) under the unverified "entry" billing reading; 1.5–11% across price ratios | the harness can choose per write | no | harness | C7 |
 | Delegate reading to sub-agents (11–50 calls) | 1.4–5.1× cheaper than reading in the main session | the same reads were needed | no | the agent | D |
 
 **How to read the table.**
@@ -97,10 +97,12 @@ Share of main-session input that would not have been processed, and what each le
   floor changes standing: about 0 in tokens, about 8% of money.
 - **In time** (cycle C6), a 200k ceiling would make the sessions slightly slower (+1.9 h): its 178
   extra compactions cost more than the faster calls save, unless a smaller compaction is also faster.
-  390k is about neutral. The restart rule saves about 8% of model time.
+  390k is about neutral. The restart rule saves about 8% of model time if no summary is generated,
+  and about none if each restart generates a compaction-length summary.
 - **Resampling the ten sessions** (cycle E4) moves the ceiling and paging rows by about ±1–2 points
   and the restart rows by 3–5. The 90% intervals are: restart above 200k 49–60%, ceiling 200k 65–68%,
-  oracle 40–43%. Every ordering in the table holds in at least 97% of resamples, with two exceptions:
+  oracle 40–43%. Every ordering E4 tested holds in at least 97% of resamples (rows added later, from
+  cycles A6, C and C7, were not resampled), with two exceptions:
   restart above 200k and a new session every 3 instructions are tied, and "compaction adds under 5
   points on top of restart" holds in 89%.
 
@@ -123,7 +125,8 @@ Share of main-session input that would not have been processed, and what each le
    - Corrected against that time placebo, forgetting ("never used again") rises to 33–45%. Corrected
      only against other sessions' vocabulary, it rises to 12–13% (cycle E5).
    - Behaviour decides between them. At the 34 real compactions, plain lexical reuse and the
-     cross-session corrections predict which files the agent went back for (AUC 0.57–0.61). The
+     cross-session corrections predict which files the agent went back for (AUC 0.57–0.61 and
+     0.55–0.60). The
      time-placebo corrections do no better than chance (cycle E8).
    - So forgetting is most likely 5.6–13%, and **carrying, not forgetting, is the larger lever**. The
      blind labels check this once more; a secondary analysis is pre-registered.
