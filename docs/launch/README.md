@@ -15,12 +15,11 @@ The project is published as **LinkedIn research notes, one at a time**, written 
 - Reply to every comment within the first 3 hours. Answer criticism with numbers; the FAQ has prepared answers.
 - Reddit: one subreddit per day, never cross-posted at once, following each subreddit's self-promotion rules.
 
-Suggested sequence for the first week:
+Sequence:
 
-1. **Day 0, LinkedIn:** research note 1 with its receipt image ([linkedin-series/](linkedin-series/README.md)); the site link goes in the first comment.
-2. **Day 1–2, GeekNews:** Show GN ([show.md](show.md)).
-3. **Day 3–5, Hacker News:** Show HN on a weekday morning, US Eastern ([show.md](show.md)).
-4. **After HN, Reddit:** r/ClaudeAI ([show.md](show.md)), one subreddit per day.
+1. **LinkedIn, note 1:** why the research exists, and the published criteria for what counts as waste ([linkedin-series/](linkedin-series/README.md), `research/protocol/waste-codebook-v0.md`). The site link goes in the first comment.
+2. **LinkedIn, note 2:** the first judgment of the survey data under those criteria, once the blind labels pass (§5 of the codebook). The receipt image belongs here.
+3. **Then the developer communities, one per day:** GeekNews, Hacker News (weekday morning, US Eastern), r/ClaudeAI ([show.md](show.md)). The drafts are updated with note 2's numbers before posting.
 
 `linkedin.md`, `x-thread.md` and `reddit.md` are earlier drafts with the old name and the n = 1 session numbers; they are kept as material only.
 

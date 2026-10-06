@@ -1,6 +1,6 @@
 # Developer communities: GeekNews, Hacker News, Reddit
 
-Posted **after** research note 1 is live on LinkedIn, one community per day. Every number is
+Posted **after** research note 2 (the first judgment under the waste codebook) is live on LinkedIn, one community per day. Update the numbers below with note 2 before posting. Every number is
 from Receipt No. 01 (`research/survey/user01/`); the carbon line is an estimate
 (`research/carbon-factors.md`). Facts table: [README.md](README.md#facts-sources-for-every-number-in-the-drafts).
 
