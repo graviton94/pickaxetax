@@ -73,6 +73,13 @@ same: ceiling 200k 50–52%, restart above 200k 43–45%, ceiling 390k 33–35% 
 correction, which raises the ceiling rows by about a point). Only the floor changes standing: about
 0 in tokens, about 8% of money.
 
+**In time** (cycle C6) the picture differs. Model latency grows with context only slowly (about
+0.2–0.4 s per 100k tokens, before the first token; 6–11% of the 61 h of model time), while a
+compaction takes about 130 s. A 200k ceiling would make the sessions slightly slower (+1.9 h; its
+178 extra compactions outweigh the faster calls) unless a smaller compaction is also faster; 390k
+is about neutral; the restart rule saves about 8% of model time. Tokens and money are where the
+levers pay; time is not, except through restarts.
+
 (Savings are not additive: several levers act on the same context. In the full bundle the restart
 rule does almost all the work; an earlier compaction adds 1.6 points and pointers 0.5, cycle B3.)
 

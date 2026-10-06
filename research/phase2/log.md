@@ -642,3 +642,27 @@ after a compaction, which may suppress refusals by design.
 re-reading) finds no visible cost of losing context at a compaction. All three are blunt.
 Together they say that losing context does not cause frequent, visible breakage. They cannot say
 that nothing subtle was lost. The quality question remains for an experiment with outcome checks.
+
+## Cycle C6 — does a large context cost time? (`C6-latency.md`)
+
+**Found.** The event pages carry a "requesting" status event before 99.9% of main calls, which gives
+an exact start. Latency runs from that start to the last streamed line. On the 13,886 calls
+triggered by a single tool result, latency grows by about 0.37 s per 100k tokens of context (90%
+interval 0.29–0.43), controlling for output and uncached tokens. At the 33 measured compactions,
+calls get faster in 30 of 33, which gives 0.19 s per 100k. The extra time comes before the first
+token. Context is 6–11% of the 61 h of main-session model time. A compaction itself takes a median
+130 s (89 s on the newer model, 177 s on the older).
+
+Translated with the fitted slope: a 200k ceiling makes the sessions 1.9 h slower, because its 178
+extra compactions cost more than the faster calls save. 390k is about neutral. The restart rule
+saves about 4.9 h (8%) if no summary is generated, and is about neutral if each restart generates a
+compaction-length summary.
+
+**Review.** The time of a compaction at a smaller ceiling is unknown; all observed ones were near
+783k. If summarizing less takes less time, the ceiling levers could turn into time savings (break
+even at about 92 s per compaction at 200k). Model and date coincide. Server load cannot be seen,
+but the slope is positive in every time-of-day bin.
+
+**Discussion.** The levers pay in tokens and money, not in model time, except restarts. That is
+worth saying plainly to users: a lower ceiling saves money but does not make the agent faster. A
+provider could change this, if a compaction of a smaller context is cheap to compute.
