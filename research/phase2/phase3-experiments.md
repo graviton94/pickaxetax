@@ -43,7 +43,7 @@ The levers a user can pull today, as a short project instruction file (for examp
 - **Arms:** (a) one session throughout; (b) restart at an instruction boundary above 200k with a
   summary the agent writes; (c) the same with a 2k-token summary.
 - **Measures:** input processed, cost, checks passed, steps; paired by task.
-- **Pre-registered expectation from phase 2:** (b) saves 40–60% of input if the summary suffices;
+- **Pre-registered expectation from phase 2:** (b) saves about 55% of input if the summary suffices;
   the experiment tells how much of that survives once lost context has to be re-read.
 
 ## E3 — Pointer for authored content (needs a harness change or a convention)
@@ -52,13 +52,14 @@ The levers a user can pull today, as a short project instruction file (for examp
   hash in the context; the agent reads the file again when it needs it. As a convention (no
   harness change), E1's first line approximates it.
 - **Measures:** as E2; plus re-reads of written files and Edit failures (wrong old text).
-- **Expectation from phase 2:** about 10% of input for file bodies, about 20% with inline
-  scripts, if re-reading on demand replaces carrying (cycle A2; behavioural replay in A3).
+- **Expectation from phase 2:** about 10–20% of input only together with a restart rule or a lower
+  compaction ceiling; alone, under today's ceiling, about nothing, and more in cost (cycles A2, B3).
+  Test it as an add-on arm to E2, not on its own.
 
 ## E4 — Compaction ceiling (needs a harness setting)
 
 - **Arms:** compaction at about 780k (today) against about 390k.
-- **Expectation:** about 39% less input, 29% less cost, after the observed re-reads (cycle D2),
+- **Expectation:** about 39–43% less input, 29% less cost, after the observed re-reads (cycles D2, B3),
   if the more frequent summaries lose nothing needed.
 
 ## Disclosures to ask for (no experiment needed)

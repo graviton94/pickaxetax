@@ -275,3 +275,25 @@ recall and precision of each.
 
 **Discussion.** Note 2's "4–25%" for forgetting covers the lexical band; its wording (estimated from
 overlapping words, to be checked by blind labeling) stands.
+
+## Cycle B3 — the levers combined (`B3-levers-combined.md`)
+
+**Found.** On one segment-level replay (reproducing measured input exactly with no policy):
+restart above 200k saves 54.8%, compaction at 390k 43.3%, both together 57.5% (52.6% of cost), all
+three with pointers 58.0%. **Pointers for the agent's own writes save nothing alone (−4.1%) once
+compaction fires at the ceiling**: slower growth only postpones the compaction. They save about 20%
+only if compactions stay at the observed calls (A2's assumption), and in price they lose (each
+re-fetch is written at 2×). The restart rule carries almost the whole bundle.
+
+**Review — a flaw found in the what-ifs.** The series replay let a smaller replayed context ride the
+real session's compactions for free. Fixed: an observed compaction applies to a replay only if it
+had reached at least 90% of the pre-compaction size; otherwise the replay keeps growing (and the cap
+policy compacts on its own). A restart is taken only if it makes the context smaller. Restart above
+200k: 58.5% → **55.2%** (B3's segment replay: 54.8%); every 3 / 10 instructions 55.1% / 22.3%;
+compaction at 400k 43.5%.
+
+**Discussion.** This changes the reading of every "keep less" result: under a ceiling-triggered
+compaction the ceiling, not the content, sets the average context of a long session. The levers
+that matter move the boundary (new session, earlier compaction, sub-agent). It also qualifies A2's
+pointer lever and the oracle-style opportunities: they are real only where the boundary is not the
+binding constraint (short sessions) or after it has been moved.

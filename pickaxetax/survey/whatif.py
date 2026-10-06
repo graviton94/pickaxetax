@@ -20,6 +20,14 @@ Only numbers are read: dataset-v2's `series` (context per main-session call, ins
 from __future__ import annotations
 
 SCHEMA = "pickaxetax.survey.whatif.v1"
+# the harness compacts at a ceiling: an observed compaction happens in a replay only if the replayed
+# context had reached (nearly) the same size; otherwise the replay would not have compacted there
+COMPACT_IF_AT_LEAST = 0.9
+
+
+def _after_drop(s: int, prev: int, x: int) -> int:
+    """An actual drop from `prev` to `x` (a compaction or a clear), seen by a replay at `s`."""
+    return min(s, x) if s >= COMPACT_IF_AT_LEAST * prev else s
 SUMMARIES = (2_000, 10_000, 30_000)
 CAPS = (100_000, 200_000, 400_000)
 EVERY = (3, 5, 10)
@@ -35,8 +43,9 @@ def restart(ctx: list[int], starts: list[int], base: int, summary: int, every: i
             threshold: int | None = None) -> dict:
     """Replay with restarts at instruction boundaries: every `every`-th instruction, and/or once the
     replayed context before an instruction exceeds `threshold`. A restart sets the context to
-    base + summary; afterwards the same growth happens call by call, and an actual compaction or
-    clear still applies. The replay never exceeds what actually happened."""
+    base + summary + what the new instruction's first call adds; afterwards the same growth happens
+    call by call. An actual compaction applies only where the replay had reached about the same
+    size (the harness compacts at its ceiling; a smaller replayed context would not have)."""
     bounds = sorted(set([0] + [x for x in starts if x < len(ctx)])) + [len(ctx)]
     total = restarts = 0
     s = ctx[0] if ctx else 0
@@ -46,13 +55,16 @@ def restart(ctx: list[int], starts: list[int], base: int, summary: int, every: i
             x = ctx[k]
             if k == 0:
                 s = x
-            elif k == a and go:
-                s = min(x, base + summary + max(0, x - ctx[k - 1]))  # keep what the new instruction adds
+                total += s
+                continue
+            d = x - ctx[k - 1]
+            cont = s + d if d >= 0 else _after_drop(s, ctx[k - 1], x)
+            fresh = base + summary + max(0, d)  # a new session keeps what the new instruction adds
+            if k == a and go and fresh < cont:  # nobody restarts into a bigger context
+                s = fresh
                 restarts += 1
             else:
-                d = x - ctx[k - 1]
-                s = s + d if d >= 0 else min(s, x)
-            s = min(s, x)
+                s = cont
             total += s
     return {"input": total, "restarts": restarts}
 
@@ -65,19 +77,19 @@ def task_scoped(ctx: list[int], starts: list[int], base: int, summary: int) -> i
 def cap(ctx: list[int], base: int, ceiling: int, summary: int) -> dict:
     """Input processed if the context were compacted whenever it would pass `ceiling`."""
     total = compactions = 0
-    s = ctx[0]
+    s = ctx[0] if ctx else 0
     for k, x in enumerate(ctx):
         if k:
             delta = x - ctx[k - 1]
-            if delta < 0:  # a real compaction or clear: the replay shrinks at least as much
-                s = min(s, x)
+            if delta < 0:  # a real compaction or clear: applies only if the replay had reached that size
+                s = _after_drop(s, ctx[k - 1], x)
             else:
                 s += delta
                 if s > ceiling:
                     total += s  # the compaction call reads the full context once
                     compactions += 1
-                    s = min(x, base + summary + min(delta, ceiling))
-        total += min(s, x) if k else x
+                    s = base + summary + min(delta, ceiling)
+        total += s
     return {"input": total, "compactions": compactions}
 
 

@@ -31,6 +31,13 @@ quarter of every cycle takes 35% of all main-session input (cycle D2). The agent
 has already read all the time (about three reads in four, compaction or not), so content dropped
 from the context does come back when needed.
 
+**The ceiling sets the average.** Compaction fires only near the ceiling, so a long session's
+context runs a sawtooth between about 64k and 783k whatever goes into it. A policy that only slows
+the growth (trimming, pointers) mostly delays the next compaction and leaves the average about where
+it was: alone, carrying pointers instead of the agent's writes saved nothing (−4%) once compaction
+was left to fire at the ceiling (cycle B3). What lowers the average is moving the boundary: a new
+session or an earlier compaction.
+
 ## 2. The levers on one scale
 
 Share of main-session input that would not have been processed, with what each lever assumes.
@@ -43,14 +50,16 @@ Share of main-session input that would not have been processed, with what each l
 | Simple recency policy, miss rate < 5% | about 3% | none beyond the replay | no | harness | backtest |
 | Cap tool results at 2k / 10k tokens | 4.4% / 0.3% | cut part re-read on reuse | no | harness | A |
 | Remove every retry and polling loop | about 1.4% (0.3–2.1%) | loops were avoidable | no | agent | B2 |
-| **Carry a pointer instead of what the agent wrote** | **about 20%** (10.5% file bodies only) | the agent re-reads when it needs it | no | harness / agent convention | A2 |
-| **New session above 200k tokens at an instruction boundary** | **58.5%** | a 10k summary is enough | no | the user, today | B |
-| New session every 3 / 10 instructions | 57.9% / 30.8% | same | no | the user, today | B |
-| Compact at half the usual ceiling (about 390k instead of 780k) | 39% of input, 29% of cost, re-reads included | the more frequent summaries lose nothing needed | no | harness | D2 |
+| Carry a pointer instead of what the agent wrote | about 20% if compactions stayed where they were; **about 0 (−4%) alone** when compaction fires at the ceiling; negative in cost (re-fetched content is written at 2×) | the agent re-reads when it needs it | no | harness / agent convention | A2, B3 |
+| **New session above 200k tokens at an instruction boundary** | **55.2%** (54.8% on segments) | a 10k summary is enough | no | the user, today | B, B3 |
+| New session every 3 / 10 instructions | 55.1% / 22.3% | same | no | the user, today | B |
+| Compact at half the usual ceiling (about 390k instead of 780k) | 39–43% of input (29% of cost with the observed re-reads) | the more frequent summaries lose nothing needed | no | harness | D2, B3 |
+| **Bundle: new session above 200k + compaction at 390k** | **57.5% of input, 52.6% of cost** | both summary assumptions | no | user + harness | B3 |
 | Compact before leaving (breaks over 1 h) | up to 29% of cost | a 30k summary is enough | no | the user / harness | C |
 | Delegate reading to sub-agents (11–50 calls) | 1.4–5.1× cheaper than reading in the main session | the same reads were needed | no | the agent | D |
 
-(Savings are not additive: several levers act on the same context.)
+(Savings are not additive: several levers act on the same context. In the full bundle the restart
+rule does almost all the work; an earlier compaction adds 1.6 points and pointers 0.5, cycle B3.)
 
 ## 3. In units of work
 
@@ -68,9 +77,10 @@ at n = 10 (cycle D3).
    reuse is detected (35–54% across six detectors, cycle E3); how little forgetting alone saves is
    not (3–19% across lexical detectors), which the blind labels have to settle. Simple "recently
    used" rules either miss needed content or save little.
-2. **The levers that need no foresight act on context size**: start smaller (restart, delegate),
-   or carry pointers to what already exists elsewhere (the agent's own writes). The largest of them
-   are available to a user today (restart rules) or to a harness (pointers to written content).
+2. **The levers that need no foresight move the boundary**: start a new session, compact earlier,
+   or delegate to a sub-agent with its own small context. Trimming what goes in helps only once the
+   boundary has moved; under today's ceiling it mostly postpones the next compaction. The largest
+   lever is available to a user today (a restart rule).
 3. **Every large saving rests on an untested assumption** — that a summary, a pointer or a
    sub-agent's answer is enough. Phase 3 has to test exactly that, on real tasks with outcomes
    checked by tests.
