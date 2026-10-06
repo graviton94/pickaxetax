@@ -27,4 +27,22 @@ sub-agents included:
 |---:|---:|---:|---:|---:|---:|
 | 584,981,506 | 578,380,118 | 6,336,669 | 264,719 | 1,716,724 | about $180.57 |
 
-The same codebook will be applied to this session once the research phase it covers ends.
+### Interim T1 of this session (2026-10-06, local transcript with its sub-agent files)
+
+Measured with `pxt survey judge` on the whole session so far (not only the 400-call snapshot).
+
+| | Main session | Sub-agents | Total |
+|---|---:|---:|---:|
+| API calls | 1,014 | 2,747 | 3,761 |
+| Input processed | 423,766,657 | 340,654,835 | 764,421,492 |
+
+- Floor (codebook v1, T1): removable tokens 0.0015% (W1 1,220, W2 10,485); removable cost 3.09%,
+  almost all W6 (2,277,149 tokens in 7 re-writes, 5 of them after an idle gap of over an hour).
+  Without those: 0.04%.
+- **45% of this session's input went to sub-agents**, nearly all of them downloading event pages
+  for the survey (about 1,000 pages for S02, S03, S05, S09, S10 and the labeling texts). Each page
+  passes through an agent's context, so a page is paid for again on every later call of that
+  agent. Measuring a large session from inside the session itself is far cheaper; this is listed
+  as a research cost, and the cheaper method is the one to use from now on.
+
+The full codebook will be applied to this session once the research phase it covers ends.
