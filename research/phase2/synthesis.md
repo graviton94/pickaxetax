@@ -143,7 +143,8 @@ Share of main-session input that would not have been processed, and what each le
 4. **Every large saving rests on one untested assumption:** that a summary, a pointer or a
    sub-agent's answer is enough. Only quality can still overturn the restart and ceiling levers, and
    the logs cannot measure quality. Phase 3 tests it on tasks with outcome checks.
-   - A candidate task set from this repository's history is in preparation (cycle D6).
+   - `research/phase3/e2-taskset-v0.md` has a candidate task set for E2: 29 validated tasks from
+     this repository's history, in 4 chains of 7 instructions (cycle D6).
    - `research/protocol/e1-before-after.md` pre-registers the user-level before/after experiment.
      One person's before/after can detect only a change to about 0.6× or less (cycle B6).
 5. **Three disclosures would remove the largest unknowns**: thinking tokens reported separately in

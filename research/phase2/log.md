@@ -710,3 +710,19 @@ price list were not re-checked (no network). The memo marks them as assumptions.
 money). It needs no change in behaviour and is an order of magnitude smaller than moving the
 ceiling. Most of the W6 cost (re-writes after breaks over an hour, the floor's 8.92%) is also
 addressed by an hourly keep-alive, or by restarting on return (A6).
+
+## Cycle D6 — a task set for phase 3's controlled restart experiment (`research/phase3/e2-taskset-v0.md`)
+
+The design is SWE-bench style, built on this repository's own history. Of 104 commits scanned, 31
+change both code and tests. 30 of those have tests that fail with the commit's code reverted and
+pass at the commit, twice, with no flakes. One (the package rename) is excluded. That leaves **29
+tasks with 134 fail-to-pass tests**, grouped into **4 chains of 7 consecutive instructions**. The
+chain boundaries are checked too: the fail-to-pass sets hold when an agent continues from the
+previous reference solution. The estimated context growth is 31–99k tokens per instruction, so
+every chain passes 200k after instruction 3 or 4, as E2's restart arm needs. The set also lists
+what a harness needs, and estimates one replicate of all three arms at 335–630M input tokens.
+
+**Review.** Four chains make the pairing thin. The repository is public, so the model may have
+seen it. All tasks come from one project, and four commit messages are a subject line only, so the
+design shows the tests as the specification. Running it costs API usage and is the data owner's
+decision. Nothing was run.

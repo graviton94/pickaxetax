@@ -39,7 +39,9 @@ The levers a user can pull today, as a short project instruction file (for examp
 ## E2 — Restart rule, controlled (needs a task set and a harness)
 
 - **Tasks:** 20–40 multi-step coding tasks with automated checks (a public benchmark or a frozen
-  set from the data owner's repositories), each long enough to pass 200k tokens of context.
+  set from the data owner's repositories), each long enough to pass 200k tokens of context. A
+  candidate set is in `research/phase3/e2-taskset-v0.md`: 29 tasks from this repository's history,
+  validated fail-to-pass, in 4 chains of 7 instructions (cycle D6).
 - **Arms:** (a) one session throughout; (b) restart at an instruction boundary above 200k with a
   summary the agent writes; (c) the same with a 2k-token summary.
 - **Measures:** input processed, cost, checks passed, steps; paired by task.
