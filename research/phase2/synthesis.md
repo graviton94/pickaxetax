@@ -114,7 +114,8 @@ at n = 10 (cycle D3).
    look as if it needed most of the old context (cycle A4), but an unrelated window scores 72–99% of
    the same "demand": it measures shared vocabulary. After the 34 real compactions the agent
    re-obtained 10–21k distinct tokens, beside about 22k restored by the harness, and no damage was
-   visible in error rates or step counts (cycle A5). The cost of re-reading therefore does not limit
+   visible in error rates, step counts or failed edits (cycles A5, D5; edits fail too rarely, 0.75%,
+   to see anything below a threefold rise). The cost of re-reading therefore does not limit
    the restart lever; whether quality survives 150 restarts instead of 34 compactions is the open part.
    No signal known at the boundary (the new prompt's overlap with the context, its length, the
    break before it) picks boundaries where less is re-read afterwards; refusing a boundary only moves

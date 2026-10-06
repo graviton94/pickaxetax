@@ -623,3 +623,22 @@ random-refusal control) are labelled as such in the memo.
 phase 3 plan). The return-after-a-break rule is the cleanest version for a user. It costs nothing
 the return does not already cost, and it is easy to follow: "after an hour away, start a new
 session with a summary".
+
+## Cycle D5 — do edits fail more after a compaction? (`D5-edit-failures.md`)
+
+**Found.** Of 1,328 Edit/Write calls in the main sessions, 10 failed (0.75%). Three quoted text that
+was no longer there, and seven were refused by the harness (file not read, or changed since read).
+Sub-agents' 166 edits never failed. After a compaction the failure rate is 0/25 in the next 10
+calls and 1/179 in the next 50, against 1.05% mid-cycle. A placebo with randomly placed fake
+compactions gives p = 1.0 / 0.66. Edits of files last seen before the compaction failed 1/64
+against 7/816 (p = 0.45). Shell edits (3,610; 1.4% errors) show a spike at 10 calls that rests on
+two ordinary errors at the window's edge and is gone at 50.
+
+**Review.** The test can only exclude a rise above about 3% (three times the control). An edit
+that is wrong but still applies is invisible to it. The harness re-attaches recently read files
+after a compaction, which may suppress refusals by design.
+
+**Discussion.** A third behavioural measure (after A5's re-reads and error rates, and A6's
+re-reading) finds no visible cost of losing context at a compaction. All three are blunt.
+Together they say that losing context does not cause frequent, visible breakage. They cannot say
+that nothing subtle was lost. The quality question remains for an experiment with outcome checks.
