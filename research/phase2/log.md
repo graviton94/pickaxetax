@@ -917,3 +917,37 @@ check only W7 and the outcome personally on 30 short items.
 phrase matching ignores context (pasted logs, up-front "하지 말고" constraints); undo actions were
 never seen. That is why the owner's check exists. The new-topic rule decides most outcomes, and the
 check tests it directly.
+
+## Cycle M1 — the minimal rule set, pre-registered replay (`M1-minimal-rules.md`)
+
+**Found.** The replay ran as pre-registered (`research/protocol/minimal-rules-v1.md`). The no-rule
+replay reproduces measured input exactly, and B3, B7 and A6 reproduce. The minimal set is **one
+rule: compact whenever the context would pass 150k** (R3). That saves 72.9% of input and 64.7% of
+model price (51–52% of total money), at 0.82 extra steps per instruction (3.4% of calls).
+- The selection is the same on all ten sessions, on both halves and at 100k / 200k. The bootstrap
+  gives 71.7–73.5% of input.
+- Once R3 caps the context below 200k, the boundary rules add nothing: R4 adds 0 and R5 subtracts.
+- The reflex and habituation rules (R1, R2) are real but tiny: 0.9% and 0.3% alone, under 0.1
+  point on top of R3.
+- The usage-weighted keep (R6) costs 2.5–2.8 points. Fetch-on-cue (R7) is ruinous under lexical
+  need (input up to 224×), even thinned to the behaviour-calibrated rate.
+- No falsifier fires. The stated expectation ("built around boundaries") was wrong.
+
+**Review.**
+- The result rests on one charge. Content dropped by a compaction costs only D2's behavioural
+  re-read rate. Under lexical need the same drops are ruinous, as R7 shows. Phase 2 has three
+  measures favouring behaviour (A5, E8, A7), so the charge is the supported one. But it was measured
+  on compactions at 783k, and R3 would make 323 compactions instead of 34.
+- Quality is not measured, and model time goes the other way. C6 found compactions cost about
+  130 s each and make a 200k ceiling slower overall, and 150k is slower still.
+- R3 is a harness setting. A user can approximate it by compacting by hand around 150k, or with
+  R4 (52%) by starting new sessions.
+
+**Discussion — what the neural analogies taught.** The rules were inspired by neural mechanisms;
+these are analogies, not claims. Of the seven, only the simplest survived: a threshold gate on a
+small working memory. The associative mechanisms do not pay under an LLM's cost structure: Hebbian
+keeping and indexed fetch-on-cue. In a brain, recall is cheap; in an agent, every fetch is one more
+step that re-reads the whole context. So efficiency here comes less from clever retention than from
+a hard limit on what is held at once. That is the B4 closed form (C\* ≈ 80–90k), now confirmed as the
+single rule that matters. Phase 3 tests what the gate costs in quality: E4 compares compaction
+ceilings, and E2 covers restarts.

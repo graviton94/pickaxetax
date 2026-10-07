@@ -167,6 +167,20 @@ Share of main-session input that would not have been processed, and what each le
 5. **Three disclosures would remove the largest unknowns**: thinking tokens reported separately in
    usage, final output tokens in event logs, and a usage record for the compaction call.
 
+## 6. The minimal rule set (pre-registered, cycle M1)
+
+Seven candidate rules, inspired by neural mechanisms (reflex, habituation, a threshold gate,
+consolidation at boundaries and at rest, Hebbian keeping, an index), were replayed under fixed
+charges and selected forward. A rule was kept only if it added at least 2 points of input and 1 of
+price.
+- **The chosen set is one rule: compact whenever the context would pass 150k.** It saves 72.9% of
+  input and 64.7% of price, with 3.4% extra calls. The choice is the same on both halves of the
+  sessions and at 100k–200k.
+- The boundary rules, the reflex and habituation rules, and the associative rules add nothing on top
+  of it, or cost more.
+- It rests on the behavioural re-read charge, and its quality is untested (about ten times as many
+  compactions).
+
 ## 6. Open in phase 2
 
 - Blind labels: the W4, W5 and W8 detectors (with W5's pre-registered secondary analysis), and
