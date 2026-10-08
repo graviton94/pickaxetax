@@ -971,3 +971,20 @@ The no-rule replay and R3 reproduce M1 exactly.
 **Discussion.** Both new rules sit on steps rather than on context, and with a small context they are worth
 little. The multiplier principle of `brain-map.md` holds out of sample: everything that is not context size
 stays below one point.
+
+## Cycle G: goal fidelity across compaction (pre-registered)
+
+Protocol `research/protocol/goal-fidelity-v1.md`; memo `G-goal-fidelity.md`.
+- **G1 could not run as registered.** Only 1 of the 34 compactions has its summary in the data; the other
+  sessions were rebuilt from an events source that does not return summaries.
+  - On that one (S01), Q1/Q5 survival is 0.58 term-weighted.
+  - An unregistered proxy uses the agent's own output after each compaction (n = 34). It gives a Q1/Q5 of
+    0.62 (95% CI 0.51–0.78), but the survival levels are low (5–8%), so it measures what the agent talks
+    about next, not what the summary kept.
+  - Verdict: **not testable**.
+- **G2.** There are 102 instructions after compactions and 131 controls.
+  - Correction or restatement: 14.7% after compaction vs 17.4% in controls, a ratio of 0.85 (0.48–1.41).
+  - Verdict: **not shown**. The user did not correct or restate more often right after a compaction.
+- **Discussion.** The claim that compaction erases early agreements is not supported by this person's
+  behaviour, and the summaries that would test it directly are missing. It stays a hypothesis. Collecting
+  summaries going forward (they are in the local transcripts) would make G1 testable.
