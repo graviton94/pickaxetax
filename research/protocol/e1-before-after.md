@@ -1,8 +1,8 @@
 # E1: a user-level bundle, before and after (pre-registration)
 
-Status: **draft for the data owner's approval, 2026-10-06.** Adopting the bundle is the data
-owner's decision. This page is meant to be committed before any "after" session exists; a change
-made after an after-session result has been read is a new version, reported as such.
+Status: **approved by the data owner, 2026-10-06**, with one addition (the return rule below).
+Committed before any "after" session exists. A change made after an after-session result has been
+read is a new version, reported as such.
 
 Design: `research/phase2/phase3-experiments.md` (E1). Code: `pickaxetax/survey/compare.py`, run as
 `pxt survey compare`. Tests: `tests/test_compare.py`.
@@ -20,6 +20,16 @@ Design: `research/phase2/phase3-experiments.md` (E1). Code: `pickaxetax/survey/c
 
 It goes into the project instruction file (for example `CLAUDE.md`) of every project the data owner
 works in during the after period, and stays unchanged. Editing it ends the period.
+
+**Return rule (added at approval, from cycle A6).** Beside the file, the data owner follows one habit:
+on returning to a session after more than an hour away with a large context, start a new session
+with a short summary instead of continuing. It is the data owner's rule, not a line in the file,
+because the agent cannot see how long the break was. For each after session the data owner records
+whether it began as such a return. Cycle A6 estimates this alone at about 15% of cost on the large
+sessions (per-session median about 5%).
+
+The after period starts when the file is in place in the first project and the data owner records
+the date in the dataset's notes.
 
 ## Before set
 
@@ -104,14 +114,14 @@ This is a before/after comparison. Anything else that changed between the two pe
 the bundle. That includes task mix and projects, model version (`--out` lists the models per side),
 Claude Code version and its compaction behaviour, and the measurement route (the before set is
 mostly event logs). The data owner also knows the phase 2 results, which may change how they work
-regardless of the file. The fourth line works only if the data owner restarts when told. n = 1 person.
+regardless of the file. The fourth line and the return rule work only if the data owner restarts. n = 1 person.
 
 ---
 
 ## 한국어 요약
 
-실험 E1의 사전 등록 초안입니다. 번들을 쓸지는 데이터 소유자가 정하므로 그의 승인을 기다립니다. "이후" 세션이 하나도 없을
-때 커밋합니다. 번들은 짧은 프로젝트 지시 파일 네 줄이고(위 원문 그대로), 기간 동안 바꾸지 않습니다. "이전"은
+실험 E1의 사전 등록입니다. 데이터 소유자가 2026-10-06에 승인했습니다. "이후" 세션이 하나도 없을
+때 커밋합니다. 번들은 짧은 프로젝트 지시 파일 네 줄이고(위 원문 그대로), 기간 동안 바꾸지 않습니다. 승인 때 사용자 습관 하나를 더했습니다. 1시간 넘게 쉬고 돌아왔는데 맥락이 크면, 이어 가지 말고 짧은 요약과 함께 새 세션을 시작합니다. 에이전트는 쉰 시간을 알 수 없으므로 파일이 아니라 데이터 소유자의 습관이고, 세션마다 그렇게 시작했는지 적습니다. "이전"은
 `dataset-v2.json`의 세션 10개입니다(digest `75f10a83…`, 위 표). 1차 지표는 지시당 주 세션 입력의 중앙값입니다. 이후/이전
 비율과 그 90% 신뢰구간을 내는데, 신뢰구간은 세션 단위로 다시 뽑는 부트스트랩(2,000번, 시드 20261006)으로 구합니다.
 `pxt survey compare`가 내는 값 그대로입니다. 신뢰구간 위끝이 1보다 작으면 줄었다고, 아래끝이 1보다 크면 늘었다고 읽고,

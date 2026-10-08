@@ -13,6 +13,9 @@ same work under the changed structure, and checking the result, can test that.
 
 ## E1 — A user-level bundle, before and after (the data owner, from the next sessions)
 
+Approved by the data owner on 2026-10-06, with one user habit added (on returning after more than
+an hour away, start a new session). Pre-registration: `research/protocol/e1-before-after.md`.
+
 The levers a user can pull today, as a short project instruction file (for example `CLAUDE.md`):
 
 ```

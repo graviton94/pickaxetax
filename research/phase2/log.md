@@ -873,3 +873,118 @@ beats the break-only restart, the break-only restart beats the keep-alive, and i
 **Review.** The break-only restart and the keep-alive describe the large sessions. Their
 per-session medians are 5.2% and 1.1%, and the keep-alive loses money in 5 of 10 sessions. The
 synthesis now says so.
+
+## Cycle C9 — checking the thinking share with time (`C9-thinking-check.md`)
+
+**Found.** S01 has real output counts and a thinking-duration field. There, thinking duration and
+thinking-signature length measure the same thing (Spearman +0.97), and either predicts the
+invisible output (R² 0.80 / 0.78; a joint fit reaches 0.97). In the event sessions the next call's
+invisible growth rises about one token per thinking token of the previous call (slope 1.05), which
+confirms C2's mechanism. With thinking estimated from time instead of signature length, the
+invisible third splits into about 39% thinking, 48% constant per-call overhead and 13% images,
+against C2's 49 / 38 / 13. Output comes to 8.3% of main-session money (8.0–9.0%), about 9% of all
+money. That is the bottom of C5's 9–12%; C5's high scenario is not supported.
+
+**Review.** The tokens-per-second rate is calibrated on S01 and scaled for the other models by
+their visible streaming speed. Slopes of 1.1–1.5 there suggest their thinking is understated by
+about 25%, which would move the split back toward C2's. The synthesis now gives "about 40%
+thinking" and "output about 9%".
+
+## Cycle D8 — judging the human categories mechanically (`research/protocol/mechanical-validation-v1.md`)
+
+The blind labeling's practice round failed. Labelers found the categories hard to tell apart, the
+items long and many, and the intent unknown. For six of the eight categories the screen held no
+evidence. The data owner chose to judge every category mechanically, checked by behaviour, and to
+check only W7 and the outcome personally on 30 short items.
+- **New tier.** `rules.detect_t3` adds W3 (unquoted sub-agent results, errored delegations, polling
+  with identical results) and proxies for W7 and the outcome, read from the next instruction:
+  undo/correction/unrequested/acceptance phrases, undo actions, new topic, interrupts.
+  `tests/test_rules_t3.py` covers it, and rule tier v0 is unchanged; all six earlier seals re-make
+  byte-identical.
+- **Rates over the ten sessions:**
+  - W3 0.1%;
+  - W7 yes / no / unsure 1.5 / 14.9 / 83.6%;
+  - outcome met / not met / unknown 73.1 / 11.4 / 15.5%. 407 of the 499 "met" calls come from the
+    new-topic rule.
+- **The owner's packet.** 30 items, selected by length only, digest `3cc9a24c…`. The t3 labels for
+  it are sealed (`1889437c…`) before the owner labels.
+- **Pre-registered decision rules.** The outcome proxy is used only if it decides at least 70% of
+  the items and agrees with the owner on at least 80% of those; W7 likewise with 50% / 80%. Phase 2
+  expects the W7 proxy to fail. W7 would then be published as the owner's 30-item rate with an
+  interval.
+
+**Review.** The proxies are weak where they matter. "Moved on to a new topic" is not "satisfied";
+phrase matching ignores context (pasted logs, up-front "하지 말고" constraints); undo actions were
+never seen. That is why the owner's check exists. The new-topic rule decides most outcomes, and the
+check tests it directly.
+
+## Cycle M1 — the minimal rule set, pre-registered replay (`M1-minimal-rules.md`)
+
+**Found.** The replay ran as pre-registered (`research/protocol/minimal-rules-v1.md`). The no-rule
+replay reproduces measured input exactly, and B3, B7 and A6 reproduce. The minimal set is **one
+rule: compact whenever the context would pass 150k** (R3). That saves 72.9% of input and 64.7% of
+model price (51–52% of total money), at 0.82 extra steps per instruction (3.4% of calls).
+- The selection is the same on all ten sessions, on both halves and at 100k / 200k. The bootstrap
+  gives 71.7–73.5% of input.
+- Once R3 caps the context below 200k, the boundary rules add nothing: R4 adds 0 and R5 subtracts.
+- The reflex and habituation rules (R1, R2) are real but tiny: 0.9% and 0.3% alone, under 0.1
+  point on top of R3.
+- The usage-weighted keep (R6) costs 2.5–2.8 points. Fetch-on-cue (R7) is ruinous under lexical
+  need (input up to 224×), even thinned to the behaviour-calibrated rate.
+- No falsifier fires. The stated expectation ("built around boundaries") was wrong.
+
+**Review.**
+- The result rests on one charge. Content dropped by a compaction costs only D2's behavioural
+  re-read rate. Under lexical need the same drops are ruinous, as R7 shows. Phase 2 has three
+  measures favouring behaviour (A5, E8, A7), so the charge is the supported one. But it was measured
+  on compactions at 783k, and R3 would make 323 compactions instead of 34.
+- Quality is not measured, and model time goes the other way. C6 found compactions cost about
+  130 s each and make a 200k ceiling slower overall, and 150k is slower still.
+- R3 is a harness setting. A user can approximate it by compacting by hand around 150k, or with
+  R4 (52%) by starting new sessions.
+
+**Discussion — what the neural analogies taught.** The rules were inspired by neural mechanisms;
+these are analogies, not claims. Of the seven, only the simplest survived: a threshold gate on a
+small working memory. The associative mechanisms do not pay under an LLM's cost structure: Hebbian
+keeping and indexed fetch-on-cue. In a brain, recall is cheap; in an agent, every fetch is one more
+step that re-reads the whole context. So efficiency here comes less from clever retention than from
+a hard limit on what is held at once. That is the B4 closed form (C\* ≈ 80–90k), now confirmed as the
+single rule that matters. Phase 3 tests what the gate costs in quality: E4 compares compaction
+ceilings, and E2 covers restarts.
+
+## Cycle M2: minimal rule set v2 (reflex arc, mode switch) and the W8 behaviour check
+
+Protocol `research/protocol/minimal-rules-v2.md`, pre-registered before the replay; memo `M2-minimal-rules-v2.md`.
+The no-rule replay and R3 reproduce M1 exactly.
+- **R8 reflex arc.** Only 10 calls are post-edit checks with no text, so R8 removes 0.015 calls per instruction.
+  - Alone it saves 0.04% of input; on {R3} it adds +0.02 points.
+  - The widest variant (state reads, no edit precondition) gives 1.66% alone and +0.35 / +0.45 on {R3}.
+  - The expectation for R8 alone (1–5%) is **falsified on the low side**: these sessions run few checks as
+    separate model steps.
+- **R9 mode switch.** There are 1,095 mechanical calls. At the 50% cut R9 saves 0.86% of input alone; on {R3}
+  it adds −0.10 input / +0.02 price points, and +0.23 money points.
+- **Selection.** The set stays {R3} on all ten sessions, on both halves and under every sensitivity.
+- **W8.** The sealed detector flags 2 of 683 instructions (0.3%), which is 0.07% of exploration tokens; 0 of the
+  3 flagged results was used later (95% CI 0–56%). The check barely separates used from unused results
+  (0.9–4.8% vs 3.3–5.1%), so it validates little. Over-exploration, as defined, is negligible in these sessions.
+
+**Discussion.** Both new rules sit on steps rather than on context, and with a small context they are worth
+little. The multiplier principle of `brain-map.md` holds out of sample: everything that is not context size
+stays below one point.
+
+## Cycle G: goal fidelity across compaction (pre-registered)
+
+Protocol `research/protocol/goal-fidelity-v1.md`; memo `G-goal-fidelity.md`.
+- **G1 could not run as registered.** Only 1 of the 34 compactions has its summary in the data; the other
+  sessions were rebuilt from an events source that does not return summaries.
+  - On that one (S01), Q1/Q5 survival is 0.58 term-weighted.
+  - An unregistered proxy uses the agent's own output after each compaction (n = 34). It gives a Q1/Q5 of
+    0.62 (95% CI 0.51–0.78), but the survival levels are low (5–8%), so it measures what the agent talks
+    about next, not what the summary kept.
+  - Verdict: **not testable**.
+- **G2.** There are 102 instructions after compactions and 131 controls.
+  - Correction or restatement: 14.7% after compaction vs 17.4% in controls, a ratio of 0.85 (0.48–1.41).
+  - Verdict: **not shown**. The user did not correct or restate more often right after a compaction.
+- **Discussion.** The claim that compaction erases early agreements is not supported by this person's
+  behaviour, and the summaries that would test it directly are missing. It stays a hypothesis. Collecting
+  summaries going forward (they are in the local transcripts) would make G1 testable.

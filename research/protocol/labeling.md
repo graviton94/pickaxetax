@@ -1,5 +1,7 @@
 # Blind labeling: how the waste codebook is checked by people
 
+> **2026-10-06:** 블라인드 판정은 연습 단계 뒤 중단했습니다(판정자가 화면만으로 판단할 수 없었음). 지금의 방법은 `research/protocol/mechanical-validation-v1.md`입니다. 판정 페이지는 데이터 주인의 30개 확인에 그대로 씁니다. / Blind labeling was withdrawn after the practice round; see `mechanical-validation-v1.md`.
+
 This is §5 of `waste-codebook-v1.md` made operational. Nobody needs an account: the data
 owner makes a packet on their own machine, labelers judge it in the public labeling page
 (`https://graviton94.github.io/pickaxetax/label.html`), and anyone can recompute the

@@ -2,7 +2,8 @@
 // The packet is read from a local file and never leaves this tab (CSP connect-src 'none').
 // Labels autosave in this browser and are exported as a file holding ids and choices only.
 
-const CATS = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"];
+const ALL_CATS = ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"];
+let CATS = ALL_CATS; // a packet may ask only some categories (`categories`), e.g. a data-owner check
 const CHOICES = ["yes", "no", "unsure"];
 const OUTCOMES = ["met", "partial", "not_met", "unsure"];
 
@@ -13,7 +14,7 @@ const T = {
     setup_h: "낭비 판정 · 블라인드 라벨링",
     setup_lede: "데이터 주인에게 받은 판정 꾸러미를 불러와, 지시마다 여덟 갈래의 낭비가 있었는지 판정합니다. 다른 판정자의 결과나 기계 판정은 보이지 않습니다. 끝나면 판정 파일을 내려받아 데이터 주인에게 돌려주세요.",
     step1: "판정 꾸러미 파일",
-    step2: "판정자 코드 (예: A, B)",
+    step2: "판정자 코드",
     step3: "단계",
     phase_cal: "연습 (먼저, 끝나면 해석 차이를 맞춥니다)",
     phase_main: "본 판정",
@@ -33,6 +34,10 @@ const T = {
     note: "메모 (선택, 판정 파일에 함께 저장됩니다. 원문을 옮겨 적지 마세요)",
     guide: "판정 기준 v1 전체 보기",
     done: "모든 항목을 판정했습니다. 판정 파일을 내려받아 데이터 주인에게 보내 주세요.",
+    step2_help: "데이터 주인이 정해 준 글자(A나 B)입니다. 판정 파일에 누구의 판정인지 적히고, 항목 순서도 이 코드로 정해집니다. 받은 링크로 열었다면 이미 채워져 있습니다.",
+    coder_locked: "받은 링크에 들어 있는 코드입니다.",
+    howto_h: "처음이라면 읽어 주세요",
+    read_h: "이 화면 읽는 법",
   },
   en: {
     title: "Labeling",
@@ -40,7 +45,7 @@ const T = {
     setup_h: "Judging waste · blind labeling",
     setup_lede: "Load the packet the data owner gave you and judge, for each instruction, whether each of the eight kinds of waste happened. You will not see other labelers' answers or any machine judgment. When done, download your labels file and send it back to the data owner.",
     step1: "Labeling packet file",
-    step2: "Your coder code (e.g. A, B)",
+    step2: "Your coder code",
     step3: "Phase",
     phase_cal: "Practice (first; differences are discussed afterwards)",
     phase_main: "Main labeling",
@@ -60,6 +65,10 @@ const T = {
     note: "Note (optional; saved in the labels file. Do not copy conversation text into it)",
     guide: "Show the full codebook v1",
     done: "Every item is labeled. Download the labels file and send it to the data owner.",
+    step2_help: "The letter the data owner gave you (A or B). It goes into your labels file to show whose labels they are, and it sets the order of the items. If you opened the link you were sent, it is already filled in.",
+    coder_locked: "This code came with your link.",
+    howto_h: "Read this first",
+    read_h: "How to read this screen",
   },
   ja: {
     title: "判定ツール",
@@ -67,7 +76,7 @@ const T = {
     setup_h: "ムダの判定 · ブラインド・ラベリング",
     setup_lede: "データの持ち主から受け取った判定パケットを読み込み、指示ごとに8種類のムダがあったかを判定します。他の判定者の結果や機械判定は表示されません。終わったら判定ファイルをダウンロードして、データの持ち主に返してください。",
     step1: "判定パケットのファイル",
-    step2: "判定者コード (例: A, B)",
+    step2: "判定者コード",
     step3: "段階",
     phase_cal: "練習 (先に行い、終わったら解釈の違いを合わせます)",
     phase_main: "本判定",
@@ -87,6 +96,10 @@ const T = {
     note: "メモ (任意。判定ファイルに保存されます。会話の原文は書き写さないでください)",
     guide: "判定基準 v1 をすべて表示",
     done: "すべての項目を判定しました。判定ファイルをダウンロードして、データの持ち主に送ってください。",
+    step2_help: "データの持ち主が決めた文字 (A か B) です。判定ファイルに誰の判定かが記録され、項目の順番もこのコードで決まります。受け取ったリンクで開いた場合はすでに入っています。",
+    coder_locked: "受け取ったリンクに含まれているコードです。",
+    howto_h: "はじめての方へ",
+    read_h: "この画面の読み方",
   },
   zh: {
     title: "判定工具",
@@ -94,7 +107,7 @@ const T = {
     setup_h: "浪费判定 · 盲法标注",
     setup_lede: "载入数据所有者给你的判定包，针对每条指令判断八类浪费是否发生。你看不到其他标注者的结果，也看不到机器判定。完成后下载标注文件，交还给数据所有者。",
     step1: "判定包文件",
-    step2: "标注者代码 (例如 A, B)",
+    step2: "标注者代码",
     step3: "阶段",
     phase_cal: "练习 (先做，完成后统一理解上的差异)",
     phase_main: "正式标注",
@@ -114,6 +127,10 @@ const T = {
     note: "备注 (可选，会保存在标注文件中。请勿抄录对话原文)",
     guide: "查看完整的判定标准 v1",
     done: "所有条目都已标注。请下载标注文件并发给数据所有者。",
+    step2_help: "数据主人给你的字母 (A 或 B)。它会写进标注文件以表明是谁的标注，题目的顺序也由它决定。如果你是用收到的链接打开的，这里已经填好了。",
+    coder_locked: "这个代码来自你收到的链接。",
+    howto_h: "第一次使用请先读",
+    read_h: "如何阅读这个页面",
   },
   es: {
     title: "Etiquetado",
@@ -121,7 +138,7 @@ const T = {
     setup_h: "Juzgar el desperdicio · etiquetado ciego",
     setup_lede: "Carga el paquete que te dio el dueño de los datos y decide, para cada instrucción, si ocurrió cada uno de los ocho tipos de desperdicio. No verás las respuestas de otras personas ni ningún juicio automático. Al terminar, descarga tu archivo de etiquetas y envíalo al dueño de los datos.",
     step1: "Archivo del paquete",
-    step2: "Tu código de etiquetador (p. ej. A, B)",
+    step2: "Tu código de etiquetador",
     step3: "Fase",
     phase_cal: "Práctica (primero; después se comparan las diferencias)",
     phase_main: "Etiquetado principal",
@@ -141,6 +158,10 @@ const T = {
     note: "Nota (opcional; se guarda en el archivo de etiquetas. No copies texto de la conversación)",
     guide: "Ver el código de desperdicio v1 completo",
     done: "Todas las instrucciones están etiquetadas. Descarga el archivo de etiquetas y envíalo al dueño de los datos.",
+    step2_help: "La letra que te dio el dueño de los datos (A o B). Va en tu archivo de etiquetas para saber de quién son, y fija el orden de los casos. Si abriste el enlace que te enviaron, ya está puesto.",
+    coder_locked: "Este código viene en tu enlace.",
+    howto_h: "Lee esto primero",
+    read_h: "Cómo leer esta pantalla",
   },
 };
 
@@ -225,6 +246,86 @@ const GUIDE = {
     "Etiqueta a solas, sin comentar los casos. Las diferencias se comentan solo después de la práctica."],
 };
 
+const HOWTO = {
+ "ko": [
+  "무엇을 하나요: AI 에이전트가 사용자의 지시 하나를 처리한 기록을 보고, 그 안에 여덟 갈래의 낭비가 있었는지 고릅니다.",
+  "항목마다 위에서부터 읽습니다: 지시(사용자가 한 말) → 에이전트가 한 일(도구 호출 목록) → 마지막 응답.",
+  "여덟 갈래마다 있음 / 없음 / 모름 중 하나를 고릅니다. 화면에 근거가 없으면 추측하지 말고 '모름'입니다.",
+  "마지막으로 결과가 요청을 충족했는지 고릅니다. 각 갈래의 뜻은 판정 화면 아래 '판정 기준 v1 전체 보기'에 있습니다.",
+  "먼저 '연습'을 하고 판정 파일을 내려받아 데이터 주인에게 보냅니다. 해석 차이를 맞춘 뒤 '본 판정'을 같은 방법으로 합니다.",
+  "진행 상황은 이 브라우저에 저장되므로 중간에 닫았다가 이어서 해도 됩니다. 다른 사람과 상의하지 말고 혼자 판정합니다."
+ ],
+ "en": [
+  "What you do: read the record of an AI agent handling one instruction from its user, and decide whether each of eight kinds of waste happened.",
+  "Read each item top to bottom: the instruction (what the user said) → what the agent did (its tool calls) → its final answer.",
+  "For each kind choose Yes / No / Unsure. If the screen gives no basis, do not guess: choose Unsure.",
+  "Then say whether the result met the request. What each kind means is under 'Show the full codebook v1' below the form.",
+  "Do the practice round first, download your labels file and send it to the data owner. After you have compared interpretations, do the main round the same way.",
+  "Your progress is saved in this browser, so you can close the page and come back. Label alone, without discussing items with anyone."
+ ],
+ "ja": [
+  "やること: AI エージェントがユーザーの指示一つを処理した記録を読み、8 種類のムダがあったかを判定します。",
+  "各項目は上から読みます: 指示 (ユーザーの発言) → エージェントがしたこと (ツール呼び出しの一覧) → 最後の応答。",
+  "種類ごとに あり / なし / 不明 を選びます。画面に根拠がなければ推測せず「不明」です。",
+  "最後に結果が依頼を満たしたかを選びます。各種類の意味はフォームの下の「判定基準 v1 をすべて表示」にあります。",
+  "まず「練習」を行い、判定ファイルをダウンロードしてデータの持ち主に送ります。解釈の違いを合わせた後、「本判定」を同じ方法で行います。",
+  "進み具合はこのブラウザに保存されるので、途中で閉じても続きから再開できます。他の人と相談せず一人で判定します。"
+ ],
+ "zh": [
+  "要做的事：阅读 AI 智能体处理用户一条指令的记录，判断其中是否发生了八类浪费。",
+  "每个条目从上往下读：指令 (用户说的话) → 智能体做了什么 (工具调用列表) → 最后的回答。",
+  "每一类选择 有 / 没有 / 不确定。屏幕上没有依据时不要猜，选「不确定」。",
+  "最后判断结果是否满足了请求。每一类的含义在表单下方的「查看完整的判定标准 v1」里。",
+  "先做「练习」，下载标注文件发给数据主人。统一理解上的差异后，用同样的方法做「正式标注」。",
+  "进度保存在这个浏览器里，中途关闭后可以继续。请独自标注，不要与他人商量。"
+ ],
+ "es": [
+  "Qué haces: leer el registro de un agente de IA atendiendo una instrucción de su usuario y decidir si ocurrió cada uno de ocho tipos de desperdicio.",
+  "Lee cada caso de arriba abajo: la instrucción (lo que dijo el usuario) → lo que hizo el agente (sus llamadas a herramientas) → su respuesta final.",
+  "Para cada tipo elige Sí / No / No sé. Si la pantalla no da base, no adivines: elige «No sé».",
+  "Después indica si el resultado cumplió lo pedido. Qué significa cada tipo está en «Ver el código de desperdicio v1 completo», debajo del formulario.",
+  "Haz primero la práctica, descarga tu archivo de etiquetas y envíalo al dueño de los datos. Tras comparar interpretaciones, haz la ronda principal igual.",
+  "Tu avance se guarda en este navegador: puedes cerrar la página y seguir después. Etiqueta a solas, sin comentar los casos con nadie."
+ ]
+};
+const READ = {
+ "ko": [
+  "#번호: 이 단계에서 몇 번째 항목인지. 순서는 판정자마다 다르게 섞여 있습니다.",
+  "S03 같은 코드: 데이터 주인의 몇 번째 세션(작업 대화)에서 나온 지시인지. 'N번째 지시'는 그 세션 안의 순서입니다.",
+  "호출: 이 지시를 처리하는 동안 AI를 몇 번 불렀는지. 입력·출력 토큰: 그동안 처리하고 만들어 낸 양.",
+  "오류: 오류로 끝난 도구 호출 수. 하위 에이전트: 일을 맡긴 보조 AI의 호출 수.",
+  "에이전트가 한 일의 각 줄: 도구 이름, 대상(파일·명령), 돌려받은 결과의 길이(자). 빨간 줄은 오류로 끝난 호출입니다."
+ ],
+ "en": [
+  "#number: which item of this round you are on. Each coder gets the items in a different order.",
+  "A code like S03: which of the data owner's sessions (working conversations) the instruction came from. 'instruction N' is its place in that session.",
+  "calls: how many times the AI was called while handling this instruction. input and output tokens: how much it processed and produced.",
+  "errors: tool calls that ended in an error. sub-agents: calls made by helper AIs it delegated to.",
+  "Each line of what the agent did: the tool, its target (file or command) and the length of the result it got back. Red lines ended in an error."
+ ],
+ "ja": [
+  "#番号: この段階で何番目の項目か。順番は判定者ごとに違うように混ぜてあります。",
+  "S03 のようなコード: データの持ち主の何番目のセッション (作業の会話) からの指示か。「N番目の指示」はそのセッション内の順番です。",
+  "呼び出し: この指示を処理する間に AI を何回呼んだか。入力・出力トークン: その間に処理し、生み出した量。",
+  "エラー: エラーで終わったツール呼び出しの数。サブエージェント: 仕事を任せた補助 AI の呼び出し数。",
+  "エージェントがしたことの各行: ツール名、対象 (ファイル・コマンド)、返ってきた結果の長さ (文字)。赤い行はエラーで終わった呼び出しです。"
+ ],
+ "zh": [
+  "#编号：这是本阶段的第几个条目。每位标注者的顺序都不同。",
+  "S03 这样的代码：指令来自数据主人的第几个会话 (工作对话)。「第 N 条指令」是它在该会话中的顺序。",
+  "调用：处理这条指令期间调用 AI 的次数。输入、输出 token：期间处理和生成的量。",
+  "错误：以错误结束的工具调用数。子智能体：交给辅助 AI 的调用数。",
+  "智能体所做之事的每一行：工具名、对象 (文件或命令)、返回结果的长度 (字)。红色的行是以错误结束的调用。"
+ ],
+ "es": [
+  "#número: qué caso de esta ronda estás viendo. Cada etiquetador recibe los casos en otro orden.",
+  "Un código como S03: de qué sesión (conversación de trabajo) del dueño de los datos viene la instrucción. «instrucción N» es su lugar en esa sesión.",
+  "llamadas: cuántas veces se llamó a la IA mientras atendía esta instrucción. tokens de entrada y salida: cuánto procesó y produjo.",
+  "errores: llamadas a herramientas que terminaron en error. subagentes: llamadas de las IA auxiliares a las que delegó.",
+  "Cada línea de lo que hizo el agente: la herramienta, su objetivo (archivo o comando) y la longitud del resultado recibido. Las líneas rojas terminaron en error."
+ ]
+};
+
 const $ = (id) => document.getElementById(id);
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -244,6 +345,9 @@ function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.
 function applyI18n() {
   document.documentElement.lang = lang === "zh" ? "zh-Hans" : lang;
   document.querySelectorAll("[data-t]").forEach((e) => { e.textContent = t(e.dataset.t); });
+  for (const [id, list] of [["howto", HOWTO], ["readhelp", READ]]) {
+    $(id).replaceChildren(...list[lang].map((x) => el("li", null, x)));
+  }
   $("lang").value = lang;
   buildForm();
   if (state) render();
@@ -351,7 +455,7 @@ function exportLabels() {
   const labels = {};
   for (const id of state.order) if (state.labels[id]) labels[id] = state.labels[id];
   const out = { schema: "pickaxetax.labels.v1", codebook: packet.codebook, packet: packet.sha256, phase: state.phase,
-    coder: state.coder, ui_lang: lang, exported: new Date().toISOString(), items: state.order.length, labels };
+    coder: state.coder, ui_lang: lang, categories: CATS, exported: new Date().toISOString(), items: state.order.length, labels };
   const blob = new Blob([JSON.stringify(out, null, 1)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = el("a");
@@ -374,6 +478,11 @@ $("packet").addEventListener("change", async () => {
     const p = JSON.parse(await f.text());
     if (!validPacket(p)) throw new Error();
     packet = p;
+    const noCal = !p.calibration.length; // a packet with no practice round starts at the main round
+    document.querySelector('input[name="phase"][value="calibration"]').disabled = noCal;
+    if (noCal) document.querySelector('input[name="phase"][value="main"]').checked = true;
+    CATS = Array.isArray(p.categories) && p.categories.length && p.categories.every((c) => ALL_CATS.includes(c)) ? p.categories : ALL_CATS;
+    buildForm();
     $("packet-info").textContent = `codebook ${p.codebook} · ${p.calibration.length} + ${p.items.length} · ${p.sha256.slice(0, 12)}…`;
     $("start").disabled = false;
   } catch { $("setup-err").textContent = t("bad_packet"); }
@@ -407,4 +516,9 @@ $("form").addEventListener("submit", (e) => e.preventDefault());
 for (const [k, name] of LANGS) { const o = el("option", null, name); o.value = k; $("lang").append(o); }
 $("lang").addEventListener("change", () => { lang = $("lang").value; store.set("label-lang", lang); applyI18n(); });
 
+// a personal link (label.html?coder=A) fills in and locks the coder code
+const linked = new URLSearchParams(location.search).get("coder");
+if (linked && /^[A-Za-z0-9_-]{1,12}$/.test(linked)) {
+  $("coder").value = linked; $("coder").readOnly = true; $("coder-locked").hidden = false;
+}
 applyI18n();

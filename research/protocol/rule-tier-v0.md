@@ -1,5 +1,8 @@
 # Rule tier v0: candidate detectors, fixed before the blind labels
 
+> **2026-10-06:** the human blind labels were withdrawn after the practice round; the detectors and their sealed
+> labels stand and are now checked against behaviour and a 30-item data-owner check. See `mechanical-validation-v1.md`.
+
 Codebook: `waste-codebook-v1.md` (§2 T2, §5.5). Code: `pickaxetax/survey/rules.py`, written out
 per packet item by `pxt survey machine --tier t2`. Tests: `tests/test_rules.py`.
 

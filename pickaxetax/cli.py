@@ -163,8 +163,9 @@ def main(argv: list[str] | None = None) -> int:
     sm2.add_argument("--limit", action="append", default=[], metavar="LABEL=N", help="the same instruction cut as the packet")
     sm2.add_argument("--limit-calls", action="append", default=[], metavar="LABEL=N")
     sm2.add_argument("--phase", choices=("main", "calibration"), default="main")
-    sm2.add_argument("--tier", choices=("t1", "t2"), default="t1",
-                     help="t1: the mechanical judge (W1, W2, W6); t2: the rule-tier candidates (W4, W5, W8)")
+    sm2.add_argument("--tier", choices=("t1", "t2", "t3"), default="t1",
+                     help="t1: the mechanical judge (W1, W2, W6); t2: the rule-tier candidates (W4, W5, W8); "
+                          "t3: W3 coordination loss and the W7 / outcome proxies")
     sm2.add_argument("--placebo", choices=["mirror"], default=None,
                      help="t2 only: W5's reuse links under the time-mirror test (the pre-registered secondary analysis)")
     sm2.add_argument("--out", default="labels-machine.json")
