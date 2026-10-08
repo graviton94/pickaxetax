@@ -951,3 +951,23 @@ step that re-reads the whole context. So efficiency here comes less from clever 
 a hard limit on what is held at once. That is the B4 closed form (C\* ≈ 80–90k), now confirmed as the
 single rule that matters. Phase 3 tests what the gate costs in quality: E4 compares compaction
 ceilings, and E2 covers restarts.
+
+## Cycle M2: minimal rule set v2 (reflex arc, mode switch) and the W8 behaviour check
+
+Protocol `research/protocol/minimal-rules-v2.md`, pre-registered before the replay; memo `M2-minimal-rules-v2.md`.
+The no-rule replay and R3 reproduce M1 exactly.
+- **R8 reflex arc.** Only 10 calls are post-edit checks with no text, so R8 removes 0.015 calls per instruction.
+  - Alone it saves 0.04% of input; on {R3} it adds +0.02 points.
+  - The widest variant (state reads, no edit precondition) gives 1.66% alone and +0.35 / +0.45 on {R3}.
+  - The expectation for R8 alone (1–5%) is **falsified on the low side**: these sessions run few checks as
+    separate model steps.
+- **R9 mode switch.** There are 1,095 mechanical calls. At the 50% cut R9 saves 0.86% of input alone; on {R3}
+  it adds −0.10 input / +0.02 price points, and +0.23 money points.
+- **Selection.** The set stays {R3} on all ten sessions, on both halves and under every sensitivity.
+- **W8.** The sealed detector flags 2 of 683 instructions (0.3%), which is 0.07% of exploration tokens; 0 of the
+  3 flagged results was used later (95% CI 0–56%). The check barely separates used from unused results
+  (0.9–4.8% vs 3.3–5.1%), so it validates little. Over-exploration, as defined, is negligible in these sessions.
+
+**Discussion.** Both new rules sit on steps rather than on context, and with a small context they are worth
+little. The multiplier principle of `brain-map.md` holds out of sample: everything that is not context size
+stays below one point.
